@@ -24,6 +24,7 @@ const gotoLogin = () => {
 
     <view class="identity">
       <navigator
+        class="navigator"
         url=""
         :class="{ active: activeLink === '商家登录' }"
         @click.prevent="setActiveLink('商家登录')"
@@ -31,6 +32,7 @@ const gotoLogin = () => {
       >
       <text>|</text>
       <navigator
+        class="navigator"
         url=""
         :class="{ active: activeLink === '管理端登录' }"
         @click.prevent="setActiveLink('管理端登录')"
@@ -54,19 +56,23 @@ const gotoLogin = () => {
   background-color: aliceblue;
 }
 .identity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0 auto;
   width: 180px;
-}
-a {
-  margin-right: 10px;
-  margin-left: 10px;
-  color: #000;
-  text-decoration: none;
-  &.active {
-    text-decoration: underline;
-    text-underline-offset: 10px;
+  .navigator {
+    margin-right: 10px;
+    margin-left: 10px;
+    color: #000;
+    text-decoration: none;
+    &.active {
+      text-decoration: underline;
+      text-underline-offset: 10px;
+    }
   }
 }
+
 button {
   margin: 20px auto;
   width: 257px;

@@ -4,6 +4,16 @@ const gotoHome = () => {
     url: '/pages/merchant_end/index/index',
   })
 }
+const gotoPhonelogin = () => {
+  uni.navigateTo({
+    url: '/pages/login_regitser/merchant/phonelogin',
+  })
+}
+const gotoForget = () => {
+  uni.navigateTo({
+    url: '/pages/login_regitser/merchant/forget/forget',
+  })
+}
 </script>
 <template>
   <view class="body">
@@ -15,22 +25,23 @@ const gotoHome = () => {
       </view>
       <view class="password">
         <text>密码</text>
-        <input type="label" placeholder="请输入账号密码" />
+        <input type="safe-password" placeholder="请输入账号密码" />
       </view>
       <view class="forgetpassword">
-        <a href="">忘记密码?</a>
+        <navigator @click="gotoForget()">忘记密码?</navigator>
       </view>
       <view class="phonelogin">
-        <a href="">手机号一键登录</a>
+        <navigator @click="gotoPhonelogin()">手机号一键登录</navigator>
       </view>
       <button @click="gotoHome">登录</button>
       <view class="nouserid">
-        <a href="">还没有账号？去注册</a>
+        <navigator>还没有账号？去注册</navigator>
       </view>
+      <text>______________________________________</text>
       <view class="wxlogin">
         <text>第三方登录方式</text>
         <view class="img">
-          <i class="image"></i>
+          <i class="circle_icon"></i>
         </view>
         <text>微信</text>
       </view>
@@ -64,10 +75,12 @@ const gotoHome = () => {
 .password {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  margin-left: 50px;
+  margin-bottom: 20rpx;
+  margin-left: 150rpx;
+  margin-right: 0;
   input {
-    margin-left: 20px;
+    margin-left: 0;
+    margin-right: 120rpx;
     padding: 4px 0 3px 8px;
     border: 1px solid #ccc;
     background-color: #ccc;
@@ -76,11 +89,66 @@ const gotoHome = () => {
 }
 
 .forgetpassword {
+  position: absolute;
+  right: 120rpx;
+  top: 250rpx;
+  navigator {
+    font-size: 12px;
+    color: #000;
+    text-decoration: none;
+  }
+}
+
+.phonelogin {
+  margin: 50rpx auto;
+  margin-bottom: 20rpx;
+  font-size: 32rpx;
+  navigator {
+    color: #000;
+    text-decoration: underline;
+    text-underline-offset: 3rpx;
+  }
+}
+
+.nouserid {
+  position: absolute;
+  right: 130rpx;
+  top: 520rpx;
+  navigator {
+    color: #000;
+    text-decoration: underline;
+    text-underline-offset: 3rpx;
+  }
+}
+text {
+  margin: 10rpx auto;
+}
+.wxlogin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 10rpx;
+  .img {
+    margin: 10rpx 0;
+    .circle_icon {
+      width: 80rpx;
+      height: 80rpx;
+      border-radius: 50%;
+      background-color: #ccc;
+      display: inline-block;
+    }
+  }
+
+  text {
+    font-size: 26rpx;
+  }
 }
 button {
   margin: 20px auto;
   width: 257px;
   height: 45px;
   border-radius: 5px;
+  border: #000 solid 1rpx;
 }
 </style>

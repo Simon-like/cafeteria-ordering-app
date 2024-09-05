@@ -22,6 +22,24 @@
       }
     },
     {
+      "path": "pages/login_regitser/merchant/forget/forget",
+      "style": {
+        "navigationBarTitleText": "找回密码"
+      }
+    },
+    {
+      "path": "pages/login_regitser/merchant/forget/forget_1",
+      "style": {
+        "navigationBarTitleText": "确认密码"
+      }
+    },
+    {
+      "path": "pages/login_regitser/merchant/phonelogin",
+      "style": {
+        "navigationBarTitleText": "手机号登录"
+      }
+    },
+    {
       "path": "pages/merchant_end/index/index",
       "style": {
         "navigationBarTitleText": "首页"
