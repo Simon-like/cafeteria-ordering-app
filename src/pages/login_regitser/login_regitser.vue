@@ -1,10 +1,18 @@
 <script setup lang="ts">
 //
 import { ref } from 'vue'
-const activeLink = ref('商家登录')
+const activeLink = ref<string>('商家登录')
 
-function setActiveLink(link: string) {
+const setActiveLink = (link: string) => {
   activeLink.value = link
+}
+
+const gotoLogin = () => {
+  if (activeLink.value === '商家登录') {
+    uni.navigateTo({
+      url: '/pages/login_regitser/merchant/login_password',
+    })
+  }
 }
 </script>
 
@@ -15,21 +23,21 @@ function setActiveLink(link: string) {
     </view>
 
     <view class="identity">
-      <a
-        href=""
+      <navigator
+        url=""
         :class="{ active: activeLink === '商家登录' }"
         @click.prevent="setActiveLink('商家登录')"
-        >商家登录</a
+        >商家登录</navigator
       >
       <text>|</text>
-      <a
-        href=""
+      <navigator
+        url=""
         :class="{ active: activeLink === '管理端登录' }"
         @click.prevent="setActiveLink('管理端登录')"
-        >管理员登录</a
+        >管理员登录</navigator
       >
     </view>
-    <button>登录</button>
+    <button @click="gotoLogin">登录</button>
     <button>注册</button>
   </view>
 </template>

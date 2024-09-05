@@ -1,4 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const gotoHome = () => {
+  uni.switchTab({
+    url: '/pages/merchant_end/index/index',
+  })
+}
+</script>
 <template>
   <view class="body">
     <view class="title">登录 </view>
@@ -17,7 +23,7 @@
       <view class="phonelogin">
         <a href="">手机号一键登录</a>
       </view>
-      <button>登录</button>
+      <button @click="gotoHome">登录</button>
       <view class="nouserid">
         <a href="">还没有账号？去注册</a>
       </view>

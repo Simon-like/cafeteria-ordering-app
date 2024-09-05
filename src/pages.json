@@ -10,33 +10,39 @@
   "pages": [
     //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
-      "path": "pages/index/index",
+      "path": "pages/login_regitser/login_regitser",
+      "style": {
+        "navigationBarTitleText": "登陆注册页"
+      }
+    },
+    {
+      "path": "pages/login_regitser/merchant/login_password",
+      "style": {
+        "navigationBarTitleText": "密码登录"
+      }
+    },
+    {
+      "path": "pages/merchant_end/index/index",
       "style": {
         "navigationBarTitleText": "首页"
       }
     },
     {
-      "path": "pages/my/my",
+      "path": "pages/merchant_end/shop/shop",
+      "style": {
+        "navigationBarTitleText": "店铺管理"
+      }
+    },
+    {
+      "path": "pages/merchant_end/order/order",
+      "style": {
+        "navigationBarTitleText": "订单管理"
+      }
+    },
+    {
+      "path": "pages/merchant_end/my/my",
       "style": {
         "navigationBarTitleText": "我的"
-      }
-    },
-    {
-      "path": "pages/cart/cart",
-      "style": {
-        "navigationBarTitleText": "购物车"
-      }
-    },
-    {
-      "path": "pages/category/category",
-      "style": {
-        "navigationBarTitleText": "分类"
-      }
-    },
-    {
-      "path": "pages/login/login",
-      "style": {
-        "navigationBarTitleText": "登录"
       }
     }
   ],
@@ -55,25 +61,25 @@
     "list": [
       {
         "text": "首页",
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/merchant_end/index/index",
         "iconPath": "static/tabs/home_default.png",
         "selectedIconPath": "static/tabs/home_selected.png"
       },
       {
-        "text": "分类",
-        "pagePath": "pages/category/category",
-        "iconPath": "static/tabs/category_default.png",
+        "text": "店铺管理",
+        "pagePath": "pages/merchant_end/shop/shop",
+        "iconPath": "static/merchant/tabs/category_default.png",
         "selectedIconPath": "static/tabs/category_selected.png"
       },
       {
-        "text": "购物车",
-        "pagePath": "pages/cart/cart",
+        "text": "订单管理",
+        "pagePath": "pages/merchant_end/order/order",
         "iconPath": "static/tabs/cart_default.png",
         "selectedIconPath": "static/tabs/cart_selected.png"
       },
       {
         "text": "我的",
-        "pagePath": "pages/my/my",
+        "pagePath": "pages/merchant_end/my/my",
         "iconPath": "static/tabs/user_default.png",
         "selectedIconPath": "static/tabs/user_selected.png"
       }
