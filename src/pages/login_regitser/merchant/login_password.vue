@@ -14,6 +14,11 @@ const gotoForget = () => {
     url: '/pages/login_regitser/merchant/forget/forget',
   })
 }
+const gotoRegister = () => {
+  uni.navigateTo({
+    url: '/pages/login_regitser/merchant/register/register_1',
+  })
+}
 </script>
 <template>
   <view class="body">
@@ -35,7 +40,7 @@ const gotoForget = () => {
       </view>
       <button @click="gotoHome">登录</button>
       <view class="nouserid">
-        <navigator>还没有账号？去注册</navigator>
+        <navigator @click="gotoRegister()">还没有账号？去注册</navigator>
       </view>
       <text>______________________________________</text>
       <view class="wxlogin">
