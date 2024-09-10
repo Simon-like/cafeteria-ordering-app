@@ -83,9 +83,11 @@ const gotoRegister = () => {
   margin-bottom: 20rpx;
   margin-left: 150rpx;
   margin-right: 0;
+  text {
+    margin: 0 30rpx;
+  }
   input {
-    margin-left: 0;
-    margin-right: 120rpx;
+    position: relative;
     padding: 4px 0 3px 8px;
     border: 1px solid #ccc;
     background-color: #ccc;
@@ -94,9 +96,8 @@ const gotoRegister = () => {
 }
 
 .forgetpassword {
-  position: absolute;
-  right: 120rpx;
-  top: 250rpx;
+  position: relative;
+  margin-left: 70%;
   navigator {
     font-size: 12px;
     color: #000;
@@ -116,9 +117,8 @@ const gotoRegister = () => {
 }
 
 .nouserid {
-  position: absolute;
-  right: 130rpx;
-  top: 520rpx;
+  position: relative;
+  margin-left: 340rpx;
   navigator {
     color: #000;
     text-decoration: underline;

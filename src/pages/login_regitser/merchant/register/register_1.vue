@@ -104,6 +104,8 @@ const gotoNext = () => {
     margin-left: 90rpx;
     text {
       white-space: nowrap;
+      width: 30%;
+      margin: 0;
     }
     input {
       margin-left: 20px;
