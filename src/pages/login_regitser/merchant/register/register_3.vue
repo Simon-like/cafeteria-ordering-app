@@ -1,4 +1,4 @@
-<script></script>
+<script script lang="ts" setup></script>
 <template>
   <view class="body">
     <view class="title"> 注册 </view>
