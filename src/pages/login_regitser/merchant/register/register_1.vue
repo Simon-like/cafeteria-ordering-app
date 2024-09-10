@@ -1,7 +1,7 @@
-<script>
+<script lang="ts" setup>
 const gotoNext = () => {
   uni.navigateTo({
-    url: '/src/pages/login_regitser/merchant/register/register_2',
+    url: '/pages/login_regitser/merchant/register/register_2',
   })
 }
 </script>
@@ -41,7 +41,7 @@ const gotoNext = () => {
         <input type="text" placeholder="请输入密码" />
       </view>
       <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
-      <button class="next" @click="gotoNext()">下一步</button>
+      <button class="next" @click="gotoNext">下一步</button>
     </view>
   </view>
 </template>
