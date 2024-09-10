@@ -1,4 +1,4 @@
-<script>
+<script setup>
 const gotoNext = () => {
   uni.navigateTo({
     url: '/pages/login_regitser/merchant/forget/forget_1',
@@ -18,9 +18,7 @@ const gotoNext = () => {
         <input type="text" class="input_password" />
         <button>获取验证码(60s)</button>
       </view>
-      <button class="next">
-        <navigator @click="gotoNext()">下一步</navigator>
-      </button>
+      <button class="next" @click="gotoNext()">下一步</button>
     </view>
   </view>
 </template>

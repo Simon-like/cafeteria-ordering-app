@@ -11,14 +11,11 @@
         <text>填写邀请码</text>
       </view>
     </view>
-    <view class="input">
-      <view class="phoneNumber"> </view>
-      <view class="verification"> </view>
-      <view class="userName"> </view>
-      <view class="accout"> </view>
-      <view class="setLoginpassword"> </view>
-      <view class="confirmLoginpassword"> </view>
+    <view class="invitation">
+      <text>管理邀请码</text>
+      <input type="text" />
     </view>
+    <button>确认</button>
   </view>
 </template>
 
@@ -62,6 +59,24 @@
     height: 10rpx;
     background-color: #ccc;
     transform: translateY(-50%);
+  }
+}
+.invitation {
+  display: flex;
+  text {
+    width: 40%;
+    display: block;
+    margin: 28rpx 0;
+    margin-left: 120rpx;
+  }
+  width: 80%;
+  input {
+    font-size: 13px;
+    padding-left: 3rpx;
+    background-color: #ccc;
+    border: #000 solid 1rpx;
+    width: 60%;
+    margin: 27rpx 0;
   }
 }
 </style>

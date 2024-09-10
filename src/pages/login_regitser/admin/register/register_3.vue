@@ -11,14 +11,10 @@
         <text>填写邀请码</text>
       </view>
     </view>
-    <view class="input">
-      <view class="phoneNumber"> </view>
-      <view class="verification"> </view>
-      <view class="userName"> </view>
-      <view class="accout"> </view>
-      <view class="setLoginpassword"> </view>
-      <view class="confirmLoginpassword"> </view>
+    <view class="text">
+      <text>您已成功提交注册，请耐心等待审核通过</text>
     </view>
+    <button>确认</button>
   </view>
 </template>
 
@@ -63,5 +59,12 @@
     background-color: #ccc;
     transform: translateY(-50%);
   }
+}
+.text {
+  position: relative;
+  margin: 40rpx 0;
+  margin-top: 40rpx;
+  display: flex;
+  justify-content: center;
 }
 </style>

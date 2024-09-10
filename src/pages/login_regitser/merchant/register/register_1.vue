@@ -23,26 +23,25 @@ const gotoNext = () => {
       </view>
     </view>
     <view class="input">
-      <view class="phoneNumber">
+      <view class="text">
         <text>手机号</text>
-        <input type="text" placeholder="请输入使用人手机号" />
-      </view>
-      <view class="verification">
         <text>验证码</text>
-        <input type="text" placeholder="请输入验证码" />
-        <button>获取验证码</button>
-      </view>
-      <view class="setLoginpassword">
         <text>设置登录密码</text>
-        <input type="text" placeholder="请输入密码" />
-      </view>
-      <view class="confirmLoginpassword">
         <text>确认登录密码</text>
-        <input type="text" placeholder="请输入密码" />
       </view>
-      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
-      <button class="next" @click="gotoNext">下一步</button>
+      <view class="input_content">
+        <input placeholder="请输入使用人手机号" type="text" />
+        <button class="verification_btn">获取验证码(60s)</button>
+        <input class="verification" placeholder="请输入验证码" type="text" />
+        <input placeholder="请输入密码" type="text" />
+        <input placeholder="请输入密码" type="text" />
+      </view>
     </view>
+    <view class="checkbox__container">
+      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
+    </view>
+
+    <button class="next" @click="gotoNext">下一步</button>
   </view>
 </template>
 
@@ -78,79 +77,60 @@ const gotoNext = () => {
   &::after {
     content: '';
     position: absolute;
-    right: -70px;
+    right: -170rpx;
     top: 50%;
-    width: 140rpx;
+    width: 170rpx;
     height: 10rpx;
     background-color: #ccc;
     transform: translateY(-50%);
   }
 }
 .input {
-  font-size: 14px;
   display: flex;
-  flex-direction: column;
-  margin-top: 30rpx;
-  width: calc(100% - 100rpx);
-  margin-right: 100rpx;
-  margin-left: 0;
-  align-items: flex-end;
-  .phoneNumber,
-  .setLoginpassword,
-  .confirmLoginpassword {
-    display: flex;
-    align-items: center;
-    margin-bottom: 40rpx;
-    margin-left: 90rpx;
+  .text {
+    width: 30%;
+    text-align: end;
     text {
-      white-space: nowrap;
-      width: 30%;
-      margin: 0;
-    }
-    input {
-      margin-left: 20px;
-      padding: 4px 0 3px 8px;
-      border: 1px solid #000;
-      background-color: #ccc;
-      .uni-input-placeholder {
-        font-size: 12px;
-      }
+      display: block;
+      margin: 20rpx 0;
+      margin-right: 10rpx;
     }
   }
-
-  .verification {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30rpx;
-    margin-left: 140rpx;
+  .input_content {
+    width: 80%;
     input {
-      margin-left: 20px;
-      padding: 4px 0 3px 8px;
-      border: 1px solid #000;
       background-color: #ccc;
-      width: 200rpx;
-      .uni-input-placeholder {
-        font-size: 12px;
-      }
-    }
-    button {
-      margin-left: 20rpx;
-      margin-top: 0;
-      padding: 0;
-      font-size: 12px;
-      width: 140rpx;
-      height: 50rpx;
       border: #000 solid 1rpx;
-      background-color: transparent;
+      width: 85%;
+      margin: 20rpx 0;
+      &::placeholder {
+        color: #999;
+        font-size: 28rpx;
+        padding-left: 5rpx;
+      }
+    }
+    .verification {
+      width: 40%;
+    }
+    .verification_btn {
+      position: absolute;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      width: auto;
+      top: 24.5%;
+      right: 80rpx;
+      font-size: 11px;
     }
   }
-  .next {
-    width: 350rpx;
-    margin: 30rpx auto;
-    margin-left: 220rpx;
-  }
+}
+.checkbox__container {
+  margin: 20rpx 0;
+  display: flex;
+  justify-content: center;
+}
+button {
+  width: 45%;
+  border: #000 solid 1rpx;
 }
 </style>
