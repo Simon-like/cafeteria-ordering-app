@@ -1,22 +1,17 @@
 <script setup lang="ts">
-const gotoHome = () => {
-  uni.switchTab({
-    url: '/pages/merchant_end/index/index',
-  })
-}
-const gotoPhonelogin = () => {
-  uni.navigateTo({
-    url: '/pages/login_regitser/merchant/phonelogin',
-  })
-}
-const gotoForget = () => {
-  uni.navigateTo({
-    url: '/pages/login_regitser/merchant/forget/forget',
-  })
-}
-const gotoRegister = () => {
-  uni.navigateTo({
-    url: '/pages/login_regitser/merchant/register/register_1',
+import { ref } from 'vue'
+import { login_pp } from '@/api/api_merchant/merchant_login.js'
+import { gotoHome, gotoForget, gotoPhonelogin, gotoRegister } from '@/api/navigation/navigation.js'
+
+const phoneNumber = ref('')
+const password = ref('')
+
+const handleLogin_pp = async () => {
+  login_pp(phoneNumber.value, password.value).then((response: { data: any }) => {
+    console.log(response.data)
+    if (response.data.code) {
+      gotoHome()
+    }
   })
 }
 </script>
@@ -26,11 +21,11 @@ const gotoRegister = () => {
     <view class="input">
       <view class="userid">
         <text>账号</text>
-        <input type="text" placeholder="请输入账号/手机号" />
+        <input v-model="phoneNumber" type="text" placeholder="请输入账号/手机号" />
       </view>
       <view class="password">
         <text>密码</text>
-        <input type="safe-password" placeholder="请输入账号密码" />
+        <input v-model="password" type="safe-password" placeholder="请输入账号密码" />
       </view>
       <view class="forgetpassword">
         <navigator @click="gotoForget()">忘记密码?</navigator>
@@ -38,7 +33,7 @@ const gotoRegister = () => {
       <view class="phonelogin">
         <navigator @click="gotoPhonelogin()">手机号一键登录</navigator>
       </view>
-      <button @click="gotoHome">登录</button>
+      <button @click="handleLogin_pp()">登录</button>
       <view class="nouserid">
         <navigator @click="gotoRegister()">还没有账号？去注册</navigator>
       </view>
