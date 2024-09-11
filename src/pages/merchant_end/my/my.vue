@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { AsideItem } from '../../../types/aside'
-import { componentList } from '@/pages/merchant_end/my/content_view/index.ts'
+import { componentList } from '@/pages/merchant_end/my/content_view/index'
 
 const my_aside_list = ref<AsideItem[]>([
   { itemId: 0, itemName: '店铺信息', active: true, hrefUrl: '' },
