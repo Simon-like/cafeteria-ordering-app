@@ -10,4 +10,5 @@ pinia.use(persist)
 export default pinia
 
 // 模块统一导出
-export * from './modules/member'
+export * from './modules/test'
+export * from './modules/merchant_end_my'

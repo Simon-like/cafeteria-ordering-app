@@ -1,28 +1,37 @@
 <script setup lang="ts">
-import { useMemberStore } from '@/stores'
+import { ref } from 'vue'
+import type { AsideItem } from '../../../types/aside'
+import StoreInfo from '@/pages/merchant_end/my/content_view/StoreInfo.vue'
 
-const memberStore = useMemberStore()
+const my_aside_list = ref<AsideItem[]>([
+  { itemName: '店铺信息', active: true, hrefUrl: '' },
+  { itemName: '联系客服', active: false, hrefUrl: '' },
+  { itemName: '账号管理', active: false, hrefUrl: '' },
+])
 </script>
 
 <template>
   <view class="my">
-    <view>会员信息：{{ memberStore.profile }}</view>
-    <button
-      @tap="
-        memberStore.setProfile({
-          nickname: '黑马先锋',
-        })
-      "
-      size="mini"
-      plain
-      type="primary"
-    >
-      保存用户信息
-    </button>
-    <button @tap="memberStore.clearProfile()" size="mini" plain type="warn">清理用户信息</button>
+    <HeaderBar />
+    <view class="content">
+      <AsideBar :itemList="my_aside_list" />
+      <component :is="StoreInfo"></component>
+    </view>
   </view>
 </template>
 
 <style lang="scss">
-//
+.my {
+  width: 750rpx;
+  height: calc(100vh - 110rpx);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
 </style>

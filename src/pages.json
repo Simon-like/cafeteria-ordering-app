@@ -48,7 +48,9 @@
     {
       "path": "pages/merchant_end/shop/shop",
       "style": {
-        "navigationBarTitleText": "店铺管理"
+        "navigationBarTitleText": "店铺管理",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
       }
     },
     {
@@ -60,7 +62,9 @@
     {
       "path": "pages/merchant_end/my/my",
       "style": {
-        "navigationBarTitleText": "我的"
+        "navigationBarTitleText": "我的",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
       }
     },
     {
@@ -104,7 +108,7 @@
       {
         "text": "店铺管理",
         "pagePath": "pages/merchant_end/shop/shop",
-        "iconPath": "static/merchant/tabs/category_default.png",
+        "iconPath": "static/tabs/category_default.png",
         "selectedIconPath": "static/tabs/category_selected.png"
       },
       {

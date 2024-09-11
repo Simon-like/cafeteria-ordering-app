@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 // 定义 Store
 export const useMemberStore = defineStore(
-  'member',
+  'test',
   () => {
     // 会员信息
     const profile = ref<any>()
