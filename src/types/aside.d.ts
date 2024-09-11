@@ -3,6 +3,7 @@
  */
 
 export type AsideItem = {
+  itemId: number
   /** 选项名称 */
   itemName: string
   /** 选项激活状态 */
