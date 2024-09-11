@@ -1,4 +1,10 @@
-<script script lang="ts" setup></script>
+<script script lang="ts" setup>
+const gotoNext = () => {
+  uni.navigateTo({
+    url: '/pages/login_regitser/merchant/register/register_3',
+  })
+}
+</script>
 <template>
   <view class="body">
     <view class="title"> 注册 </view>
@@ -17,21 +23,22 @@
       </view>
     </view>
     <view class="input">
-      <view class="hostname">
+      <view class="text">
         <text>所有人姓名</text>
-        <input type="text" />
-      </view>
-      <view class="shopname">
         <text>店铺名称</text>
-        <input type="text" />
-      </view>
-      <view class="shopplace">
         <text>店铺地址</text>
+      </view>
+      <view class="input_content">
+        <input type="text" />
+        <input type="text" />
         <input type="text" />
       </view>
-      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
-      <button class="next">下一步</button>
     </view>
+    <text class="tips">--店铺详细信息注册完成后可在门店管理页面中更改--</text>
+    <view class="checkbox__container">
+      <label> <checkbox /><text>我已阅读并同意xxxxxx</text> </label>
+    </view>
+    <button @click="gotoNext()">下一步</button>
   </view>
 </template>
 
@@ -76,39 +83,40 @@
   }
 }
 .input {
-  font-size: 14px;
   display: flex;
-  flex-direction: column;
-  margin-top: 30rpx;
-  margin-left: 0;
-  width: calc(100% - 130rpx);
-  margin-right: 130rpx;
-  align-items: flex-end;
-  .hostname,
-  .shopname,
-  .shopplace {
-    display: flex;
-    align-items: center;
-    margin-bottom: 40rpx;
-    margin-left: 90rpx;
-
+  margin-top: 20rpx;
+  .text {
+    width: 40%;
+    text-align: end;
     text {
-      white-space: nowrap;
+      display: block;
+      margin: 20rpx 0;
+      margin-right: 10rpx;
     }
+  }
+  .input_content {
+    width: 60%;
     input {
-      margin-left: 20px;
-      padding: 4px 0 3px 8px;
-      border: 1px solid #000;
       background-color: #ccc;
-      .uni-input-placeholder {
-        font-size: 12px;
-      }
+      border: #000 solid 1rpx;
+      width: 60%;
+      margin: 20rpx 0;
     }
   }
-  .next {
-    width: 350rpx;
-    margin: 30rpx auto;
-    margin-left: 220rpx;
-  }
+}
+.tips {
+  display: flex;
+  justify-content: center;
+  font-size: xx-small;
+  color: #ccc;
+}
+.checkbox__container {
+  margin: 20rpx 0;
+  display: flex;
+  justify-content: center;
+}
+button {
+  width: 45%;
+  border: #000 solid 1rpx;
 }
 </style>

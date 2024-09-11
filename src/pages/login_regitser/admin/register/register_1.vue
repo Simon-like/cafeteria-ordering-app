@@ -14,18 +14,16 @@ const gotoNext = () => {
         <text>注册账户</text>
       </view>
       <view class="nav-item">
-        <view class="circle" id="line"> 2 </view>
-        <text>门店信息</text>
-      </view>
-      <view class="nav-item">
-        <view class="circle"> 3 </view>
-        <text>资质审核</text>
+        <view class="circle"> 2 </view>
+        <text>填写注册码</text>
       </view>
     </view>
     <view class="input">
       <view class="text">
         <text>手机号</text>
         <text>验证码</text>
+        <text>请输入使用人姓名</text>
+        <text>账号</text>
         <text>设置登录密码</text>
         <text>确认登录密码</text>
       </view>
@@ -33,6 +31,8 @@ const gotoNext = () => {
         <input placeholder="请输入使用人手机号" type="text" />
         <button class="verification_btn">获取验证码(60s)</button>
         <input class="verification" placeholder="请输入验证码" type="text" />
+        <input placeholder="" type="text" />
+        <input placeholder="账号固定为手机号" type="text" />
         <input placeholder="请输入密码" type="text" />
         <input placeholder="请输入密码" type="text" />
       </view>
@@ -54,10 +54,9 @@ const gotoNext = () => {
 }
 .nav {
   display: flex;
-  align-items: center;
   justify-content: center;
   .nav-item {
-    margin-left: 50rpx;
+    margin-left: 80rpx;
     position: relative;
     .circle {
       display: flex;
@@ -67,7 +66,7 @@ const gotoNext = () => {
       height: 40rpx;
       border-radius: 50%;
       background-color: #ccc;
-      margin-left: 42rpx;
+      margin-left: 52rpx;
       margin-bottom: 20rpx;
     }
   }
@@ -88,21 +87,24 @@ const gotoNext = () => {
 .input {
   display: flex;
   .text {
-    width: 30%;
+    font-size: 13px;
+    width: 40%;
     text-align: end;
     text {
       display: block;
-      margin: 20rpx 0;
+      margin: 28rpx 0;
       margin-right: 10rpx;
     }
   }
   .input_content {
     width: 80%;
     input {
+      font-size: 13px;
+      padding-left: 3rpx;
       background-color: #ccc;
       border: #000 solid 1rpx;
       width: 85%;
-      margin: 20rpx 0;
+      margin: 27rpx 0;
       &::placeholder {
         color: #999;
         font-size: 28rpx;
@@ -117,10 +119,13 @@ const gotoNext = () => {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: auto;
-      top: 24.5%;
-      right: 80rpx;
-      font-size: 11px;
+      padding: 0;
+      margin-top: 13rpx;
+      width: 30%;
+      top: 23%;
+      right: 9%;
+      height: 4%;
+      font-size: xx-small;
     }
   }
 }

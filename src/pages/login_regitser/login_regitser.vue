@@ -2,17 +2,20 @@
 //
 import { ref } from 'vue'
 const activeLink = ref<string>('商家登录')
-
 const setActiveLink = (link: string) => {
   activeLink.value = link
 }
 
 const gotoLogin = () => {
-  if (activeLink.value === '商家登录') {
-    uni.navigateTo({
-      url: '/pages/login_regitser/merchant/login_password',
-    })
-  }
+  uni.navigateTo({
+    url: '/pages/login_regitser/merchant/login_password',
+  })
+}
+const gotoRegister = () => {
+  const identity = activeLink.value === '商家登录' ? 'merchant' : 'admin'
+  uni.navigateTo({
+    url: `/pages/login_regitser/${identity}/register/register_1`,
+  })
 }
 </script>
 
@@ -40,7 +43,7 @@ const gotoLogin = () => {
       >
     </view>
     <button @click="gotoLogin">登录</button>
-    <button>注册</button>
+    <button @click="gotoRegister">注册</button>
   </view>
 </template>
 

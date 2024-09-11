@@ -1,18 +1,31 @@
-<script></script>
+<script setup>
+import { ref } from 'vue'
+import { login_pv } from '@/api/api_merchant/merchant_login'
+import { gotoHome } from '@/api/navigation/navigation.js'
+const phoneNumber = ref('')
+const validationCode = ref('')
+const handleLogin_pv = async () => {
+  login_pv(phoneNumber.value, validationCode.value).then((response) => {
+    if (response.data.code) {
+      gotoHome()
+    }
+  })
+}
+</script>
 <template>
   <view class="body">
     <view class="title"> 登录 </view>
     <view class="input">
-      <view class="phoneNumber">
+      <view v-model="phoneNumber" class="phoneNumber">
         <text>手机号</text>
         <input type="text" />
       </view>
       <view class="password">
         <text>验证码</text>
-        <input type="text" class="input_password" />
+        <input v-model="validationCode" type="text" class="input_password" />
         <button>获取验证码(60s)</button>
       </view>
-      <button class="login">登录</button>
+      <button class="login" @click="handleLogin_pv">登录</button>
     </view>
   </view>
 </template>
