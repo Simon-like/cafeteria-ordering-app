@@ -10,7 +10,7 @@ const my_aside_list = ref<AsideItem[]>([
 ])
 const channelId = ref<number>(0)
 
-const onSwitch = (e) => {
+const onSwitch = (e: number) => {
   channelId.value = e
 }
 </script>
