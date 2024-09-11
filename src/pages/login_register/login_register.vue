@@ -8,13 +8,13 @@ const setActiveLink = (link: string) => {
 
 const gotoLogin = () => {
   uni.navigateTo({
-    url: '/pages/login_regitser/merchant/login_password',
+    url: '/pages/login_register/merchant/login_password',
   })
 }
 const gotoRegister = () => {
   const identity = activeLink.value === '商家登录' ? 'merchant' : 'admin'
   uni.navigateTo({
-    url: `/pages/login_regitser/${identity}/register/register_1`,
+    url: `/pages/login_register/${identity}/register/register_1`,
   })
 }
 </script>
@@ -47,7 +47,7 @@ const gotoRegister = () => {
   </view>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 //
 .login {
   font-size: 14px;

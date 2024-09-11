@@ -21,7 +21,7 @@
 
 <script></script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .title {
   font-size: 68rpx;
   margin: 20rpx auto;

@@ -20,12 +20,28 @@ const onSwitch = (e: number) => {
     <HeaderBar />
     <view class="content">
       <AsideBar :itemList="my_aside_list" @switch="onSwitch" />
-      <component :is="componentList[channelId]"></component>
+      <transition name="fade" mode="out-in" appear>
+        <component :is="componentList[channelId]"></component>
+      </transition>
     </view>
   </view>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 .my {
   width: 750rpx;
   height: calc(100vh - 110rpx);

@@ -12,3 +12,4 @@ export default pinia
 // 模块统一导出
 export * from './modules/test'
 export * from './modules/merchant_end_my'
+export * from './modules/DoubleToken'

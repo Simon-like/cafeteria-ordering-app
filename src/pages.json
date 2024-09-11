@@ -10,31 +10,31 @@
   "pages": [
     //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
-      "path": "pages/login_regitser/login_regitser",
+      "path": "pages/login_register/login_register",
       "style": {
         "navigationBarTitleText": "登陆注册页"
       }
     },
     {
-      "path": "pages/login_regitser/merchant/login_password",
+      "path": "pages/login_register/merchant/login_password",
       "style": {
         "navigationBarTitleText": "密码登录"
       }
     },
     {
-      "path": "pages/login_regitser/merchant/forget/forget",
+      "path": "pages/login_register/merchant/forget/forget",
       "style": {
         "navigationBarTitleText": "找回密码"
       }
     },
     {
-      "path": "pages/login_regitser/merchant/forget/forget_1",
+      "path": "pages/login_register/merchant/forget/forget_1",
       "style": {
         "navigationBarTitleText": "确认密码"
       }
     },
     {
-      "path": "pages/login_regitser/merchant/phonelogin",
+      "path": "pages/login_register/merchant/phonelogin",
       "style": {
         "navigationBarTitleText": "手机号登录"
       }
@@ -68,37 +68,37 @@
       }
     },
     {
-      "path": "pages/login_regitser/merchant/register/register_1",
+      "path": "pages/login_register/merchant/register/register_1",
       "style": {
         "navigationBarTitleText": "商户端注册第一步"
       }
     },
     {
-      "path": "pages/login_regitser/merchant/register/register_2",
+      "path": "pages/login_register/merchant/register/register_2",
       "style": {
         "navigationBarTitleText": "商户端注册第二步"
       }
     },
     {
-      "path": "pages/login_regitser/merchant/register/register_3",
+      "path": "pages/login_register/merchant/register/register_3",
       "style": {
         "navigationBarTitleText": "商户端注册第三步"
       }
     },
     {
-      "path": "pages/login_regitser/admin/register/register_1",
+      "path": "pages/login_register/admin/register/register_1",
       "style": {
         "navigationBarTitleText": ""
       }
     },
     {
-      "path": "pages/login_regitser/admin/register/register_2",
+      "path": "pages/login_register/admin/register/register_2",
       "style": {
         "navigationBarTitleText": ""
       }
     },
     {
-      "path": "pages/login_regitser/admin/register/register_3",
+      "path": "pages/login_register/admin/register/register_3",
       "style": {
         "navigationBarTitleText": ""
       }

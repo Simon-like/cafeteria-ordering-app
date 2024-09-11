@@ -1,16 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { login_pv } from '@/api/api_merchant/merchant_login'
-import { gotoHome } from '@/api/navigation/navigation.js'
+
 const phoneNumber = ref('')
 const validationCode = ref('')
-const handleLogin_pv = async () => {
-  login_pv(phoneNumber.value, validationCode.value).then((response) => {
-    if (response.data.code) {
-      gotoHome()
-    }
-  })
-}
+
 </script>
 <template>
   <view class="body">
@@ -30,7 +23,7 @@ const handleLogin_pv = async () => {
   </view>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .body {
   display: flex;
   flex-direction: column;

@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { login_pp } from '@/api/api_merchant/merchant_login.js'
-import { gotoHome, gotoForget, gotoPhonelogin, gotoRegister } from '@/api/navigation/navigation.js'
 
 const phoneNumber = ref('')
 const password = ref('')
 
-const handleLogin_pp = async () => {
-  login_pp(phoneNumber.value, password.value).then((response: { data: any }) => {
-    console.log(response.data)
-    if (response.data.code) {
-      gotoHome()
-    }
+const gotoForget = () => {}
+
+const gotoPhonelogin = () => {}
+
+const handleLogin_pp = () => {
+  uni.switchTab({
+    url: '/pages/merchant_end/index/index',
   })
 }
+
+const gotoRegister = () => {}
 </script>
 <template>
   <view class="body">

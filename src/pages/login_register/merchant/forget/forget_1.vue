@@ -1,4 +1,4 @@
-<script></script>
+<script lang="ts" setup></script>
 <template>
   <view class="body">
     <view class="title"> 找回密码 </view>
@@ -15,8 +15,8 @@
     </view>
   </view>
 </template>
-
-<style lang="scss">
+ 
+<style lang="scss" scoped>
 .body {
   display: flex;
   flex-direction: column;

@@ -1,7 +1,7 @@
-<script script lang="ts" setup>
+<script lang="ts" setup>
 const gotoNext = () => {
   uni.navigateTo({
-    url: '/pages/login_regitser/merchant/register/register_3',
+    url: '/pages/login_register/merchant/register/register_3',
   })
 }
 </script>
@@ -42,7 +42,7 @@ const gotoNext = () => {
   </view>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .title {
   font-size: 68rpx;
   margin: 20rpx auto;

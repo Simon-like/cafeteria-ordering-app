@@ -1,4 +1,4 @@
-import { useMemberStore } from '@/stores'
+import { useDoubleTokenStore } from '@/stores'
 
 const baseURL = 'https://pcapi-xiaotuxian-front-devtest.itheima.net'
 
@@ -18,8 +18,8 @@ const httpInterceptor = {
       // 'source-client': 'miniapp',
     }
     // 4. 添加 token 请求标识
-    const memberStore = useMemberStore()
-    const token = memberStore.profile?.token
+    const DoubleTokenStore = useDoubleTokenStore()
+    const token = DoubleTokenStore.accessToken
     if (token) {
       options.header.Authorzatopn = token
     }
@@ -63,10 +63,10 @@ export const http = <T>(options: UniApp.RequestOptions) => {
           resolve(res.data as Data<T>)
         } else if (res.statusCode === 401) {
           // 401错误（比如token失效），调用reject,清理用户数据，跳转到登录页
-          const memberStore = useMemberStore()
-          memberStore.clearProfile()
+          const DoubleTokenStore = useDoubleTokenStore()
+          DoubleTokenStore.removeToken(2)
           uni.navigateTo({
-            url: '/pages/login/login',
+            url: '/pages/login_register/login_regitser',
           })
           reject(res)
         } else {

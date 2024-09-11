@@ -1,10 +1,11 @@
-<script setup>
+<script lang="ts" setup>
 const gotoNext = () => {
   uni.navigateTo({
-    url: '/pages/login_regitser/merchant/forget/forget_1',
+    url: '/pages/login_register/merchant/forget/forget_1',
   })
 }
 </script>
+
 <template>
   <view class="body">
     <view class="title"> 找回密码 </view>
@@ -23,7 +24,7 @@ const gotoNext = () => {
   </view>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .body {
   display: flex;
   flex-direction: column;

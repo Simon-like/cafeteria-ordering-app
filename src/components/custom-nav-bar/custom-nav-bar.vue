@@ -27,7 +27,7 @@ defineProps({
   </view>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .layout {
   .navbar {
     position: fixed;

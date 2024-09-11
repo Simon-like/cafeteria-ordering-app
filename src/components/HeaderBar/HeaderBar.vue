@@ -16,7 +16,7 @@ const work_status = ref<string>('营业中')
   </view>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .header-bar {
   width: 100%;
   display: flex;
