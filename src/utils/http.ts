@@ -20,7 +20,7 @@ const httpInterceptor = {
     // 4. 添加 token 请求标识
     const DoubleTokenStore = useDoubleTokenStore()
     const token = DoubleTokenStore.accessToken
-    if (token) {
+    if (!!token) {
       options.header.Authorzatopn = token
     }
 

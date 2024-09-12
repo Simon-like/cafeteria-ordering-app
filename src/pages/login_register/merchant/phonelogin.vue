@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { merchant_Login_pv, merchant_getvalidationCode } from '@/services/merchant/merchant_api'
-import { gotoHome } from '@/services/navigation/navigation.js'
+import { gotoHome } from '@/composables/navigation/navigation.ts'
 const phoneNumber = ref('')
 const validationCode = ref('')
 

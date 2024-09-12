@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { admin_Login_pp } from '@/services/admin/admin_api.js'
+import { admin_Login_pp } from '@/services/admin/admin_api'
 import {
   gotoHome,
   gotoForget,
   gotoPhonelogin,
   gotoRegister,
-} from '@/services/navigation/navigation.js'
+} from '@/composables/navigation/navigation'
 const phoneNumber = ref('')
 const password = ref('')
 

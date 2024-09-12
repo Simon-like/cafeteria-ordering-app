@@ -14,7 +14,7 @@ export const useDoubleTokenStore = defineStore(
     }
 
     // 0移除accessToken，1移除refreshToken，2都移除
-    const removeToken = (type) => {
+    const removeToken = (type: number) => {
       if (type === 0) accessToken.value = ''
       else if (type === 1) refreshToken.value = ''
       else {

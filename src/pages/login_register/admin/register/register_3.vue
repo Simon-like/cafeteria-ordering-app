@@ -1,3 +1,5 @@
+<script lang="ts" setup></script>
+
 <template>
   <view class="body">
     <view class="title"> 注册 </view>
@@ -17,8 +19,6 @@
     <button>确认</button>
   </view>
 </template>
-
-<script></script>
 
 <style lang="scss" scoped>
 .title {

@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { merchant_Login_pp } from '@/services/merchant/merchant_api.js'
+import { merchant_Login_pp } from '@/services/merchant/merchant_api'
 import {
   gotoHome,
   gotoForget,
   gotoPhonelogin,
   gotoRegister,
-} from '@/services/navigation/navigation.js'
+} from '@/composables/navigation/navigation'
 const phoneNumber = ref('')
 const password = ref('')
 
 const handleLogin_pp = async () => {
+  // 开发测试用，等后端接口写完了再改
+  gotoHome()
   merchant_Login_pp(phoneNumber.value, password.value).then((response) => {
     console.log(response)
-    if (response?.code === '1') {
+    if (+response?.code === 1) {
       gotoHome()
     }
   })

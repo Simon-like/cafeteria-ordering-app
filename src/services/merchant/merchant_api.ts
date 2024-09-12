@@ -1,6 +1,6 @@
 import { http } from '@/utils/http'
 
-export const merchant_Login_pp = (phoneNumber, password) => {
+export const merchant_Login_pp = (phoneNumber: string, password: string) => {
   return http({
     method: 'POST',
     url: '/merchant/login/password',
@@ -8,10 +8,13 @@ export const merchant_Login_pp = (phoneNumber, password) => {
       phoneNumber,
       password,
     },
+    header: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   })
 }
 
-export const merchant_Login_pv = (phoneNumber, validationCode) => {
+export const merchant_Login_pv = (phoneNumber: string, validationCode: string) => {
   return http({
     method: 'POST',
     url: '/merchant/login/phone',
@@ -22,7 +25,7 @@ export const merchant_Login_pv = (phoneNumber, validationCode) => {
   })
 }
 
-export const merchant_getvalidationCode = (phoneNumber) => {
+export const merchant_getvalidationCode = (phoneNumber: string) => {
   return http({
     method: 'GET',
     url: `/merchant/phone?phoneNumber=${phoneNumber}`,

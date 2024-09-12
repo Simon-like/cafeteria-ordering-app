@@ -1,14 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
-import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api.js'
-import { gotoHome } from '@/services/navigation/navigation.js'
+import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api'
+import { gotoHome } from '@/composables/navigation/navigation'
 const phoneNumber = ref('')
 const validationCode = ref('')
 
 const handleLogin_pv = async () => {
   admin_Login_pv(phoneNumber.value, validationCode.value).then((response) => {
     console.log(response)
-    if (response?.code === 1) {
+    if (+response?.code === 1) {
       gotoHome()
     }
   })
@@ -16,7 +16,7 @@ const handleLogin_pv = async () => {
 const getValidationCode = async () => {
   admin_getvalidationCode(phoneNumber.value).then((response) => {
     console.log(response)
-    if (response?.code) {
+    if (!!response?.code) {
       gotoHome()
     }
   })
