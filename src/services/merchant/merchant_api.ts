@@ -1,7 +1,7 @@
 import { http } from '@/utils/http'
-import type { resMsg } from '@/types/aside'
+import type { TokenType } from '@/types/login_register'
 export const merchant_Login_pp = (phoneNumber: string, password: string) => {
-  return http<resMsg>({
+  return http<TokenType>({
     method: 'POST',
     url: '/merchant/login/password',
     data: {

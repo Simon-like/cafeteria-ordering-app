@@ -11,12 +11,3 @@ export type AsideItem = {
   /** 选项跳转url */
   hrefUrl: string
 }
-
-export type resMsg = {
-  code: number
-  /** 响应码 */
-  msg: string
-  /** 错误信息 */
-  data: object
-  /** 返回信息 */
-}

@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { admin_Login_pp } from '@/services/admin/admin_api'
 import { useDoubleTokenStore } from '@/stores'
-import type { resMsg } from '@/types/aside'
 import {
   gotoHome,
   gotoForget,
@@ -13,13 +12,13 @@ import {
 const phoneNumber = ref('')
 const password = ref('')
 const tokenStore = useDoubleTokenStore()
-const res = ref<resMsg>()
+
 const handleLogin_pp = async () => {
-  res.value = await admin_Login_pp(phoneNumber.value, password.value)
-  const accessToken = res.value?.data?.accessToken
-  const refreshToken = res.value?.data?.refreshToken
+  const res = await admin_Login_pp(phoneNumber.value, password.value)
+  const accessToken = res.data.accessToken
+  const refreshToken = res.data.refreshToken
   tokenStore.addToken(accessToken, refreshToken)
-  if (+res.value?.code === 1) {
+  if (+res.code === 1) {
     gotoHome()
   }
 }

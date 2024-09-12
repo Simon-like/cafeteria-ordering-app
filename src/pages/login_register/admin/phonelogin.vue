@@ -2,16 +2,15 @@
 import { ref } from 'vue'
 import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api'
 import { gotoHome } from '@/composables/navigation/navigation'
-import type { resMsg } from '@/types/aside'
 import { useDoubleTokenStore } from '@/stores'
 const phoneNumber = ref('')
 const validationCode = ref('')
-const res = ref<resMsg>()
+
 const tokenStore = useDoubleTokenStore()
 const handleLogin_pv = async () => {
-  res.value = await admin_Login_pv(phoneNumber.value, validationCode.value)
-  const accessToken = res.value?.data?.accessToken
-  const refreshToken = res.value?.data?.refreshToken
+  const res = await admin_Login_pv(phoneNumber.value, validationCode.value)
+  const accessToken = res.data.accessToken
+  const refreshToken = res.data.refreshToken
   tokenStore.addToken(accessToken, refreshToken)
 }
 const getValidationCode = async () => {

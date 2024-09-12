@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { merchant_Login_pp } from '@/services/merchant/merchant_api'
 import { useDoubleTokenStore } from '@/stores'
-import type { resMsg } from '@/types/aside'
 import {
   gotoHome,
   gotoForget,
@@ -12,14 +11,15 @@ import {
 const phoneNumber = ref('')
 const password = ref('')
 const tokenStore = useDoubleTokenStore()
-const res = ref<resMsg>()
+
 const handleLogin_pp = async () => {
   // 开发测试用，等后端接口写完了再改
-  res.value = await merchant_Login_pp(phoneNumber.value, password.value)
-  const accessToken = res.value?.data?.accessToken
-  const refreshToken = res.value?.data?.refreshToken
+  gotoHome()
+  const res = await merchant_Login_pp(phoneNumber.value, password.value)
+  const accessToken = res.data.accessToken
+  const refreshToken = res.data.refreshToken
   tokenStore.addToken(accessToken, refreshToken)
-  if (+res.value?.code === 1) {
+  if (+res.code === 1) {
     gotoHome()
   }
 }
