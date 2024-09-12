@@ -47,7 +47,7 @@ uni.addInterceptor('uploadFlie', httpInterceptor)
 interface Data<T> {
   code: string
   msg: string
-  result: T
+  data: T
 }
 
 // 2.2 添加类型，支持泛型
