@@ -133,7 +133,7 @@ const handleValidationCode = async () => {
       padding: 0;
       margin-top: 13rpx;
       width: 30%;
-      top: 23%;
+      top: 21.5%;
       right: 9%;
       height: 4%;
       font-size: xx-small;

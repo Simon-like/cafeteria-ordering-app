@@ -50,7 +50,7 @@ const getValidationCode = async () => {
       <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
     </view>
 
-    <button class="next" @click="handleRegister">下一步</button>
+    <button class="next" @click="gotoNext">下一步</button>
   </view>
 </template>
 
@@ -127,7 +127,7 @@ const getValidationCode = async () => {
       justify-content: center;
       align-items: center;
       width: auto;
-      top: 24.5%;
+      top: 22%;
       right: 80rpx;
       font-size: 11px;
     }

@@ -3,6 +3,13 @@ export const gotoHome = () => {
     url: '/pages/merchant_end/index/index',
   })
 }
+
+export const gotoLoginAndRegister = () => {
+  uni.navigateTo({
+    url: '/pages/login_register/login_register',
+  })
+}
+
 export const gotoForget = () => {
   uni.navigateTo({
     url: '/pages/login_register/merchant/forget/forget',

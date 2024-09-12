@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
 const account_info = ref('simon火锅店')
 </script>
 
@@ -7,7 +8,7 @@ const account_info = ref('simon火锅店')
   <view class="account-mana">
     <view class="platform-logo"> 平台logo </view>
     <view class="account-info"> 当前账号：{{ account_info }} </view>
-    <view class="outlogin">退出登录</view>
+    <view class="outlogin" @click="gotoLoginAndRegister">退出登录</view>
   </view>
 </template>
 
