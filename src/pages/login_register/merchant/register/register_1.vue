@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { merchant_register, merchant_getvalidationCode } from '@/services/merchant/merchant_api'
+import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
+const phoneNumber = ref('')
 const gotoNext = () => {
   uni.navigateTo({
     url: '/pages/login_register/merchant/register/register_2',
   })
 }
-const phoneNumber = ref('')
-const handleRegister = async () => {
-  merchant_register()
+const getValidationCode = async () => {
+  merchant_getvalidationCode(phoneNumber.value).then((response) => {
+    console.log(response)
+  })
+  // 处理获取验证码的逻辑，例如计时器等
 }
 </script>
 <template>
@@ -37,9 +40,7 @@ const handleRegister = async () => {
       </view>
       <view class="input_content">
         <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
-        <button class="verification_btn" @click="merchant_getvalidationCode(phoneNumber.valueOf)">
-          获取验证码(60s)
-        </button>
+        <button class="verification_btn" @click="getValidationCode()">获取验证码(60s)</button>
         <input class="verification" placeholder="请输入验证码" type="text" />
         <input placeholder="请输入密码" type="text" />
         <input placeholder="请输入密码" type="text" />

@@ -1,7 +1,7 @@
 import { http } from '@/utils/http'
-
-export const admin_Login_pp = (phoneNumber, password) => {
-  return http({
+import type { resMsg } from '@/types/aside'
+export const admin_Login_pp = (phoneNumber: string, password: string) => {
+  return http<resMsg>({
     method: 'POST',
     url: '/administer/login/password',
     data: {
@@ -11,8 +11,8 @@ export const admin_Login_pp = (phoneNumber, password) => {
   })
 }
 
-export const admin_Login_pv = (phoneNumber, validationCode) => {
-  return http({
+export const admin_Login_pv = (phoneNumber: string, validationCode: string) => {
+  return http<resMsg>({
     method: 'POST',
     url: '/administer/login/phone',
     data: {
@@ -22,14 +22,20 @@ export const admin_Login_pv = (phoneNumber, validationCode) => {
   })
 }
 
-export const admin_getvalidationCode = (phoneNumber) => {
+export const admin_getvalidationCode = (phoneNumber: string) => {
   return http({
     method: 'GET',
     url: `/administer/phone?phoneNumber=${phoneNumber}`,
   })
 }
 
-export const admin_register = (phoneNumber, realName, inviteCode, password, college) => {
+export const admin_register = (
+  phoneNumber: string,
+  realName: string,
+  inviteCode: string,
+  password: string,
+  college: string,
+) => {
   return http({
     method: 'POST',
     url: '/administer/register',

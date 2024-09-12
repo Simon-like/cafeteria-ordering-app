@@ -1,17 +1,20 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { merchant_Login_pv, merchant_getvalidationCode } from '@/services/merchant/merchant_api'
 import { gotoHome } from '@/composables/navigation/navigation.ts'
+import type { resMsg } from '@/types/aside'
+import { useDoubleTokenStore } from '@/stores'
+
 const phoneNumber = ref('')
 const validationCode = ref('')
 
+const res = ref<resMsg>()
+const tokenStore = useDoubleTokenStore()
 const handleLogin_pv = async () => {
-  merchant_Login_pv(phoneNumber.value, validationCode.value).then((response) => {
-    console.log(response)
-    if (response?.code === '1') {
-      gotoHome()
-    }
-  })
+  res.value = await merchant_Login_pv(phoneNumber.value, validationCode.value)
+  const accessToken = res.value?.data?.accessToken
+  const refreshToken = res.value?.data?.refreshToken
+  tokenStore.addToken(accessToken, refreshToken)
 }
 const getValidationCode = async () => {
   merchant_getvalidationCode(phoneNumber.value).then((response) => {
