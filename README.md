@@ -1,30 +1,29 @@
 ## 项目简介
 
-食堂订单项目的商家端/管理端app开发部分
+食堂订单项目的商家端/管理端 app 开发部分
 
 ## 当前进度
 
- **目前项目初始化完成，实在是太忙了** 
+**目前登录注册和商户端个人信息页面基本完成，等待后端联调**
 
 ### 技术栈
 
-- IDE：[HBuilderX]（整了好久的vscode配置，好麻烦，还是就用这个玩意吧）
+- IDE：[HBuilderX]（整了好久的 vscode 配置，好麻烦，还是就用这个玩意吧）
 - 前端框架：[uni-app](https://uniapp.dcloud.net.cn/) (Vue3 + TS )
 - 状态管理：[pinia](https://pinia.vuejs.org/zh/)
 - 组件库：[uni-ui](https://uniapp.dcloud.net.cn/component/uniui/uni-ui.html)
-【思来想去还是用官方的组件库，简单高效】
+  【思来想去还是用官方的组件库，简单高效】
 
 ## 资料说明
-
 
 ### 📗 接口文档
 
 【待更新】
 
-## HBX插件安装说明
+## HBX 插件安装说明
 
-都在DCloud插件市场，自行配置下载
-1.easy-git和git插件
+都在 DCloud 插件市场，自行配置下载
+1.easy-git 和 git 插件
 2.formatAndSave
 3.eslint-plugin-vue
 
@@ -52,7 +51,6 @@ npm run dev:h5
 # App端
 需 HbuilderX 工具，运行 - 运行到手机或模拟器
 ```
-
 
 ### 工程结构解析
 
