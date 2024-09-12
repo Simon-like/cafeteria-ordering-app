@@ -1,8 +1,18 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { admin_getvalidationCode } from '@/services/admin/admin_api'
+
+const phoneNumber = ref()
+
 const gotoNext = () => {
   console.log('1')
   uni.navigateTo({
     url: '/pages/login_register/admin/register/register_2',
+  })
+}
+const handleValidationCode = async () => {
+  admin_getvalidationCode(phoneNumber.value).then((response) => {
+    console.log(response)
   })
 }
 </script>
@@ -30,7 +40,7 @@ const gotoNext = () => {
       </view>
       <view class="input_content">
         <input placeholder="请输入使用人手机号" type="text" />
-        <button class="verification_btn">获取验证码(60s)</button>
+        <button class="verification_btn" @click="handleValidationCode">获取验证码(60s)</button>
         <input class="verification" placeholder="请输入验证码" type="text" />
         <input placeholder="" type="text" />
         <input placeholder="账号固定为手机号" type="text" />

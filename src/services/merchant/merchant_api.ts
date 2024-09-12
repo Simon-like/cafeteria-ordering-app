@@ -1,7 +1,7 @@
 import { http } from '@/utils/http'
-
+import type { resMsg } from '@/types/aside'
 export const merchant_Login_pp = (phoneNumber: string, password: string) => {
-  return http({
+  return http<resMsg>({
     method: 'POST',
     url: '/merchant/login/password',
     data: {
@@ -15,7 +15,7 @@ export const merchant_Login_pp = (phoneNumber: string, password: string) => {
 }
 
 export const merchant_Login_pv = (phoneNumber: string, validationCode: string) => {
-  return http({
+  return http<resMsg>({
     method: 'POST',
     url: '/merchant/login/phone',
     data: {
@@ -32,7 +32,14 @@ export const merchant_getvalidationCode = (phoneNumber: string) => {
   })
 }
 
-export const merchant_register = (phoneNumber, realName, name, address, password, college) => {
+export const merchant_register = (
+  phoneNumber: string,
+  realName: string,
+  name: string,
+  address: string,
+  password: string,
+  college: string,
+) => {
   return http({
     method: 'POST',
     url: '/merchant/register',
