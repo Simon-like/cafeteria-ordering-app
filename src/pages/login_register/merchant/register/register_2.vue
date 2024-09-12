@@ -23,14 +23,16 @@ const gotoNext = () => {
       </view>
     </view>
     <view class="input">
-      <view class="text">
+      <view class="input-item">
         <text>所有人姓名</text>
-        <text>店铺名称</text>
-        <text>店铺地址</text>
+        <input type="text" />
       </view>
-      <view class="input_content">
+      <view class="input-item">
+        <text>店铺名称</text>
         <input type="text" />
-        <input type="text" />
+      </view>
+      <view class="input-item">
+        <text>店铺地址</text>
         <input type="text" />
       </view>
     </view>
@@ -84,23 +86,24 @@ const gotoNext = () => {
 }
 .input {
   display: flex;
-  margin-top: 20rpx;
-  .text {
-    width: 40%;
-    text-align: end;
+  flex-direction: column; // 使每个 input-item 垂直排列
+  margin-top: 30rpx;
+  .input-item {
+    display: flex;
+    align-items: center; // 垂直居中对齐
+    margin-bottom: 20rpx; // 每个 input 项的间距
+
     text {
-      display: block;
-      margin: 20rpx 0;
-      margin-right: 10rpx;
+      width: 230rpx; // 文本宽度
+      margin-right: 10rpx; // 文本和 input 之间的间距
+      text-align: right; // 右对齐文本
     }
-  }
-  .input_content {
-    width: 60%;
+
     input {
+      padding-left: 10rpx;
       background-color: #ccc;
       border: #000 solid 1rpx;
-      width: 60%;
-      margin: 20rpx 0;
+      width: 400rpx; // 输入框宽度，减去文本宽度和间距
     }
   }
 }

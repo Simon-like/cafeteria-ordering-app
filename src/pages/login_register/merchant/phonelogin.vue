@@ -13,6 +13,7 @@ const handleLogin_pv = async () => {
   const accessToken = res.data.accessToken
   const refreshToken = res.data.refreshToken
   tokenStore.addToken(accessToken, refreshToken)
+  gotoHome()
 }
 const getValidationCode = async () => {
   merchant_getvalidationCode(phoneNumber.value).then((response) => {
