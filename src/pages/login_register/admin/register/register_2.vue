@@ -1,3 +1,10 @@
+<script lang="ts" setup>
+const gotoNext = () => {
+  uni.navigateTo({
+    url: '/pages/login_register/admin/register/register_3',
+  })
+}
+</script>
 <template>
   <view class="body">
     <view class="title"> 注册 </view>
@@ -15,11 +22,9 @@
       <text>管理邀请码</text>
       <input type="text" />
     </view>
-    <button>确认</button>
+    <button @click="gotoNext">确认</button>
   </view>
 </template>
-
-<script></script>
 
 <style lang="scss" scoped>
 .title {
@@ -78,5 +83,8 @@
     width: 60%;
     margin: 27rpx 0;
   }
+}
+button {
+  width: 60%;
 }
 </style>

@@ -1,21 +1,24 @@
 <script setup>
 import { ref } from 'vue'
-import { merchant_Login_pv, merchant_getvalidationCode } from '@/services/merchant/merchant_api'
+import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api.js'
 import { gotoHome } from '@/services/navigation/navigation.js'
 const phoneNumber = ref('')
 const validationCode = ref('')
 
 const handleLogin_pv = async () => {
-  merchant_Login_pv(phoneNumber.value, validationCode.value).then((response) => {
+  admin_Login_pv(phoneNumber.value, validationCode.value).then((response) => {
     console.log(response)
-    if (response?.code === '1') {
+    if (response?.code === 1) {
       gotoHome()
     }
   })
 }
 const getValidationCode = async () => {
-  merchant_getvalidationCode(phoneNumber.value).then((response) => {
+  admin_getvalidationCode(phoneNumber.value).then((response) => {
     console.log(response)
+    if (response?.code) {
+      gotoHome()
+    }
   })
   // 处理获取验证码的逻辑，例如计时器等
 }

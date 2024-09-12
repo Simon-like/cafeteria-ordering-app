@@ -67,4 +67,7 @@
   display: flex;
   justify-content: center;
 }
+button {
+  width: 60%;
+}
 </style>

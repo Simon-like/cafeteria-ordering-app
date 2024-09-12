@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { merchant_Login_pp } from '@/services/merchant/merchant_api.js'
+import { admin_Login_pp } from '@/services/admin/admin_api.js'
 import {
   gotoHome,
   gotoForget,
@@ -11,7 +11,7 @@ const phoneNumber = ref('')
 const password = ref('')
 
 const handleLogin_pp = async () => {
-  merchant_Login_pp(phoneNumber.value, password.value).then((response) => {
+  admin_Login_pp(phoneNumber.value, password.value).then((response) => {
     console.log(response)
     if (response?.code === '1') {
       gotoHome()

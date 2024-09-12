@@ -1,6 +1,6 @@
 import { useDoubleTokenStore } from '@/stores'
 
-const baseURL = 'https://pcapi-xiaotuxian-front-devtest.itheima.net'
+const baseURL = 'https://yapi.adb-tech.com/mock/1288'
 
 // 添加拦截器
 const httpInterceptor = {
@@ -47,7 +47,7 @@ uni.addInterceptor('uploadFlie', httpInterceptor)
 interface Data<T> {
   code: string
   msg: string
-  result: T
+  data: T
 }
 
 // 2.2 添加类型，支持泛型

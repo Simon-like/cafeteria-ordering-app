@@ -1,8 +1,14 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { merchant_register, merchant_getvalidationCode } from '@/services/merchant/merchant_api'
 const gotoNext = () => {
   uni.navigateTo({
     url: '/pages/login_register/merchant/register/register_2',
   })
+}
+const phoneNumber = ref('')
+const handleRegister = async () => {
+  merchant_register()
 }
 </script>
 <template>
@@ -30,8 +36,10 @@ const gotoNext = () => {
         <text>确认登录密码</text>
       </view>
       <view class="input_content">
-        <input placeholder="请输入使用人手机号" type="text" />
-        <button class="verification_btn">获取验证码(60s)</button>
+        <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
+        <button class="verification_btn" @click="merchant_getvalidationCode(phoneNumber.valueOf)">
+          获取验证码(60s)
+        </button>
         <input class="verification" placeholder="请输入验证码" type="text" />
         <input placeholder="请输入密码" type="text" />
         <input placeholder="请输入密码" type="text" />
@@ -41,7 +49,7 @@ const gotoNext = () => {
       <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
     </view>
 
-    <button class="next" @click="gotoNext">下一步</button>
+    <button class="next" @click="handleRegister">下一步</button>
   </view>
 </template>
 
