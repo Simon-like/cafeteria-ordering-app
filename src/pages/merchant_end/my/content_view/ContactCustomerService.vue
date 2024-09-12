@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-const value = ref<string>('simon')
+const value = ref<string>('')
 const range = [
   { value: 0, text: '篮球' },
   { value: 1, text: '足球' },
@@ -12,11 +12,24 @@ const range = [
   <view class="contact-customerservice">
     <uni-easyinput
       type="textarea"
-      autoHeight
       v-model="value"
-      placeholder="请输入内容"
+      autoHeight
+      placeholder="请输入您遇到的问题"
+      :styles="{
+        color: '#000',
+        borderColor: '#7e7e5e',
+      }"
+      :placeholderStyle="'color:rgba(0, 0, 0, 0.5);font-size:14px'"
     ></uni-easyinput>
     <view class="sub-button">提交</view>
+    <view class="text-area">
+      <view class="line">
+        如您的问题没有解决或客服没有在三个工作日内回复您，您可以选择以下方式联系：
+      </view>
+      <view class="line"> 客服电话：000-00000000 </view>
+      <view class="line"> 客服微信：xxxxxxxxxxxxxx </view>
+      <view class="line"> …… </view>
+    </view>
   </view>
 </template>
 
@@ -25,15 +38,27 @@ const range = [
   width: 635rpx;
   height: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
   font-size: 26rpx;
   gap: 36rpx;
-  padding: 28rpx 16rpx;
+  padding: 30rpx 16rpx;
   font-size: 30rpx;
   .uni-easyinput {
     width: 100%;
   }
+  :deep() {
+    .uni-easyinput {
+      width: 446rpx;
+      height: 257rpx;
+      flex: 0;
+
+      .is-input-border {
+        border-radius: 0;
+      }
+    }
+  }
+
   .sub-button {
     margin: 0 auto;
     margin-top: 46rpx;
@@ -48,6 +73,11 @@ const range = [
       opacity: 0.8;
       transform: scale(0.95);
     }
+  }
+
+  .text-area {
+    margin: 48rpx 30rpx 0 30rpx;
+    font-size: 25rpx;
   }
 }
 </style>
