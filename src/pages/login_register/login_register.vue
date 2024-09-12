@@ -1,20 +1,20 @@
 <script setup lang="ts">
 //
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 const activeLink = ref<string>('商家登录')
 const setActiveLink = (link: string) => {
   activeLink.value = link
 }
-
+const identity = computed(() => (activeLink.value === '商家登录' ? 'merchant' : 'admin'))
 const gotoLogin = () => {
   uni.navigateTo({
-    url: '/pages/login_register/merchant/login_password',
+    url: `/pages/login_register/${identity.value}/login_password`,
   })
 }
 const gotoRegister = () => {
-  const identity = activeLink.value === '商家登录' ? 'merchant' : 'admin'
+  console.log(identity.value)
   uni.navigateTo({
-    url: `/pages/login_register/${identity}/register/register_1`,
+    url: `/pages/login_register/${identity.value}/register/register_1`,
   })
 }
 </script>

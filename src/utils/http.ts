@@ -1,6 +1,6 @@
 import { useDoubleTokenStore } from '@/stores'
 
-const baseURL = 'https://pcapi-xiaotuxian-front-devtest.itheima.net'
+const baseURL = 'https://yapi.adb-tech.com/mock/1288'
 
 // 添加拦截器
 const httpInterceptor = {

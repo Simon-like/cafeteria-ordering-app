@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 const gotoNext = () => {
+  console.log('1')
   uni.navigateTo({
-    url: '/pages/login_regitser/merchant/register/register_2',
+    url: '/pages/login_register/admin/register/register_2',
   })
 }
 </script>

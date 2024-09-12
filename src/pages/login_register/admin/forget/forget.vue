@@ -1,39 +1,25 @@
-<script setup>
-import { ref } from 'vue'
-import { merchant_Login_pv, merchant_getvalidationCode } from '@/services/merchant/merchant_api'
-import { gotoHome } from '@/services/navigation/navigation.js'
-const phoneNumber = ref('')
-const validationCode = ref('')
-
-const handleLogin_pv = async () => {
-  merchant_Login_pv(phoneNumber.value, validationCode.value).then((response) => {
-    console.log(response)
-    if (response?.code === '1') {
-      gotoHome()
-    }
+<script lang="ts" setup>
+const gotoNext = () => {
+  uni.navigateTo({
+    url: '/pages/login_register/admin/forget/forget_1',
   })
-}
-const getValidationCode = async () => {
-  merchant_getvalidationCode(phoneNumber.value).then((response) => {
-    console.log(response)
-  })
-  // 处理获取验证码的逻辑，例如计时器等
 }
 </script>
+
 <template>
   <view class="body">
-    <view class="title"> 登录 </view>
+    <view class="title"> 找回密码 </view>
     <view class="input">
       <view class="phoneNumber">
         <text>手机号</text>
-        <input v-model="phoneNumber" type="text" />
+        <input type="text" />
       </view>
       <view class="password">
         <text>验证码</text>
-        <input v-model="validationCode" type="text" class="input_password" />
-        <button @click="getValidationCode()">获取验证码(60s)</button>
+        <input type="text" class="input_password" />
+        <button>获取验证码(60s)</button>
       </view>
-      <button class="login" @click="handleLogin_pv">登录</button>
+      <button class="next" @click="gotoNext()">下一步</button>
     </view>
   </view>
 </template>
@@ -57,15 +43,12 @@ const getValidationCode = async () => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  align-items: center;
-  justify-content: center;
 
   .phoneNumber {
     display: flex;
     align-items: center;
     margin-bottom: 40rpx;
-    margin-left: 0;
-
+    margin-left: 140rpx;
     input {
       margin-left: 20px;
       padding: 4px 0 3px 8px;
@@ -78,8 +61,8 @@ const getValidationCode = async () => {
   .password {
     display: flex;
     align-items: center;
-    margin-bottom: 20rpx;
-    margin-left: 0;
+    margin-bottom: 30rpx;
+    margin-left: 140rpx;
     .input_password {
       margin-left: 20px;
       padding: 4px 0 3px 8px;
@@ -90,7 +73,7 @@ const getValidationCode = async () => {
     }
     button {
       margin-left: 20rpx;
-      margin-top: 2rpx;
+      margin-top: 0;
       padding: 0;
       font-size: 12px;
       width: 200rpx;
@@ -103,7 +86,7 @@ const getValidationCode = async () => {
       justify-content: center;
     }
   }
-  .login {
+  .next {
     margin: 50rpx 160rpx;
     width: 470rpx;
     height: 90rpx;

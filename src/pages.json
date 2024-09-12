@@ -86,21 +86,27 @@
       }
     },
     {
+      "path": "pages/login_register/admin/login_password",
+      "style": {
+        "navigationBarTitleText": "管理端登录"
+      }
+    },
+    {
       "path": "pages/login_register/admin/register/register_1",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "管理端注册第一步"
       }
     },
     {
       "path": "pages/login_register/admin/register/register_2",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "管理端注册第二步"
       }
     },
     {
       "path": "pages/login_register/admin/register/register_3",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "管理端注册第三步"
       }
     }
   ],
