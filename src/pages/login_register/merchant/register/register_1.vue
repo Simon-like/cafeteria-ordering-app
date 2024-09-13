@@ -8,6 +8,7 @@ const gotoNext = () => {
   })
 }
 const getValidationCode = async () => {
+  console.log('aa')
   merchant_getvalidationCode(phoneNumber.value).then((response) => {
     console.log(response)
   })

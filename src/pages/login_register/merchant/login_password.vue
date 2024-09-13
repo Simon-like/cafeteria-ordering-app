@@ -2,12 +2,7 @@
 import { ref } from 'vue'
 import { merchant_Login_pp } from '@/services/merchant/merchant_api'
 import { useDoubleTokenStore } from '@/stores'
-import {
-  gotoHome,
-  gotoForget,
-  gotoPhonelogin,
-  gotoRegister,
-} from '@/composables/navigation/navigation'
+import { gotoHome } from '@/composables/navigation/navigation'
 const phoneNumber = ref('')
 const password = ref('')
 const tokenStore = useDoubleTokenStore()
@@ -37,14 +32,16 @@ const handleLogin_pp = async () => {
         <input v-model="password" type="safe-password" placeholder="请输入账号密码" />
       </view>
       <view class="forgetpassword">
-        <navigator @click="gotoForget()">忘记密码?</navigator>
+        <navigator url="/pages/login_register/merchant/forget/forget">忘记密码?</navigator>
       </view>
       <view class="phonelogin">
-        <navigator @click="gotoPhonelogin()">手机号一键登录</navigator>
+        <navigator url="/pages/login_register/merchant/phonelogin">手机号一键登录</navigator>
       </view>
       <button @click="handleLogin_pp()">登录</button>
       <view class="nouserid">
-        <navigator @click="gotoRegister()">还没有账号？去注册</navigator>
+        <navigator url="/pages/login_register/merchant/register/register_1"
+          >还没有账号？去注册</navigator
+        >
       </view>
       <text>______________________________________</text>
       <view class="wxlogin">

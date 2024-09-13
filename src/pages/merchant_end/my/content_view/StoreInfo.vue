@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 type StoreInfo = {
   logo: string
   name: string
@@ -9,6 +9,7 @@ type StoreInfo = {
   owner: string
   desc: string
 }
+
 const store_info = ref<StoreInfo>({
   logo: '../../../static/images/logo_icon.png',
   name: 'simon火锅店',
@@ -18,6 +19,88 @@ const store_info = ref<StoreInfo>({
   owner: 'simon',
   desc: '无',
 })
+
+const popup = ref()
+const valiForm = ref<UniHelper.FormInstance>()
+const onEdit = () => {
+  popup.value.open('center')
+}
+
+const close = () => {
+  popup.value.close()
+} //对话框取消按钮
+
+const confirm = () => {
+  popup.value.close()
+} //对话框确认按钮
+
+const rules = {
+  name: {
+    rules: [
+      {
+        required: true,
+        errorMessage: '名称不能为空',
+      },
+    ],
+  },
+  address: {
+    rules: [
+      {
+        required: true,
+        errorMessage: '地址不能为空',
+      },
+    ],
+  },
+  hours: {
+    rules: [
+      {
+        required: true,
+        errorMessage: '营业时间不能为空',
+      },
+    ],
+  },
+  owner: {
+    rules: [
+      {
+        required: true,
+        errorMessage: '所有人不能为空',
+      },
+    ],
+  },
+  number: {
+    rules: [
+      {
+        required: true,
+        errorMessage: '联系电话不能为空',
+      },
+    ],
+  },
+}
+
+// 校验表单数据
+const valiFormData = reactive({
+  name: '',
+  address: '',
+  number: '',
+  hours: '',
+  owner: '',
+  introduction: '',
+})
+
+const submit = () => {
+  valiForm.value
+    ?.validate()
+    .then((res: string) => {
+      console.log('success', res)
+      uni.showToast({
+        title: `修改成功`,
+      })
+      popup.value.close()
+    })
+    .catch((err: string) => {
+      console.log('err', err)
+    })
+}
 </script>
 
 <template>
@@ -38,7 +121,55 @@ const store_info = ref<StoreInfo>({
       </view>
     </view>
 
-    <view class="edit-button"> 修改资料 </view>
+    <view class="edit-button" @click="onEdit"> 修改资料 </view>
+
+    <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
+      <uni-card class="form-card">
+        <uni-section title="修改资料" type="line">
+          <scroll-view scroll-y="true" class="scroll-Y">
+            <view class="form-wrapper">
+              <!-- 基础表单 -->
+              <uni-forms
+                ref="valiForm"
+                :rules="rules"
+                :modelValue="valiFormData"
+                label-align="right"
+              >
+                <uni-forms-item required name="name">
+                  <template #label><text>店铺名称</text></template>
+                  <uni-easyinput v-model="valiFormData.name" placeholder="请输入店铺名称" />
+                </uni-forms-item>
+                <uni-forms-item required name="address">
+                  <template #label><text>店铺地址</text></template>
+                  <uni-easyinput v-model="valiFormData.address" placeholder="请输入店铺地址" />
+                </uni-forms-item>
+                <uni-forms-item required name="number">
+                  <template #label><text>联系电话</text></template>
+                  <uni-easyinput v-model="valiFormData.number" placeholder="请输入联系电话" />
+                </uni-forms-item>
+                <uni-forms-item required name="hours">
+                  <template #label><text>营业时间</text></template>
+                  <uni-easyinput v-model="valiFormData.hours" placeholder="请输入营业时间" />
+                </uni-forms-item>
+                <uni-forms-item required name="owner">
+                  <template #label><text>所有人</text></template>
+                  <uni-easyinput v-model="valiFormData.owner" placeholder="请输入所有人" />
+                </uni-forms-item>
+                <uni-forms-item name="introduction">
+                  <template #label><text>店铺简介</text></template>
+                  <uni-easyinput
+                    type="textarea"
+                    v-model="valiFormData.introduction"
+                    placeholder="请输入店铺简介"
+                  />
+                </uni-forms-item>
+              </uni-forms>
+              <view class="submit-button" @click="submit"> 提交 </view>
+            </view>
+          </scroll-view>
+        </uni-section>
+      </uni-card>
+    </uni-popup>
   </view>
 </template>
 
@@ -77,6 +208,35 @@ const store_info = ref<StoreInfo>({
     &:active {
       opacity: 0.8;
       transform: scale(0.95);
+    }
+  }
+
+  .form-card {
+    width: 700rpx;
+    .scroll-Y {
+      height: 500rpx;
+    }
+    .form-wrapper {
+      :deep() {
+        text {
+          font-size: 30rpx;
+          margin-right: 30rpx;
+        }
+        .submit-button {
+          margin: 0 auto;
+          margin-top: 46rpx;
+          width: 300rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          background-color: rgba(126, 126, 94, 0.7);
+          text-align: center;
+          transition: all 0.2s ease;
+          &:active {
+            opacity: 0.8;
+            transform: scale(0.95);
+          }
+        }
+      }
     }
   }
 }
