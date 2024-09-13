@@ -8,14 +8,11 @@ export const merchant_Login_pp = (phoneNumber: string, password: string) => {
       phoneNumber,
       password,
     },
-    header: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
   })
 }
 
 export const merchant_Login_pv = (phoneNumber: string, validationCode: string) => {
-  return http<resMsg>({
+  return http<TokenType>({
     method: 'POST',
     url: '/merchant/login/phone',
     data: {

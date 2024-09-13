@@ -14,7 +14,7 @@ const tokenStore = useDoubleTokenStore()
 
 const handleLogin_pp = async () => {
   // 开发测试用，等后端接口写完了再改
-  gotoHome()
+  // gotoHome()
   const res = await merchant_Login_pp(phoneNumber.value, password.value)
   const accessToken = res.data.accessToken
   const refreshToken = res.data.refreshToken

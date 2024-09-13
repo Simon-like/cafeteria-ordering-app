@@ -42,7 +42,8 @@
     {
       "path": "pages/merchant_end/index/index",
       "style": {
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom"
       }
     },
     {
@@ -56,7 +57,8 @@
     {
       "path": "pages/merchant_end/order/order",
       "style": {
-        "navigationBarTitleText": "订单管理"
+        "navigationBarTitleText": "订单管理",
+        "navigationStyle": "custom"
       }
     },
     {

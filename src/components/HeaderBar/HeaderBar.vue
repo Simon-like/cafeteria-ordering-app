@@ -22,7 +22,7 @@ const work_status = ref<string>('营业中')
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100rpx;
+  height: 115rpx;
   border-bottom: 2px solid rgba(16, 16, 16, 0.5);
   box-shadow: 0 3px 3px rgba(16, 16, 16, 0.2);
 
@@ -33,11 +33,11 @@ const work_status = ref<string>('营业中')
     gap: 4rpx;
 
     .title {
-      font-size: 25rpx;
+      font-size: 30rpx;
     }
 
     .work-status {
-      font-size: 16rpx;
+      font-size: 25rpx;
       .iconfont {
         color: rgba(139, 139, 208, 0.8);
 

@@ -1,6 +1,7 @@
 import { useDoubleTokenStore } from '@/stores'
 
-const baseURL = 'https://yapi.adb-tech.com/mock/1288'
+// const baseURL = 'https://yapi.adb-tech.com/mock/1288'
+const baseURL = 'http://47.99.35.140:8080'
 
 // 添加拦截器
 const httpInterceptor = {

@@ -49,7 +49,7 @@ const range = [
   }
   :deep() {
     .uni-easyinput {
-      width: 446rpx;
+      width: 500rpx;
       height: 257rpx;
       flex: 0;
 
