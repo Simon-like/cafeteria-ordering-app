@@ -12,13 +12,11 @@ const handleLogin_pv = async () => {
   const accessToken = res.data.accessToken
   const refreshToken = res.data.refreshToken
   tokenStore.addToken(accessToken, refreshToken)
+  gotoHome()
 }
 const getValidationCode = async () => {
   admin_getvalidationCode(phoneNumber.value).then((response) => {
     console.log(response)
-    if (response?.code) {
-      gotoHome()
-    }
   })
   // 处理获取验证码的逻辑，例如计时器等
 }

@@ -32,17 +32,21 @@ const getValidationCode = async () => {
       </view>
     </view>
     <view class="input">
-      <view class="text">
+      <view class="input-item">
         <text>手机号</text>
-        <text>验证码</text>
-        <text>设置登录密码</text>
-        <text>确认登录密码</text>
-      </view>
-      <view class="input_content">
         <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
-        <button class="verification_btn" @click="getValidationCode()">获取验证码(60s)</button>
+      </view>
+      <view class="input-item">
+        <text>验证码</text>
         <input class="verification" placeholder="请输入验证码" type="text" />
+        <button class="verification_btn" @click="getValidationCode()">获取验证码(60s)</button>
+      </view>
+      <view class="input-item">
+        <text>设置登录密码</text>
         <input placeholder="请输入密码" type="text" />
+      </view>
+      <view class="input-item">
+        <text>确认登录密码</text>
         <input placeholder="请输入密码" type="text" />
       </view>
     </view>
@@ -96,40 +100,39 @@ const getValidationCode = async () => {
 }
 .input {
   display: flex;
-  .text {
-    width: 30%;
-    text-align: end;
+  flex-direction: column; // 使每个 input-item 垂直排列
+  margin-top: 30rpx;
+  .input-item {
+    display: flex;
+    align-items: center; // 垂直居中对齐
+    margin-bottom: 20rpx; // 每个 input 项的间距
+
     text {
-      display: block;
-      margin: 20rpx 0;
-      margin-right: 10rpx;
+      width: 230rpx; // 文本宽度
+      margin-right: 10rpx; // 文本和 input 之间的间距
+      text-align: right; // 右对齐文本
     }
-  }
-  .input_content {
-    width: 80%;
+
     input {
+      padding-left: 10rpx;
       background-color: #ccc;
       border: #000 solid 1rpx;
-      width: 85%;
-      margin: 20rpx 0;
-      &::placeholder {
-        color: #999;
-        font-size: 28rpx;
-        padding-left: 5rpx;
-      }
+      width: 400rpx; // 输入框宽度，减去文本宽度和间距
     }
     .verification {
-      width: 40%;
+      width: 220rpx;
+      margin-right: 0;
     }
     .verification_btn {
-      position: absolute;
+      font-size: xx-small;
+      width: 170rpx;
       display: flex;
       justify-content: center;
-      align-items: center;
-      width: auto;
-      top: 22%;
-      right: 80rpx;
-      font-size: 11px;
+      padding-left: 2rpx;
+      padding-right: 2rpx;
+      margin-right: 80rpx;
+      margin-left: 10rpx;
+      white-space: nowrap;
     }
   }
 }

@@ -25,34 +25,45 @@ const handleValidationCode = async () => {
         <text>注册账户</text>
       </view>
       <view class="nav-item">
-        <view class="circle"> 2 </view>
-        <text>填写注册码</text>
+        <view class="circle" id="line"> 2 </view>
+        <text>门店信息</text>
+      </view>
+      <view class="nav-item">
+        <view class="circle"> 3 </view>
+        <text>资质审核</text>
       </view>
     </view>
     <view class="input">
-      <view class="text">
+      <view class="input-item">
         <text>手机号</text>
-        <text>验证码</text>
-        <text>请输入使用人姓名</text>
-        <text>账号</text>
-        <text>设置登录密码</text>
-        <text>确认登录密码</text>
+        <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
       </view>
-      <view class="input_content">
-        <input placeholder="请输入使用人手机号" type="text" />
-        <button class="verification_btn" @click="handleValidationCode">获取验证码(60s)</button>
+      <view class="input-item">
+        <text>验证码</text>
         <input class="verification" placeholder="请输入验证码" type="text" />
-        <input placeholder="" type="text" />
-        <input placeholder="账号固定为手机号" type="text" />
+        <button class="verification_btn" @click="handleValidationCode()">获取验证码(60s)</button>
+      </view>
+      <view class="input-item">
+        <text>请输入使用人姓名</text>
+        <input type="text" />
+      </view>
+      <view class="input-item">
+        <text>账号</text>
+        <input type="text" />
+      </view>
+      <view class="input-item">
+        <text>设置登录密码</text>
         <input placeholder="请输入密码" type="text" />
+      </view>
+      <view class="input-item">
+        <text>确认登录密码</text>
         <input placeholder="请输入密码" type="text" />
       </view>
     </view>
     <view class="checkbox__container">
       <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
     </view>
-
-    <button class="next" @click="gotoNext">下一步</button>
+    <button class="next" @click="gotoNext()">下一步</button>
   </view>
 </template>
 
@@ -65,9 +76,10 @@ const handleValidationCode = async () => {
 }
 .nav {
   display: flex;
+  align-items: center;
   justify-content: center;
   .nav-item {
-    margin-left: 80rpx;
+    margin-left: 50rpx;
     position: relative;
     .circle {
       display: flex;
@@ -77,7 +89,7 @@ const handleValidationCode = async () => {
       height: 40rpx;
       border-radius: 50%;
       background-color: #ccc;
-      margin-left: 52rpx;
+      margin-left: 42rpx;
       margin-bottom: 20rpx;
     }
   }
@@ -87,7 +99,7 @@ const handleValidationCode = async () => {
   &::after {
     content: '';
     position: absolute;
-    right: -170rpx;
+    right: -160rpx;
     top: 50%;
     width: 170rpx;
     height: 10rpx;
@@ -97,46 +109,40 @@ const handleValidationCode = async () => {
 }
 .input {
   display: flex;
-  .text {
-    font-size: 13px;
-    width: 40%;
-    text-align: end;
+  flex-direction: column; // 使每个 input-item 垂直排列
+  margin-top: 30rpx;
+  .input-item {
+    display: flex;
+    align-items: center; // 垂直居中对齐
+    margin-bottom: 20rpx; // 每个 input 项的间距
+
     text {
-      display: block;
-      margin: 28rpx 0;
-      margin-right: 10rpx;
+      width: 270rpx; // 文本宽度
+      margin-right: 10rpx; // 文本和 input 之间的间距
+      text-align: right; // 右对齐文本
     }
-  }
-  .input_content {
-    width: 80%;
+
     input {
-      font-size: 13px;
-      padding-left: 3rpx;
+      padding-left: 10rpx;
       background-color: #ccc;
       border: #000 solid 1rpx;
-      width: 85%;
-      margin: 27rpx 0;
-      &::placeholder {
-        color: #999;
-        font-size: 28rpx;
-        padding-left: 5rpx;
-      }
+      width: 400rpx; // 输入框宽度，减去文本宽度和间距
     }
     .verification {
-      width: 40%;
+      width: 220rpx;
+      margin-left: 5rpx;
     }
     .verification_btn {
-      position: absolute;
+      font-size: xx-small;
+      width: 170rpx;
       display: flex;
       justify-content: center;
+      padding-left: 2rpx;
+      padding-right: 2rpx;
+      margin-right: 80rpx;
+      margin-left: 10rpx;
+      white-space: nowrap;
       align-items: center;
-      padding: 0;
-      margin-top: 13rpx;
-      width: 30%;
-      top: 21.5%;
-      right: 9%;
-      height: 4%;
-      font-size: xx-small;
     }
   }
 }
