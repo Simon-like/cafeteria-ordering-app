@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import type { AsideItem } from '../../../types/aside'
 import { componentList } from '@/pages/merchant_end/my/content_view/index'
+import { onLoad } from '@dcloudio/uni-app'
 
 const my_aside_list = ref<AsideItem[]>([
   { itemId: 0, itemName: '店铺信息', active: true, hrefUrl: '' },

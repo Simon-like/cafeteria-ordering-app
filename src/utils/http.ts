@@ -7,6 +7,8 @@ const baseURL = 'http://114.55.108.97:8080'
 const httpInterceptor = {
   // 拦截前触发
   invoke(options: UniApp.RequestOptions) {
+    // options.url = packApiUrl(options.url)
+
     // 1. 非 http 开头需要拼接地址
     if (!options.url.startsWith('http')) {
       options.url = baseURL + options.url
@@ -21,9 +23,9 @@ const httpInterceptor = {
     // 4. 添加 token 请求标识
     const DoubleTokenStore = useDoubleTokenStore()
     const token = DoubleTokenStore.accessToken
-    if (!!token) {
-      options.header.Authorzatopn = token
-    }
+    //if (!!token) {
+    options.header.Authorzatopn = token
+    //}
 
     console.log(options)
   },
@@ -81,6 +83,7 @@ export const http = <T>(options: UniApp.RequestOptions) => {
       },
       // 响应失败（比如网络没了）
       fail(err) {
+        console.log('cao')
         uni.showToast({
           icon: 'none',
           title: '网络错误，换个网络试试',

@@ -7,7 +7,7 @@
     <custom-nav-bar></custom-nav-bar>
     <HeaderBar />
     <view class="content">
-      <view class="total-amount"> </view>
+      <view class="total-amount"> simon</view>
     </view>
   </view>
 </template>
