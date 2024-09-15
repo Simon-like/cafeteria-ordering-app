@@ -1,5 +1,14 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { useMerchantStore } from '@/stores'
+const realName = ref<string>('')
+const name = ref<string>('')
+const address = ref<string>('')
+const merchantStore = useMerchantStore()
 const gotoNext = () => {
+  merchantStore.realName = realName.value
+  merchantStore.name = name.value
+  merchantStore.address = address.value
   uni.navigateTo({
     url: '/pages/login_register/merchant/register/register_3',
   })
@@ -25,15 +34,15 @@ const gotoNext = () => {
     <view class="input">
       <view class="input-item">
         <text>所有人姓名</text>
-        <input type="text" />
+        <input type="text" v-model="realName" />
       </view>
       <view class="input-item">
         <text>店铺名称</text>
-        <input type="text" />
+        <input type="text" v-model="name" />
       </view>
       <view class="input-item">
         <text>店铺地址</text>
-        <input type="text" />
+        <input type="text" v-model="address" />
       </view>
     </view>
     <text class="tips">--店铺详细信息注册完成后可在门店管理页面中更改--</text>

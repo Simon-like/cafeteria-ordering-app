@@ -1,14 +1,23 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
-const phoneNumber = ref('')
+import { useMerchantStore } from '@/stores'
+const phoneNumber = ref<string>('')
+const validationCode = ref<string>('')
+const password_1 = ref<string>('')
+const password_2 = ref<string>('')
+const merchantStore = useMerchantStore()
 const gotoNext = () => {
-  uni.navigateTo({
-    url: '/pages/login_register/merchant/register/register_2',
-  })
+  //后续添加验证码验证
+  if (password_1.value === password_2.value) {
+    merchantStore.phoneNumber = phoneNumber.value
+    merchantStore.password = password_1.value
+    uni.navigateTo({
+      url: '/pages/login_register/merchant/register/register_2',
+    })
+  }
 }
 const getValidationCode = async () => {
-  console.log('aa')
   merchant_getvalidationCode(phoneNumber.value).then((response) => {
     console.log(response)
   })
@@ -39,7 +48,12 @@ const getValidationCode = async () => {
       </view>
       <view class="input-item">
         <text>验证码</text>
-        <input class="verification" placeholder="请输入验证码" type="text" />
+        <input
+          class="verification"
+          placeholder="请输入验证码"
+          type="text"
+          v-model="validationCode"
+        />
         <button class="verification_btn" @click="getValidationCode()">获取验证码(60s)</button>
       </view>
       <view class="input-item">

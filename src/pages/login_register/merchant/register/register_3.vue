@@ -1,4 +1,19 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { merchant_register } from '@/services/merchant/merchant_api'
+import { useMerchantStore } from '@/stores'
+const merchantStore = useMerchantStore()
+
+const handleRegister = async () => {
+  merchant_register(
+    merchantStore.phoneNumber,
+    merchantStore.realName,
+    merchantStore.name,
+    merchantStore.address,
+    merchantStore.password,
+    merchantStore.college,
+  )
+}
+</script>
 <template>
   <view class="body">
     <view class="title"> 注册 </view>
@@ -21,7 +36,7 @@
         <text>店铺名称：xxxxxxx</text>
         <text>店铺地址：xxxxxxx</text>
       </view>
-      <button>提交审核</button>
+      <button @click="handleRegister">提交审核</button>
     </view>
   </view>
 </template>
