@@ -12,84 +12,6 @@ export const useMerchantStore = defineStore(
     const address = ref<string>()
     const password = ref<string>()
     const college = ref<string>()
-    // 保存商户信息，登录时使用
-    const addUserinfo = (type: string = '', content: string = '') => {
-      switch (type) {
-        case 'phoneNumber':
-          phoneNumber.value = content
-          break
-        case 'realName':
-          realName.value = content
-          break
-        case 'name':
-          name.value = content
-          break
-        case 'address':
-          address.value = content
-          break
-        case 'password':
-          password.value = content
-          break
-        case 'college':
-          college.value = content
-          break
-      }
-    }
-    // 修改商户信息
-    const changeUserinfo = (type: string = '', content: string = '') => {
-      switch (type) {
-        case 'phoneNumber':
-          phoneNumber.value = content
-          break
-        case 'realName':
-          realName.value = content
-          break
-        case 'name':
-          name.value = content
-          break
-        case 'address':
-          address.value = content
-          break
-        case 'password':
-          password.value = content
-          break
-        case 'college':
-          college.value = content
-          break
-      }
-    }
-    // 删除商户信息中的某个字段
-    const deleteUserinfo = (type: string = '', content: string = '') => {
-      switch (type) {
-        case 'phoneNumber':
-          phoneNumber.value = content
-          break
-        case 'realName':
-          realName.value = content
-          break
-        case 'name':
-          name.value = content
-          break
-        case 'address':
-          address.value = content
-          break
-        case 'password':
-          password.value = content
-          break
-        case 'college':
-          college.value = content
-          break
-      }
-    }
-    // 清理商户信息，退出时使用
-    const clearUserinfo = () => {
-      phoneNumber.value = ''
-      realName.value = ''
-      name.value = ''
-      address.value = ''
-      password.value = ''
-      college.value = ''
-    }
 
     // 记得 return
     return {
@@ -99,9 +21,6 @@ export const useMerchantStore = defineStore(
       address,
       password,
       college,
-      addUserinfo,
-      changeUserinfo,
-      clearUserinfo,
     }
   },
   // TODO: 持久化
