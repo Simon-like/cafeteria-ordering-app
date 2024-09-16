@@ -74,7 +74,6 @@ const gotoNext = () => {
     margin: 28rpx 0;
     margin-left: 120rpx;
   }
-  width: 80%;
   input {
     font-size: 13px;
     padding-left: 3rpx;
