@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { getTitleBarHeight, getStatusBarHeight, getNavBarHeight } from '@/utils/system'
+
+/**
+ * @description 移动端顶部占位符组件，避免与状态栏冲突
+ * @author 应东林
+ * @date 2024-09-17
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-17
+ */
 </script>
 
 <template>

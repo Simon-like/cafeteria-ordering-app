@@ -8,6 +8,4 @@ export type AsideItem = {
   itemName: string
   /** 选项激活状态 */
   active: boolean
-  /** 选项跳转url */
-  hrefUrl: string
 }

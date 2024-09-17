@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4680392 */
-  src: url('iconfont.woff2?t=1726150278642') format('woff2'),
-       url('iconfont.woff?t=1726150278642') format('woff'),
-       url('iconfont.ttf?t=1726150278642') format('truetype');
+  src: url('iconfont.woff2?t=1726475569028') format('woff2'),
+       url('iconfont.woff?t=1726475569028') format('woff'),
+       url('iconfont.ttf?t=1726475569028') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,38 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zuojiantou:before {
+  content: "\e64e";
+}
+
+.icon-jiantouarrow483:before {
+  content: "\e695";
+}
+
+.icon-jiantou-copy:before {
+  content: "\e600";
+}
+
+.icon-arrdown:before {
+  content: "\e601";
+}
+
+.icon-long_arrow_down:before {
+  content: "\e602";
+}
+
+.icon-arrow-right:before {
+  content: "\e603";
+}
+
+.icon-arrdown1:before {
+  content: "\e604";
+}
+
+.icon-youjiantou-:before {
+  content: "\e630";
 }
 
 .icon-sousuo:before {

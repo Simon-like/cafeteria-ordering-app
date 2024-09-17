@@ -1,5 +1,14 @@
 <script lang="ts" setup>
 import type { AsideItem } from '@/types/aside'
+
+/**
+ * @description 侧边栏组件
+ * @author 应东林
+ * @date 2024-09-17
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-17
+ */
+
 const props = defineProps<{
   itemList: AsideItem[]
 }>()

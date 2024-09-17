@@ -2,12 +2,19 @@
 import { ref } from 'vue'
 import type { AsideItem } from '../../../types/aside'
 import { componentList } from '@/pages/merchant_end/my/content_view/index'
-import { onLoad } from '@dcloudio/uni-app'
+
+/**
+ * @description 个人中心主页面
+ * @author 应东林
+ * @date 2024-09-17
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-17
+ */
 
 const my_aside_list = ref<AsideItem[]>([
-  { itemId: 0, itemName: '店铺信息', active: true, hrefUrl: '' },
-  { itemId: 1, itemName: '联系客服', active: false, hrefUrl: '' },
-  { itemId: 2, itemName: '账号管理', active: false, hrefUrl: '' },
+  { itemId: 0, itemName: '店铺信息', active: true },
+  { itemId: 1, itemName: '联系客服', active: false },
+  { itemId: 2, itemName: '账号管理', active: false },
 ])
 const channelId = ref<number>(0)
 
