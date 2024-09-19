@@ -12,6 +12,15 @@ export const useMerchantStore = defineStore(
     const address = ref<string>()
     const password = ref<string>()
     const college = ref<string>()
+    //return新增的
+    const businessHours = ref<string>()
+    const contactPhone = ref<string>()
+    const deleteStatus = ref<number>()
+    const discription = ref<string>()
+    const operationStatus = ref<number>()
+    const logo = ref<string>()
+    const merchantId = ref<number>()
+    const version = ref<number>()
 
     // 记得 return
     return {
@@ -21,6 +30,14 @@ export const useMerchantStore = defineStore(
       address,
       password,
       college,
+      businessHours,
+      contactPhone,
+      deleteStatus,
+      discription,
+      operationStatus,
+      logo,
+      merchantId,
+      version,
     }
   },
   // TODO: 持久化
