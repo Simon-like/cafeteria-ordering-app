@@ -3,6 +3,7 @@ import { ref, reactive } from 'vue'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
 import { GetMerchantInfo, ChangeMerchantInfo } from '@/services/merchant/merchant_api'
 import { onLoad } from '@dcloudio/uni-app'
+import type { MerchantInfo } from '@/types/merchant_return'
 
 /**
  * @description 个人中心页面数据的替换，通过pinia仓库进行数据管理
@@ -15,21 +16,6 @@ const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
   Object.assign(Merchant, res.data)
-}
-
-const ChangeInfo = async () => {
-  await ChangeMerchantInfo(
-    Merchant.logo,
-    Merchant.address,
-    Merchant.name,
-    Merchant.contactPhone,
-    Merchant.businessHours,
-    Merchant.discription,
-    Merchant.realName,
-    Merchant.merchantId,
-  ).then((response) => {
-    console.log(response.data)
-  })
 }
 
 onLoad(HandleGetInfo)
@@ -106,24 +92,36 @@ const submit = () => {
     ?.validate()
     .then((res: string) => {
       // 更新商户信息
-      Merchant.name = valiFormData.name
-      Merchant.address = valiFormData.address
-      Merchant.contactPhone = valiFormData.number
-      Merchant.businessHours = valiFormData.hours
-      Merchant.realName = valiFormData.owner
-      Merchant.discription = valiFormData.introduction
-      console.log('success', res)
-      ChangeInfo()
-      uni.showToast({
-        title: `修改成功`,
+      let changeData: MerchantInfo = reactive({
+        merchantName: valiFormData.name,
+        merchantAddress: valiFormData.address,
+        contactPhone: valiFormData.number,
+        realName: valiFormData.owner,
+        discription: valiFormData.introduction,
+        logo: '',
+        businessHours: valiFormData.hours,
+        operationStatus: Merchant.operationStatus,
+        merchantId: Merchant.merchantId,
       })
-      popup.value.close()
+      ChangeMerchantInfo(changeData)
+        .then((res) => {
+          console.log(res)
+          uni.showToast({
+            title: `修改成功`,
+          })
+          popup.value.close()
+          HandleGetInfo()
+        })
+        .catch((err) => {
+          uni.showToast({
+            title: `修改失败`,
+          })
+          console.log(err)
+        })
     })
     .catch((err: string) => {
       console.log('err', err)
     })
-
-  ChangeInfo()
 }
 </script>
 
