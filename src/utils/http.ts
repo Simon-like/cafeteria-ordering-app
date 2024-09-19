@@ -1,6 +1,14 @@
 import { useDoubleTokenStore } from '@/stores'
 import { refreshToken } from '@/utils/refreshToken'
 
+/**
+ * @description 网络请求拦截器，已初步完成双token设置
+ * @author 应东林
+ * @date 2024-09-19
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-19
+ */
+
 const baseURL = 'http://114.55.108.97:8080'
 
 // 添加拦截器
@@ -25,7 +33,7 @@ const httpInterceptor = {
     options.header.token = actoken
     options.header.refreshToken = retoken
 
-    console.log(options)
+    console.log('请求信息：', options)
   },
 }
 uni.addInterceptor('request', httpInterceptor)
@@ -59,6 +67,7 @@ export const http = <T>(options: UniApp.RequestOptions) => {
       ...options,
       // 响应成功
       success(res) {
+        console.log('第一层响应信息：', res)
         if (res.statusCode >= 200 && res.statusCode < 300) {
           // 获取数据成功，调用resolve
           resolve(res.data as Data<T>)
@@ -83,6 +92,7 @@ export const http = <T>(options: UniApp.RequestOptions) => {
       },
       // 响应失败（比如网络没了）
       fail(err) {
+        console.log('第一层响应信息：', res)
         uni.showToast({
           icon: 'none',
           title: '网络错误，换个网络试试',

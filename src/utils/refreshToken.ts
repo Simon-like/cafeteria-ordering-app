@@ -1,5 +1,13 @@
 import { useDoubleTokenStore } from '@/stores'
 
+/**
+ * @description 刷新accessToken请求函数
+ * @author 应东林
+ * @date 2024-09-19
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-19
+ */
+
 interface Data {
   code: string
   msg: string
