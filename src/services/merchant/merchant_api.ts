@@ -51,6 +51,7 @@ export const merchant_register = (
     },
   })
 }
+
 export const GetMerchantInfo = () => {
   return http<MerchantInfo>({
     method: 'GET',
