@@ -1,0 +1,54 @@
+import { useDoubleTokenStore } from '@/stores'
+
+interface Data {
+  code: string
+  msg: string
+  data: { accessToken: string; refreshToken: string }
+}
+
+export const refreshToken = () => {
+  //发起刷新token请求
+  const DoubleTokenStore = useDoubleTokenStore()
+
+  return new Promise<Data>((resolve, reject) => {
+    uni.request({
+      method: 'GET',
+      url: '/common/newToken/login',
+      header: {
+        Authorization: `Bearer ${DoubleTokenStore.refreshToken}`,
+      },
+      success(res) {
+        //成功获取新的token
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          const tokenData = res.data as Data
+          //更新token
+          DoubleTokenStore.addToken(tokenData.data.accessToken, tokenData.data.refreshToken)
+          resolve(tokenData)
+        } else if (res.statusCode === 409) {
+          uni.showToast({
+            icon: 'none',
+            title: 'refreshToken过期，请重新登录',
+          })
+          uni.navigateTo({
+            url: '/pages/login_register/login_register',
+          })
+          reject(res)
+        } else {
+          uni.showToast({
+            icon: 'none',
+            title: (res.data as Data).msg || '请求错误哦~',
+          })
+          reject(res)
+        }
+      },
+      // 响应失败（比如网络没了）
+      fail(err) {
+        uni.showToast({
+          icon: 'none',
+          title: '网络错误，换个网络试试',
+        })
+        reject(err)
+      },
+    })
+  })
+}
