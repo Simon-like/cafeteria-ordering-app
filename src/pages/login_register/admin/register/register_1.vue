@@ -1,14 +1,28 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { admin_getvalidationCode } from '@/services/admin/admin_api'
-
-const phoneNumber = ref()
-
+import { useAdminStore } from '@/stores/modules/admin_information'
+/**
+ * @description 增加了管理端仓库和相关调用
+ * @author 钟礼豪
+ * @date 2024-09-19
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-09-19
+ */
+const adminStore = useAdminStore()
+const phoneNumber = ref<string>('')
+const password_1 = ref<string>('')
+const password_2 = ref<string>('')
+const validationCode = ref<string>('')
 const gotoNext = () => {
-  console.log('1')
-  uni.navigateTo({
-    url: '/pages/login_register/admin/register/register_2',
-  })
+  if (password_1.value === password_2.value) {
+    ;(adminStore.phoneNumber = phoneNumber.value),
+      (adminStore.password = password_1.value),
+      (adminStore.validationCode = validationCode.value)
+    uni.navigateTo({
+      url: '/pages/login_register/admin/register/register_2',
+    })
+  }
 }
 const handleValidationCode = async () => {
   admin_getvalidationCode(phoneNumber.value).then((response) => {
@@ -40,7 +54,12 @@ const handleValidationCode = async () => {
       </view>
       <view class="input-item">
         <text>验证码</text>
-        <input class="verification" placeholder="请输入验证码" type="text" />
+        <input
+          class="verification"
+          placeholder="请输入验证码"
+          type="text"
+          v-model="validationCode"
+        />
         <button class="verification_btn" @click="handleValidationCode()">获取验证码(60s)</button>
       </view>
       <view class="input-item">
@@ -53,11 +72,11 @@ const handleValidationCode = async () => {
       </view>
       <view class="input-item">
         <text>设置登录密码</text>
-        <input placeholder="请输入密码" type="text" />
+        <input placeholder="请输入密码" type="text" v-model="password_1" />
       </view>
       <view class="input-item">
         <text>确认登录密码</text>
-        <input placeholder="请输入密码" type="text" />
+        <input placeholder="请输入密码" type="text" v-model="password_2" />
       </view>
     </view>
     <view class="checkbox__container">

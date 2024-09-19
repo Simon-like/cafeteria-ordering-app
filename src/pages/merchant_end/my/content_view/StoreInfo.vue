@@ -1,24 +1,38 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-type StoreInfo = {
-  logo: string
-  name: string
-  address: string
-  phone: string
-  time: string
-  owner: string
-  desc: string
+import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { GetMerchantInfo, ChangeMerchantInfo } from '@/services/merchant/merchant_api'
+import { onLoad } from '@dcloudio/uni-app'
+
+/**
+ * @description 个人中心页面数据的替换，通过pinia仓库进行数据管理
+ * @author 应东林  钟礼豪
+ * @date 2024-09-19
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-09-19
+ */
+const Merchant = useMerchantStore()
+const HandleGetInfo = async () => {
+  const res = await GetMerchantInfo()
+  Object.assign(Merchant, res.data)
 }
 
-const store_info = ref<StoreInfo>({
-  logo: '../../../static/images/logo_icon.png',
-  name: 'simon火锅店',
-  address: '西蒙大街202号',
-  phone: '16623819144',
-  time: '9:00-22:00',
-  owner: 'simon',
-  desc: '无',
-})
+const ChangeInfo = async () => {
+  await ChangeMerchantInfo(
+    Merchant.logo,
+    Merchant.address,
+    Merchant.name,
+    Merchant.contactPhone,
+    Merchant.businessHours,
+    Merchant.discription,
+    Merchant.realName,
+    Merchant.merchantId,
+  ).then((response) => {
+    console.log(response.data)
+  })
+}
+
+onLoad(HandleGetInfo)
 
 const popup = ref()
 const valiForm = ref<UniHelper.FormInstance>()
@@ -91,7 +105,15 @@ const submit = () => {
   valiForm.value
     ?.validate()
     .then((res: string) => {
+      // 更新商户信息
+      Merchant.name = valiFormData.name
+      Merchant.address = valiFormData.address
+      Merchant.contactPhone = valiFormData.number
+      Merchant.businessHours = valiFormData.hours
+      Merchant.realName = valiFormData.owner
+      Merchant.discription = valiFormData.introduction
       console.log('success', res)
+      ChangeInfo()
       uni.showToast({
         title: `修改成功`,
       })
@@ -100,6 +122,8 @@ const submit = () => {
     .catch((err: string) => {
       console.log('err', err)
     })
+
+  ChangeInfo()
 }
 </script>
 
@@ -107,17 +131,17 @@ const submit = () => {
   <view class="store-info">
     <view class="store-logo">
       <text>店铺logo:</text>
-      <image :src="store_info.logo" mode="aspectFill" class="logo"></image>
+      <image :src="Merchant.logo" mode="aspectFill" class="logo"></image>
     </view>
-    <view class="store-name">店铺名称: {{ store_info.name }}</view>
-    <view class="store-address">店铺地址: {{ store_info.address }}</view>
-    <view class="contact-number">联系电话: {{ store_info.phone }}</view>
-    <view class="opening-hours">营业时间: {{ store_info.time }}</view>
-    <view class="owner">所有人: {{ store_info.owner }}</view>
+    <view class="store-name">店铺名称: {{ Merchant.name }}</view>
+    <view class="store-address">店铺地址: {{ Merchant.address }}</view>
+    <view class="contact-number">联系电话: {{ Merchant.contactPhone }}</view>
+    <view class="opening-hours">营业时间: {{ Merchant.businessHours }}</view>
+    <view class="owner">所有人: {{ Merchant.realName }}</view>
     <view class="store-introduction">
       <text>店铺简介: </text>
       <view class="description">
-        {{ store_info.desc }}
+        {{ Merchant.discription }}
       </view>
     </view>
 

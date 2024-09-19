@@ -2,12 +2,15 @@
 import { ref } from 'vue'
 import { admin_Login_pp } from '@/services/admin/admin_api'
 import { useDoubleTokenStore } from '@/stores'
-import {
-  gotoHome,
-  gotoForget,
-  gotoPhonelogin,
-  gotoRegister,
-} from '@/composables/navigation/navigation'
+import { gotoHome } from '@/composables/navigation/navigation'
+
+/**
+ * @description 修改了标签属性使用问题，减少了click事件的使用
+ * @author 钟礼豪
+ * @date 2024-09-19
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-09-19
+ */
 
 const phoneNumber = ref('')
 const password = ref('')
@@ -36,14 +39,16 @@ const handleLogin_pp = async () => {
         <input v-model="password" type="safe-password" placeholder="请输入账号密码" />
       </view>
       <view class="forgetpassword">
-        <navigator @click="gotoForget()">忘记密码?</navigator>
+        <navigator url="/pages/login_register/admin/forget/forget">忘记密码?</navigator>
       </view>
       <view class="phonelogin">
-        <navigator @click="gotoPhonelogin()">手机号一键登录</navigator>
+        <navigator url="/pages/login_register/admin/phonelogin">手机号一键登录</navigator>
       </view>
       <button @click="handleLogin_pp()">登录</button>
       <view class="nouserid">
-        <navigator @click="gotoRegister()">还没有账号？去注册</navigator>
+        <navigator url="/pages/login_register/admin/register/register_1"
+          >还没有账号？去注册</navigator
+        >
       </view>
       <text>______________________________________</text>
       <view class="wxlogin">

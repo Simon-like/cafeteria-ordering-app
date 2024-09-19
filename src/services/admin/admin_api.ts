@@ -35,6 +35,7 @@ export const admin_register = (
   inviteCode: string,
   password: string,
   college: string,
+  validationCode: string,
 ) => {
   return http({
     method: 'POST',
@@ -45,6 +46,7 @@ export const admin_register = (
       inviteCode,
       password,
       college,
+      validationCode,
     },
   })
 }

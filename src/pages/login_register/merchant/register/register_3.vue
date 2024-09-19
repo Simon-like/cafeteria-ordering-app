@@ -31,10 +31,10 @@ const handleRegister = async () => {
         <text>资质审核</text>
       </view>
       <view class="content">
-        <text>手机号：xxxxxxx</text>
-        <text>所有人姓名：xxxxxxx</text>
-        <text>店铺名称：xxxxxxx</text>
-        <text>店铺地址：xxxxxxx</text>
+        <text>手机号：{{ merchantStore.phoneNumber }}</text>
+        <text>所有人姓名：{{ merchantStore.realName }}</text>
+        <text>店铺名称：{{ merchantStore.name }}</text>
+        <text>店铺地址：{{ merchantStore.address }}</text>
       </view>
       <button @click="handleRegister">提交审核</button>
     </view>

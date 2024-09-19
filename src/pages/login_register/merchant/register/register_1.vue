@@ -2,6 +2,15 @@
 import { ref } from 'vue'
 import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
 import { useMerchantStore } from '@/stores'
+
+/**
+ * @description 修复了password传参问题
+ * @author 钟礼豪
+ * @date 2024-09-14
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-09-19
+ */
+
 const phoneNumber = ref<string>('')
 const validationCode = ref<string>('')
 const password_1 = ref<string>('')
@@ -58,11 +67,11 @@ const getValidationCode = async () => {
       </view>
       <view class="input-item">
         <text>设置登录密码</text>
-        <input placeholder="请输入密码" type="text" />
+        <input placeholder="请输入密码" type="text" v-model="password_1" />
       </view>
       <view class="input-item">
         <text>确认登录密码</text>
-        <input placeholder="请输入密码" type="text" />
+        <input placeholder="请输入密码" type="text" v-model="password_2" />
       </view>
     </view>
     <view class="checkbox__container">

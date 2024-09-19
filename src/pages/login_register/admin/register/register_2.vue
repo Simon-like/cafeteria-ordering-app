@@ -1,8 +1,15 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { useAdminStore } from '@/stores/modules/admin_information'
+const adminStore = useAdminStore()
+const inviteCode = ref<string>()
 const gotoNext = () => {
-  uni.navigateTo({
-    url: '/pages/login_register/admin/register/register_3',
-  })
+  if (inviteCode.value) {
+    adminStore.inviteCode = inviteCode.value
+    uni.navigateTo({
+      url: '/pages/login_register/admin/register/register_3',
+    })
+  }
 }
 </script>
 <template>
@@ -20,7 +27,7 @@ const gotoNext = () => {
     </view>
     <view class="invitation">
       <text>管理邀请码</text>
-      <input type="text" />
+      <input type="text" v-model="inviteCode" />
     </view>
     <button @click="gotoNext">确认</button>
   </view>
@@ -68,19 +75,19 @@ const gotoNext = () => {
 }
 .invitation {
   display: flex;
+  margin-top: 30rpx;
+  margin-bottom: 40rpx;
   text {
-    width: 40%;
+    width: 24%;
     display: block;
-    margin: 28rpx 0;
-    margin-left: 120rpx;
+    margin-left: 60rpx;
   }
   input {
-    font-size: 13px;
+    font-size: 16px;
     padding-left: 3rpx;
     background-color: #ccc;
     border: #000 solid 1rpx;
     width: 60%;
-    margin: 27rpx 0;
   }
 }
 button {
