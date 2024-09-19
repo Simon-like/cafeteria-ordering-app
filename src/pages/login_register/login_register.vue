@@ -26,20 +26,18 @@ const gotoRegister = () => {
     </view>
 
     <view class="identity">
-      <navigator
+      <view
         class="navigator"
-        url=""
         :class="{ active: activeLink === '商家登录' }"
         @click.prevent="setActiveLink('商家登录')"
-        >商家登录</navigator
+        >商家登录</view
       >
       <text>|</text>
-      <navigator
+      <view
         class="navigator"
-        url=""
         :class="{ active: activeLink === '管理端登录' }"
         @click.prevent="setActiveLink('管理端登录')"
-        >管理员登录</navigator
+        >管理员登录</view
       >
     </view>
     <button @click="gotoLogin">登录</button>
