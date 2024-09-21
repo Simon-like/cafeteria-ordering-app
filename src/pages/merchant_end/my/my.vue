@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import type { AsideItem } from '../../../types/aside'
 import { componentList } from '@/pages/merchant_end/my/content_view/index'
-
+import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { GetMerchantInfo } from '@/services/merchant/merchant_api'
+import { onLoad } from '@dcloudio/uni-app'
 /**
  * @description 个人中心主页面
  * @author 应东林
@@ -10,6 +12,14 @@ import { componentList } from '@/pages/merchant_end/my/content_view/index'
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-09-17
  */
+const Merchant = useMerchantStore()
+const HandleGetInfo = async () => {
+  const res = await GetMerchantInfo()
+  console.log('res_my:', res.data)
+  Object.assign(Merchant, res.data)
+}
+
+onLoad(HandleGetInfo)
 
 const my_aside_list = ref<AsideItem[]>([
   { itemId: 0, itemName: '店铺信息', active: true },
