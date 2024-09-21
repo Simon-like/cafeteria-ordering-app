@@ -60,11 +60,11 @@ const handleValidationCode = async () => {
       </view>
       <view class="input-item">
         <text>请输入使用人姓名</text>
-        <input type="text" />
+        <input type="text" placeholder="请输入使用人姓名" />
       </view>
       <view class="input-item">
         <text>账号</text>
-        <input type="text" />
+        <input type="text" placeholder="请输入账号昵称" />
       </view>
       <view class="input-item">
         <text>设置登录密码</text>

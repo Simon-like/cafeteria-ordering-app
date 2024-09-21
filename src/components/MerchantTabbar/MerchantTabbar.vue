@@ -62,7 +62,7 @@ const pageIndex = ref<number>(0)
     activeColor="#d81e06"
     :safeAreaInsetBottom="false"
   >
-    <up-tabbar-item.
+    <up-tabbar-item
       v-for="item in MerchantTabbarItem"
       :text="item.text"
       :key="item.index"

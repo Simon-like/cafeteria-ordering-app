@@ -79,12 +79,6 @@
       }
     },
     {
-      "path": "pages/login_register/admin/register/register_3",
-      "style": {
-        "navigationBarTitleText": "管理端注册第三步"
-      }
-    },
-    {
       "path": "pages/admin_end/admin_index",
       "style": {
         "navigationBarTitleText": "管理端主页面",

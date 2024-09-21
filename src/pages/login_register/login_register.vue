@@ -24,7 +24,6 @@ const gotoRegister = () => {
     <view class="logo">
       <text>logo</text>
     </view>
-
     <view class="identity">
       <view
         class="navigator"
