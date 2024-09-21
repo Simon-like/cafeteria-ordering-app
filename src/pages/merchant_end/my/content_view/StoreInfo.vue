@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
-import { GetMerchantInfo, ChangeMerchantInfo } from '@/services/merchant/merchant_api'
+import {
+  GetMerchantInfo,
+  ChangeMerchantInfo,
+  updateMerchantOperationStatus,
+} from '@/services/merchant/merchant_api'
 import { onLoad } from '@dcloudio/uni-app'
 import type { MerchantInfo } from '@/types/merchant_return'
 
@@ -15,13 +19,21 @@ import type { MerchantInfo } from '@/types/merchant_return'
 const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
+  console.log('res:', res.data)
   Object.assign(Merchant, res.data)
 }
 
 onLoad(HandleGetInfo)
 
+const HandleUpdate = async () => {
+  updateMerchantOperationStatus(Merchant.merchantId, opener.value)
+  if (opener.value === '1') opener.value = '0'
+  else opener.value = '1'
+}
+
 const popup = ref()
 const valiForm = ref<UniHelper.FormInstance>()
+const opener = ref('1')
 const onEdit = () => {
   popup.value.open('center')
 }
@@ -123,13 +135,24 @@ const submit = () => {
       console.log('err', err)
     })
 }
+const logoPickerPopup = ref()
+
+const openLogoPicker = () => {
+  logoPickerPopup.value.open('center')
+}
+
+const submitLogo = (logoPath: string) => {
+  Merchant.logo = logoPath
+  logoPickerPopup.value.close()
+  // 这里可以添加上传logo到服务器的代码
+}
 </script>
 
 <template>
   <view class="store-info">
     <view class="store-logo">
       <text>店铺logo:</text>
-      <image :src="Merchant.logo" mode="aspectFill" class="logo"></image>
+      <image :src="Merchant.logo" mode="aspectFill" class="logo" @click="openLogoPicker()"></image>
     </view>
     <view class="store-name">店铺名称: {{ Merchant.name }}</view>
     <view class="store-address">店铺地址: {{ Merchant.address }}</view>
@@ -142,8 +165,29 @@ const submit = () => {
         {{ Merchant.discription }}
       </view>
     </view>
+    <view class="Operation">
+      <label> <checkbox @click="HandleUpdate()" /><text>是否营业</text> </label>
+    </view>
 
     <view class="edit-button" @click="onEdit"> 修改资料 </view>
+
+    <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
+      <view class="picker-container">
+        <uni-file-picker
+          limit="1"
+          title="从相册选图"
+          @change="submitLogo"
+          :source-type="['album']"
+        ></uni-file-picker>
+        <uni-file-picker
+          limit="1"
+          title="使用相机"
+          @change="submitLogo"
+          :source-type="['camera']"
+        ></uni-file-picker
+        ><view class="submit-button" @click="submitLogo('123')"> 提交 </view>
+      </view>
+    </uni-popup>
 
     <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
       <uni-card class="form-card">
@@ -259,6 +303,26 @@ const submit = () => {
           }
         }
       }
+    }
+  }
+}
+.picker-container {
+  padding: 50rpx 40rpx;
+  width: 600rpx;
+  height: 750rpx;
+  background-color: #fff;
+  .submit-button {
+    margin: 0 auto;
+    margin-top: 46rpx;
+    width: 300rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    background-color: rgba(126, 126, 94, 0.7);
+    text-align: center;
+    transition: all 0.2s ease;
+    &:active {
+      opacity: 0.8;
+      transform: scale(0.95);
     }
   }
 }

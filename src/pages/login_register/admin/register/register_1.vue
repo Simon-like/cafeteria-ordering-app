@@ -39,12 +39,8 @@ const handleValidationCode = async () => {
         <text>注册账户</text>
       </view>
       <view class="nav-item">
-        <view class="circle" id="line"> 2 </view>
-        <text>门店信息</text>
-      </view>
-      <view class="nav-item">
-        <view class="circle"> 3 </view>
-        <text>资质审核</text>
+        <view class="circle"> 2 </view>
+        <text>填写邀请码</text>
       </view>
     </view>
     <view class="input">

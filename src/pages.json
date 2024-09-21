@@ -104,12 +104,6 @@
       "style": {
         "navigationBarTitleText": "管理端注册第二步"
       }
-    },
-    {
-      "path": "pages/login_register/admin/register/register_3",
-      "style": {
-        "navigationBarTitleText": "管理端注册第三步"
-      }
     }
   ],
   "globalStyle": {

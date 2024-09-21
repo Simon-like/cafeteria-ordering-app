@@ -59,17 +59,17 @@ export const GetMerchantInfo = () => {
   })
 }
 
-export const ChangeMerchantInfo = (changeData:MerchantInfo) => {
+export const ChangeMerchantInfo = (changeData: MerchantInfo) => {
   return http({
     method: 'PUT',
     url: '/merchant/merchant_changerinfo',
-    data:changeData,
+    data: changeData,
   })
 }
 
 export const updateMerchantOperationStatus = (
-  merchantId: number, //商户的唯一标识符
-  operationStatus: number, //商家的运营状态，0表示正常营业，1表示暂停营业
+  merchantId: string, //商户的唯一标识符
+  operationStatus: string, //商家的运营状态，0表示正常营业，1表示暂停营业
 ) => {
   return http({
     method: 'PUT',

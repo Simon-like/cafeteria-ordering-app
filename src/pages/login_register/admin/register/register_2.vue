@@ -6,9 +6,6 @@ const inviteCode = ref<string>()
 const gotoNext = () => {
   if (inviteCode.value) {
     adminStore.inviteCode = inviteCode.value
-    uni.navigateTo({
-      url: '/pages/login_register/admin/register/register_3',
-    })
   }
 }
 </script>
