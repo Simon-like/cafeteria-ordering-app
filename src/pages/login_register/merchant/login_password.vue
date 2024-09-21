@@ -2,20 +2,27 @@
 import { ref } from 'vue'
 import { merchant_Login_pp } from '@/services/merchant/merchant_api'
 import { useDoubleTokenStore } from '@/stores'
-import { gotoHome } from '@/composables/navigation/navigation'
+import { gotoMerchantHome } from '@/composables/navigation/navigation'
+
+/**
+ * @description 商家端账号密码登录，成功设置动态修改tabbar
+ * @author 钟礼豪 应东林
+ * @date 2024-09-20
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-20
+ */
+
 const phoneNumber = ref('')
 const password = ref('')
 const tokenStore = useDoubleTokenStore()
 
 const handleLogin_pp = async () => {
-  // 开发测试用，等后端接口写完了再改
-  // gotoHome()
   const res = await merchant_Login_pp(phoneNumber.value, password.value)
   const accessToken = res.data.accessToken
   const refreshToken = res.data.refreshToken
   tokenStore.addToken(accessToken, refreshToken)
   if (+res.code === 1) {
-    gotoHome()
+    gotoMerchantHome()
   }
 }
 </script>

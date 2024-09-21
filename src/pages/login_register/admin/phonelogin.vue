@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api'
-import { gotoHome } from '@/composables/navigation/navigation'
+import { gotoAdminHome } from '@/composables/navigation/navigation'
 import { useDoubleTokenStore } from '@/stores'
 const phoneNumber = ref('')
 const validationCode = ref('')
@@ -12,7 +12,7 @@ const handleLogin_pv = async () => {
   const accessToken = res.data.accessToken
   const refreshToken = res.data.refreshToken
   tokenStore.addToken(accessToken, refreshToken)
-  gotoHome()
+  gotoAdminHome()
 }
 const getValidationCode = async () => {
   admin_getvalidationCode(phoneNumber.value).then((response) => {

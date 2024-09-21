@@ -1,25 +1,14 @@
 <script lang="ts" setup></script>
 
 <template>
-  <view class="order">
-    <custom-nav-bar></custom-nav-bar>
-    <HeaderBar />
-    <view class="content"> </view>
-  </view>
+  <view class="order"> </view>
 </template>
 
 <style lang="scss" scoped>
 .order {
-  width: 750rpx;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  .content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
+  justify-content: space-between;
 }
 </style>

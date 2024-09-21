@@ -22,35 +22,31 @@ const statistics_list = ref([
 
 <template>
   <view class="index">
-    <custom-nav-bar></custom-nav-bar>
-    <HeaderBar />
-    <view class="content">
-      <view class="total-amount">
-        <StatisticsItem
-          v-for="item in statistics_list"
-          :key="item.name"
-          :name="item.name"
-          :data="item.data"
-          :changeAmount="item.changeAmount"
-        ></StatisticsItem>
-        <StatisticsItem
-          :name="'本月总收入'"
-          :data="0"
-          :changeAmount="0"
-          :compareType="1"
-        ></StatisticsItem>
+    <view class="total-amount">
+      <StatisticsItem
+        v-for="item in statistics_list"
+        :key="item.name"
+        :name="item.name"
+        :data="item.data"
+        :changeAmount="item.changeAmount"
+      ></StatisticsItem>
+      <StatisticsItem
+        :name="'本月总收入'"
+        :data="0"
+        :changeAmount="0"
+        :compareType="1"
+      ></StatisticsItem>
+    </view>
+    <view class="sales-trend chart-wrapper">
+      <view class="title"> 销量趋势 </view>
+      <view class="chart">
+        <LineChart></LineChart>
       </view>
-      <view class="sales-trend chart-wrapper">
-        <view class="title"> 销量趋势 </view>
-        <view class="chart">
-          <LineChart></LineChart>
-        </view>
-      </view>
-      <view class="top-dishes chart-wrapper">
-        <view class="title"> 本周销量最佳菜品 </view>
-        <view class="chart">
-          <PieChart></PieChart>
-        </view>
+    </view>
+    <view class="top-dishes chart-wrapper">
+      <view class="title"> 本周销量最佳菜品 </view>
+      <view class="chart">
+        <PieChart></PieChart>
       </view>
     </view>
   </view>
@@ -58,56 +54,49 @@ const statistics_list = ref([
 
 <style lang="scss" scoped>
 .index {
-  width: 750rpx;
-  height: 100vh;
+  padding: 60rpx 70rpx;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  .content {
-    padding: 60rpx 70rpx;
-    width: 100%;
-    height: 100%;
+  .total-amount {
+    width: 600rpx;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30rpx;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chart-wrapper {
+    width: 600rpx;
+    overflow: hidden;
+    border: 2px solid rgba(0, 0, 0, 0.7);
+    padding: 10rpx 0;
+    border-radius: 10rpx;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 10rpx 10rpx 20rpx rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    .total-amount {
-      width: 600rpx;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30rpx;
-      align-items: center;
-      justify-content: center;
+    gap: 20rpx;
+
+    .title {
+      margin-left: 5rpx;
+      font-size: 30rpx;
+      font-weight: 550;
     }
-
-    .chart-wrapper {
-      width: 600rpx;
-      overflow: hidden;
-      border: 2px solid rgba(0, 0, 0, 0.7);
-      padding: 10rpx 0;
-      border-radius: 10rpx;
-      background-color: rgba(0, 0, 0, 0.1);
-      box-shadow: 10rpx 10rpx 20rpx rgba(0, 0, 0, 0.5);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 20rpx;
-
-      .title {
-        margin-left: 5rpx;
-        font-size: 30rpx;
-        font-weight: 550;
-      }
-      .chart {
-        width: 100%;
-        height: 260rpx;
-      }
+    .chart {
+      width: 100%;
+      height: 260rpx;
     }
+  }
 
-    .top-dishes {
-      .chart {
-        height: 330rpx;
-      }
+  .top-dishes {
+    .chart {
+      height: 330rpx;
     }
   }
 }

@@ -8,9 +8,17 @@ import { useDoubleTokenStore } from '@/stores'
  * @lastModifiedTime  2024-09-19
  */
 
-export const gotoHome = () => {
-  uni.switchTab({
-    url: '/pages/merchant_end/index/index',
+// 进入商户端首页
+export const gotoMerchantHome = () => {
+  uni.navigateTo({
+    url: '/pages/merchant_end/merchant_index',
+  })
+}
+
+// 进入管理端首页
+export const gotoAdminHome = () => {
+  uni.navigateTo({
+    url: '/pages/admin_end/admin_index',
   })
 }
 
