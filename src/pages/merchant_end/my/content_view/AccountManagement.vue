@@ -14,7 +14,7 @@ const account_info = ref('simon火锅店')
 
 <style lang="scss" scoped>
 .account-mana {
-  width: 600rpx;
+  width: 610rpx;
   height: 100%;
   display: flex;
   align-items: center;

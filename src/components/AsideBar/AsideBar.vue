@@ -40,9 +40,9 @@ const channelSwitch = (id: number) => {
 
 <style lang="scss" scoped>
 .aside-bar {
-  min-width: 150rpx;
+  width: 140rpx;
   height: 100%;
-  border-right: 2px solid rgba(3, 3, 3, 0.8);
+  border-right: 1px solid rgba(3, 3, 3, 0.8);
   .item {
     width: 100%;
     min-height: 115rpx;

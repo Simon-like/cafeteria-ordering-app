@@ -45,30 +45,52 @@ const statusSwitch = (index: number) => {
 
 <template>
   <view class="dish-info">
-    <up-scroll-list :indicator="false" class="status-header">
+    <view class="status-header">
       <view
         class="status-box"
         v-for="item in status_list"
         :key="item.index"
         @click="statusSwitch(item.index)"
+        :class="{ active: item.active }"
       >
-        <view class="wrapper" :class="{ active: item.active }">
-          <view class="title">{{ item.title }}</view>
-          <view class="number">{{ item.number }}</view>
-        </view>
+        <view class="title">{{ item.title }}</view>
+        <view class="number">{{ item.number }}</view>
       </view>
-    </up-scroll-list>
+    </view>
 
-    <view class="content">
+    <view class="dish-body">
       <AsideBar :itemList="category_list" @switch="onSwitch" />
-      <view class=""></view>
+      <view class="dish-content">
+        <view class="addDish-box">+ 新增菜品</view>
+        <scroll-view
+          :scroll-top="scrollTop"
+          scroll-y="true"
+          class="scroll-Y"
+          @scrolltoupper="upper"
+          @scrolltolower="lower"
+          @scroll="scroll"
+        >
+          <view class="dish-wrapper" v-for="item in 20">
+            <view class="dish-img"></view>
+            <view class="dish-info">
+              <view class="dish-name">海参</view>
+              <view class="dish-value-line">
+                <view class="today-inventory">今日库存(/份) 24</view>
+              </view>
+              <view class="dish-price-line"></view>
+              <view class="dish-status-line"></view>
+              <view class="button-box"></view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
     </view>
   </view>
 </template>
 
 <style lang="scss" scope>
 .dish-info {
-  width: 600rpx;
+  width: 610rpx;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -77,28 +99,103 @@ const statusSwitch = (index: number) => {
   padding: 0;
   .status-header {
     width: 100%;
-    height: 120rpx;
+    height: 115rpx;
     border-bottom: 2px solid rgba(0, 0, 0, 0.8);
-    padding: 0 20rpx;
-    line-height: 120rpx;
+    padding: 0 30rpx;
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+    overflow-x: auto;
 
     .status-box {
-      margin-right: 30rpx;
-      .wrapper {
-        display: flex;
-
-        gap: 10rpx;
-        .title {
-          white-space: nowrap;
-        }
+      position: relative;
+      display: flex;
+      gap: 10rpx;
+      padding: 8rpx;
+      .title {
+        white-space: nowrap;
       }
-      .active {
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -6rpx;
+        width: 100%;
+        height: 3rpx;
+        background: #000;
+        border-radius: 5rpx;
+        transform-origin: right;
+        transform: scaleX(0);
+        transition: transform 0.5s;
+        font-size: 2em;
+      }
+
+      &.active::after {
+        transform-origin: left;
+        transform: scaleX(1);
       }
     }
   }
-  .content {
-    width: 100rpx;
+  .dish-body {
+    width: 100%;
     flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    .dish-content {
+      width: 470rpx;
+      height: 1200rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8rpx;
+      overflow: hidden;
+      gap: 10rpx;
+      .addDish-box {
+        width: 210rpx;
+        height: 50rpx;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 16rpx;
+        line-height: 50rpx;
+        text-align: center;
+        font-weight: 550;
+        transition: 0.2s ease;
+        &:active {
+          scale: 0.95;
+        }
+      }
+      .dish-wrapper {
+        width: 100%;
+        height: 200rpx;
+        background-color: rgba(0, 0, 0, 0.1);
+        margin-bottom: 10rpx;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18rpx 5rpx;
+        gap: 20rpx;
+        .dish-img {
+          width: 150rpx;
+          height: 150rpx;
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+        .dish-info {
+          flex: 1;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10rpx;
+          .dish-name {
+            font-weight: 600;
+          }
+          .dish-value-line {
+            font-size: 18rpx;
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+    }
   }
 }
 </style>

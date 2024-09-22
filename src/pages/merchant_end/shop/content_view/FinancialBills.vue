@@ -14,7 +14,7 @@
 
 <style lang="scss" scope>
 .financial-bills {
-  width: 600rpx;
+  width: 610rpx;
   height: 100%;
   display: flex;
   align-items: flex-start;

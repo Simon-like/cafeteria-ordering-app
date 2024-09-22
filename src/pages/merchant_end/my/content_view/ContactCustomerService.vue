@@ -35,7 +35,7 @@ const range = [
 
 <style lang="scss" scoped>
 .contact-customerservice {
-  width: 600rpx;
+  width: 610rpx;
   height: 100%;
   display: flex;
   align-items: center;
