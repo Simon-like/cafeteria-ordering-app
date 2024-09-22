@@ -1,11 +1,22 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { refreshToken } from '@/utils/refreshToken'
 
 const show = ref(false)
 </script>
 
 <template>
-  <view class="contact_center"> 联络中心</view>
+  <view class="contact_center">
+    <view
+      class="testBtn"
+      @click="
+        refreshToken().then((res) => {
+          console.log('hh:', res)
+        })
+      "
+      >点我</view
+    >
+  </view>
 </template>
 
 <style lang="scss" scope>

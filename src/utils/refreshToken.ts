@@ -20,11 +20,8 @@ export const refreshToken = () => {
 
   return new Promise<Data>((resolve, reject) => {
     uni.request({
-      method: 'GET',
+      method: 'POST',
       url: '/common/newToken/login',
-      header: {
-        Authorization: `Bearer ${DoubleTokenStore.refreshToken}`,
-      },
       success(res) {
         //成功获取新的token
         if (res.statusCode >= 200 && res.statusCode < 300) {

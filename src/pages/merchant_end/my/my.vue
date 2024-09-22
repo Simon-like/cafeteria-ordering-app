@@ -15,7 +15,6 @@ import { onLoad } from '@dcloudio/uni-app'
 const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
-  console.log('res_my:', res.data)
   Object.assign(Merchant, res.data)
 }
 
