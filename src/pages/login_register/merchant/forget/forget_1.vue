@@ -1,21 +1,32 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { merchant_forget } from '@/services/merchant/merchant_api'
+const merchantStore = useMerchantStore()
+const password_1 = ref<string>()
+const password_2 = ref<string>()
+const handleForget = async () => {
+  if (password_1.value === password_2.value) merchantStore.password = password_1.value
+  merchant_forget(merchantStore.phoneNumber, merchantStore.password)
+}
+</script>
 <template>
   <view class="body">
     <view class="title"> 找回密码 </view>
     <view class="input">
       <view class="newpassword">
         <text>新的密码</text>
-        <input type="text" />
+        <input type="text" v-model="password_1" />
       </view>
       <view class="confirm">
         <text>确认密码</text>
-        <input type="text" class="input_password" />
+        <input type="text" class="input_password" v-model="password_2" />
       </view>
-      <button class="submit">确认</button>
+      <button class="submit" @click="handleForget">确认</button>
     </view>
   </view>
 </template>
- 
+
 <style lang="scss" scoped>
 .body {
   display: flex;

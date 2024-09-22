@@ -6,8 +6,10 @@ import { useDoubleTokenStore } from '@/stores'
 
 const phoneNumber = ref<string>('')
 const validationCode = ref<string>('')
-
 const tokenStore = useDoubleTokenStore()
+const countdown = ref(60) // 倒计时时间
+const isCounting = ref(false) // 是否正在倒计时
+
 const handleLogin_pv = async () => {
   const res = await merchant_Login_pv(phoneNumber.value, validationCode.value)
   const accessToken = res.data.accessToken
@@ -15,11 +17,38 @@ const handleLogin_pv = async () => {
   tokenStore.addToken(accessToken, refreshToken)
   gotoHome()
 }
+
 const getValidationCode = async () => {
-  merchant_getvalidationCode(phoneNumber.value).then((response) => {
-    console.log(response)
-  })
-  // 处理获取验证码的逻辑，例如计时器等
+  if (!phoneNumber.value) {
+    alert('请输入手机号')
+    return
+  }
+  merchant_getvalidationCode(phoneNumber.value)
+    .then((response) => {
+      console.log(response)
+      if (response) {
+        startCountdown()
+      } else {
+        alert('获取验证码失败，请重试')
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+      alert('获取验证码失败，请重试')
+    })
+}
+
+const startCountdown = () => {
+  isCounting.value = true
+  const interval = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value -= 1
+    } else {
+      clearInterval(interval)
+      countdown.value = 60
+      isCounting.value = false
+    }
+  }, 1000)
 }
 </script>
 <template>
@@ -33,7 +62,9 @@ const getValidationCode = async () => {
       <view class="password">
         <text>验证码</text>
         <input v-model="validationCode" type="text" class="input_password" />
-        <button @click="getValidationCode()">获取验证码(60s)</button>
+        <button :disabled="isCounting" @click="getValidationCode">
+          {{ isCounting ? `${countdown}s` : '获取验证码(60s)' }}
+        </button>
       </view>
       <button class="login" @click="handleLogin_pv">登录</button>
     </view>

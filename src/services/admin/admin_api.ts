@@ -25,15 +25,15 @@ export const admin_Login_pv = (phoneNumber: string, validationCode: string) => {
 export const admin_getvalidationCode = (phoneNumber: string) => {
   return http({
     method: 'GET',
-    url: `/administer/phone?phoneNumber=${phoneNumber}`,
+    url: `/administer/getCaptcha?phoneNumber=${phoneNumber}`,
   })
 }
 
 export const admin_register = (
   phoneNumber: string,
-  realName: string,
-  inviteCode: string,
   password: string,
+  inviteCode: string,
+  realName: string,
   college: string,
   validationCode: string,
 ) => {
@@ -42,11 +42,22 @@ export const admin_register = (
     url: '/administer/register',
     data: {
       phoneNumber,
+      password,
       realName,
       inviteCode,
-      password,
       college,
       validationCode,
+    },
+  })
+}
+
+export const admin_forget = (newPassword: string, phoneNumber: string) => {
+  return http({
+    method: 'POST',
+    url: '/administer/findPassword',
+    data: {
+      newPassword,
+      phoneNumber,
     },
   })
 }

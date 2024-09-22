@@ -1,5 +1,20 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
+const merchantStore = useMerchantStore()
+const phoneNumber = ref<string>()
+const validationCode = ref<string>()
+
+const getValidationCode = async () => {
+  merchant_getvalidationCode(phoneNumber.value).then((response) => {
+    console.log(response)
+  })
+  // 处理获取验证码的逻辑，例如计时器等
+}
 const gotoNext = () => {
+  merchantStore.phoneNumber = phoneNumber.value
+  merchantStore.validationCode = validationCode.value
   uni.navigateTo({
     url: '/pages/login_register/merchant/forget/forget_1',
   })
@@ -12,12 +27,12 @@ const gotoNext = () => {
     <view class="input">
       <view class="phoneNumber">
         <text>手机号</text>
-        <input type="text" />
+        <input type="text" v-model="phoneNumber" />
       </view>
       <view class="password">
         <text>验证码</text>
-        <input type="text" class="input_password" />
-        <button>获取验证码(60s)</button>
+        <input type="text" class="input_password" v-model="validationCode" />
+        <button @click="getValidationCode">获取验证码(60s)</button>
       </view>
       <button class="next" @click="gotoNext()">下一步</button>
     </view>

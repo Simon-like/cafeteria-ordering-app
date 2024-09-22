@@ -21,19 +21,21 @@ const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
   console.log('res:', res.data)
   Object.assign(Merchant, res.data)
+  Merchant.operationStatus = '1'
 }
 
 onLoad(HandleGetInfo)
 
 const HandleUpdate = async () => {
-  updateMerchantOperationStatus(Merchant.merchantId, opener.value)
-  if (opener.value === '1') opener.value = '0'
-  else opener.value = '1'
+  console.log('nowStatus:', Merchant.operationStatus)
+  updateMerchantOperationStatus(Merchant.id, Merchant.operationStatus)
+  if (Merchant.operationStatus === '1') Merchant.operationStatus = '0'
+  else Merchant.operationStatus = '1'
+  console.log('changedStatus:', Merchant.operationStatus)
 }
 
 const popup = ref()
 const valiForm = ref<UniHelper.FormInstance>()
-const opener = ref('1')
 const onEdit = () => {
   popup.value.open('center')
 }
@@ -103,6 +105,7 @@ const submit = () => {
   valiForm.value
     ?.validate()
     .then((res: string) => {
+      console.log(res)
       // 更新商户信息
       let changeData: MerchantInfo = reactive({
         merchantName: valiFormData.name,
@@ -113,7 +116,7 @@ const submit = () => {
         logo: '',
         businessHours: valiFormData.hours,
         operationStatus: Merchant.operationStatus,
-        merchantId: Merchant.merchantId,
+        id: Merchant.id,
       })
       ChangeMerchantInfo(changeData)
         .then((res) => {

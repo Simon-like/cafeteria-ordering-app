@@ -1,17 +1,28 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { useAdminStore } from '@/stores/modules/admin_information'
+import { admin_forget } from '@/services/admin/admin_api'
+const adminStore = useAdminStore()
+const password_1 = ref<string>()
+const password_2 = ref<string>()
+const handleForget = async () => {
+  if (password_1.value === password_2.value) adminStore.password = password_1.value
+  admin_forget(adminStore.phoneNumber, adminStore.password)
+}
+</script>
 <template>
   <view class="body">
     <view class="title"> 找回密码 </view>
     <view class="input">
       <view class="newpassword">
         <text>新的密码</text>
-        <input type="text" />
+        <input type="text" v-model="password_1" />
       </view>
       <view class="confirm">
         <text>确认密码</text>
-        <input type="text" class="input_password" />
+        <input type="text" class="input_password" v-model="password_2" />
       </view>
-      <button class="submit">确认</button>
+      <button class="submit" @click="handleForget">确认</button>
     </view>
   </view>
 </template>

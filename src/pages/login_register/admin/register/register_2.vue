@@ -1,12 +1,20 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
+import { admin_register } from '@/services/admin/admin_api'
 const adminStore = useAdminStore()
 const inviteCode = ref<string>()
-const gotoNext = () => {
-  if (inviteCode.value) {
-    adminStore.inviteCode = inviteCode.value
-  }
+const handleRegister = async () => {
+  admin_register(
+    adminStore.phoneNumber,
+    adminStore.password,
+    adminStore.inviteCode,
+    adminStore.realName,
+    adminStore.college,
+    adminStore.validationCode,
+  ).then((response) => {
+    console.log(response.data)
+  })
 }
 </script>
 <template>
@@ -26,7 +34,7 @@ const gotoNext = () => {
       <text>管理邀请码</text>
       <input type="text" v-model="inviteCode" />
     </view>
-    <button @click="gotoNext">确认</button>
+    <button @click="handleRegister">确认</button>
   </view>
 </template>
 
