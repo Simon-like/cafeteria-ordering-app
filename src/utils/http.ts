@@ -92,7 +92,7 @@ export const http = <T>(options: UniApp.RequestOptions) => {
       },
       // 响应失败（比如网络没了）
       fail(err) {
-        console.log('第一层响应信息：', res)
+        console.log('响应失败了，第一层响应信息：', err)
         uni.showToast({
           icon: 'none',
           title: '网络错误，换个网络试试',

@@ -12,3 +12,5 @@ export default pinia
 // 模块统一导出
 export * from './modules/DoubleToken'
 export * from './modules/merchant_information'
+export * from './modules/admin_information'
+export * from './modules/tabbar_info'

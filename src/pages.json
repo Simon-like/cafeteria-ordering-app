@@ -4,7 +4,10 @@
     "autoscan": true,
     "custom": {
       "^uni-(.*)": "@/components/uni-$1.vue", // 匹配components目录内的vue文件
-      "^vue-file-(.*)": "packageName/path/to/vue-file-$1.vue" // 匹配node_modules内的vue文件
+      "^vue-file-(.*)": "packageName/path/to/vue-file-$1.vue", // 匹配node_modules内的vue文件
+      "^u--(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
     }
   },
   "pages": [
@@ -37,36 +40,6 @@
       "path": "pages/login_register/merchant/phonelogin",
       "style": {
         "navigationBarTitleText": "手机号登录"
-      }
-    },
-    {
-      "path": "pages/merchant_end/index/index",
-      "style": {
-        "navigationBarTitleText": "首页",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/merchant_end/shop/shop",
-      "style": {
-        "navigationBarTitleText": "店铺管理",
-        "enablePullDownRefresh": false,
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/merchant_end/order/order",
-      "style": {
-        "navigationBarTitleText": "订单管理",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/merchant_end/my/my",
-      "style": {
-        "navigationBarTitleText": "我的",
-        "enablePullDownRefresh": false,
-        "navigationStyle": "custom"
       }
     },
     {
@@ -104,6 +77,20 @@
       "style": {
         "navigationBarTitleText": "管理端注册第二步"
       }
+    },
+    {
+      "path": "pages/admin_end/admin_index",
+      "style": {
+        "navigationBarTitleText": "管理端主页面",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/merchant_end/merchant_index",
+      "style": {
+        "navigationBarTitleText": "商户端主页面",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {
@@ -111,38 +98,5 @@
     "navigationBarTitleText": "",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
-  },
-  // 设置 TabBar
-  "tabBar": {
-    "color": "#333",
-    "selectedColor": "#27ba9b",
-    "backgroundColor": "#fff",
-    "borderStyle": "white",
-    "list": [
-      {
-        "text": "首页",
-        "pagePath": "pages/merchant_end/index/index",
-        "iconPath": "static/tabs/home_default.png",
-        "selectedIconPath": "static/tabs/home_selected.png"
-      },
-      {
-        "text": "店铺管理",
-        "pagePath": "pages/merchant_end/shop/shop",
-        "iconPath": "static/tabs/category_default.png",
-        "selectedIconPath": "static/tabs/category_selected.png"
-      },
-      {
-        "text": "订单管理",
-        "pagePath": "pages/merchant_end/order/order",
-        "iconPath": "static/tabs/cart_default.png",
-        "selectedIconPath": "static/tabs/cart_selected.png"
-      },
-      {
-        "text": "我的",
-        "pagePath": "pages/merchant_end/my/my",
-        "iconPath": "static/tabs/user_default.png",
-        "selectedIconPath": "static/tabs/user_selected.png"
-      }
-    ]
   }
 }

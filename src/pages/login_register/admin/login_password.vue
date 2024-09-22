@@ -2,28 +2,30 @@
 import { ref } from 'vue'
 import { admin_Login_pp } from '@/services/admin/admin_api'
 import { useDoubleTokenStore } from '@/stores'
-import { gotoHome } from '@/composables/navigation/navigation'
+import { gotoAdminHome } from '@/composables/navigation/navigation'
 
 /**
- * @description 修改了标签属性使用问题，减少了click事件的使用
- * @author 钟礼豪
+ * @description 修改了标签属性使用问题，减少了click事件的使用，已完成动态修改tabbar
+ * @author 钟礼豪 应东林
  * @date 2024-09-19
- * @lastModifiedBy 钟礼豪
+ * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-09-19
  */
 
 const phoneNumber = ref('')
 const password = ref('')
 const tokenStore = useDoubleTokenStore()
+const handleLogin_pp = () => {
+  gotoAdminHome()
 
-const handleLogin_pp = async () => {
-  const res = await admin_Login_pp(phoneNumber.value, password.value)
-  const accessToken = res.data.accessToken
-  const refreshToken = res.data.refreshToken
-  tokenStore.addToken(accessToken, refreshToken)
-  if (+res.code === 1) {
-    gotoHome()
-  }
+  // const res = await admin_Login_pp(phoneNumber.value, password.value)
+  // const accessToken = res.data.accessToken
+  // const refreshToken = res.data.refreshToken
+  // tokenStore.addToken(accessToken, refreshToken)
+  // if (+res.code === 1) {
+  //   gotoAdminHome()
+  //   tabbarToggle('admin')
+  // }
 }
 </script>
 <template>

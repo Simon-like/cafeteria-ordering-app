@@ -40,17 +40,21 @@ const channelSwitch = (id: number) => {
 
 <style lang="scss" scoped>
 .aside-bar {
-  width: 150rpx;
+  width: 140rpx;
   height: 100%;
-  border-right: 2px solid rgba(3, 3, 3, 0.8);
+  border-right: 1px solid rgba(3, 3, 3, 0.8);
   .item {
     width: 100%;
-    height: 115rpx;
+    min-height: 115rpx;
     border-bottom: 2px solid rgba(3, 3, 3, 0.8);
     transition: all 0.3s ease;
     font-size: 25rpx;
-    text-align: center;
-    line-height: 115rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8rpx;
+    //text-align: center;
+    //line-height: 115rpx;
     &.active {
       background-color: rgba(0, 225, 225, 0.8);
     }

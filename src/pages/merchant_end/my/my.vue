@@ -15,7 +15,6 @@ import { onLoad } from '@dcloudio/uni-app'
 const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
-  console.log('res_my:', res.data)
   Object.assign(Merchant, res.data)
 }
 
@@ -35,27 +34,16 @@ const onSwitch = (e: number) => {
 
 <template>
   <view class="my">
-    <custom-nav-bar></custom-nav-bar>
-    <HeaderBar />
-    <view class="content">
-      <AsideBar :itemList="my_aside_list" @switch="onSwitch" />
-      <component :is="componentList[channelId]"></component>
-    </view>
+    <AsideBar :itemList="my_aside_list" @switch="onSwitch" />
+    <component :is="componentList[channelId]"></component>
   </view>
 </template>
 
 <style lang="scss" scoped>
 .my {
-  width: 750rpx;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  .content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
+  justify-content: space-between;
 }
 </style>

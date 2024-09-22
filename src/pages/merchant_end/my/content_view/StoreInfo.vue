@@ -19,7 +19,6 @@ import type { MerchantInfo } from '@/types/merchant_return'
 const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
-  console.log('res:', res.data)
   Object.assign(Merchant, res.data)
   Merchant.operationStatus = '1'
 }
@@ -120,7 +119,6 @@ const submit = () => {
       })
       ChangeMerchantInfo(changeData)
         .then((res) => {
-          console.log(res)
           uni.showToast({
             title: `修改成功`,
           })
@@ -131,7 +129,6 @@ const submit = () => {
           uni.showToast({
             title: `修改失败`,
           })
-          console.log(err)
         })
     })
     .catch((err: string) => {
@@ -244,7 +241,7 @@ const submitLogo = (logoPath: string) => {
 
 <style lang="scss" scoped>
 .store-info {
-  width: 635rpx;
+  width: 610rpx;
   height: 100%;
   display: flex;
   align-items: flex-start;
