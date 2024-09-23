@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { AsideItem } from '../../../types/aside'
-import { ref } from 'vue'
+import type { AsideItem } from '@/types/aside'
+import { ref, reactive, nextTick } from 'vue'
 /**
  * @description 店铺管理菜单信息管理
  * @author 应东林
@@ -41,6 +41,51 @@ const statusSwitch = (index: number) => {
     else item.active = true
   })
 }
+
+//菜品信息
+
+const dish_info_list = ref([
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+  { name: 'hh' },
+])
+
+const scrollTop = ref<number>(0)
+const old = reactive({
+  scrollTop: 0,
+})
+
+const scroll = (e: any) => {
+  console.log(e)
+  old.scrollTop = e.detail.scrollTop
+}
+const goTop = (e: any) => {
+  // 解决view层不同步的问题
+  scrollTop.value = old.scrollTop
+  nextTick(function () {
+    scrollTop.value = 0
+  })
+  uni.showToast({
+    icon: 'none',
+    title: '已返回顶部',
+  })
+}
+
+//修改菜品信息
+const edit = () => {
+  uni.navigateTo({
+    url: '/pages/merchant_end/shop/dish_info_edit/dish_info_edit',
+    animationType: 'fade-in',
+    animationDuration: 200,
+  })
+}
 </script>
 
 <template>
@@ -61,25 +106,31 @@ const statusSwitch = (index: number) => {
     <view class="dish-body">
       <AsideBar :itemList="category_list" @switch="onSwitch" />
       <view class="dish-content">
-        <view class="addDish-box">+ 新增菜品</view>
-        <scroll-view
-          :scroll-top="scrollTop"
-          scroll-y="true"
-          class="scroll-Y"
-          @scrolltoupper="upper"
-          @scrolltolower="lower"
-          @scroll="scroll"
-        >
-          <view class="dish-wrapper" v-for="item in 20">
-            <view class="dish-img"></view>
+        <view class="box">
+          <view class="addDish-box">+ 新增菜品</view>
+          <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
+        </view>
+        <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
+          <view class="dish-wrapper" v-for="value in dish_info_list">
+            <view class="dish-img">{{ value.name }}</view>
             <view class="dish-info">
               <view class="dish-name">海参</view>
               <view class="dish-value-line">
                 <view class="today-inventory">今日库存(/份) 24</view>
               </view>
-              <view class="dish-price-line"></view>
-              <view class="dish-status-line"></view>
-              <view class="button-box"></view>
+              <view class="dish-price-line">
+                <view class="current price"> <i class="iconfont icon-renminbi"></i>24.0 </view>
+                <view class="original price">
+                  <i class="iconfont icon-renminbi"></i>40.0
+                  <view class="underline"></view>
+                  <view class="discount">6折</view>
+                </view>
+              </view>
+              <view class="dish-status-line">单点不送</view>
+              <view class="button-box">
+                <view class="edit btn" @click="edit">修改信息</view>
+                <view class="discontinued btn">下架</view>
+              </view>
             </view>
           </view>
         </scroll-view>
@@ -150,22 +201,43 @@ const statusSwitch = (index: number) => {
       padding: 8rpx;
       overflow: hidden;
       gap: 10rpx;
-      .addDish-box {
-        width: 210rpx;
-        height: 50rpx;
-        background-color: rgba(0, 0, 0, 0.2);
-        border-radius: 16rpx;
-        line-height: 50rpx;
-        text-align: center;
-        font-weight: 550;
-        transition: 0.2s ease;
-        &:active {
-          scale: 0.95;
+      .box {
+        width: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .addDish-box {
+          width: 210rpx;
+          height: 50rpx;
+          background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 16rpx;
+          line-height: 50rpx;
+          text-align: center;
+          font-weight: 550;
+          transition: 0.2s ease;
+          &:active {
+            scale: 0.95;
+          }
+        }
+        .toTop {
+          position: absolute;
+          right: 10rpx;
+          top: 0;
+          padding: 10rpx;
+          background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 16rpx;
+          font-weight: 550;
+          transition: 0.2s ease;
+          &:active {
+            scale: 0.9;
+          }
         }
       }
       .dish-wrapper {
         width: 100%;
-        height: 200rpx;
+        position: relative;
+        height: 240rpx;
         background-color: rgba(0, 0, 0, 0.1);
         margin-bottom: 10rpx;
         display: flex;
@@ -183,8 +255,8 @@ const statusSwitch = (index: number) => {
           height: 100%;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 10rpx;
+          align-items: flex-start;
+          gap: 6rpx;
           .dish-name {
             font-weight: 600;
           }
@@ -192,6 +264,63 @@ const statusSwitch = (index: number) => {
             font-size: 18rpx;
             display: flex;
             align-items: center;
+          }
+          .dish-price-line {
+            display: flex;
+            gap: 5rpx;
+            align-items: bottom;
+            .price {
+              position: relative;
+              font-size: 22rpx;
+              .iconfont {
+                color: rgba(236, 154, 0, 0.9);
+                font-size: 20rpx;
+              }
+              &.original {
+                scale: 0.8;
+                .underline {
+                  height: 0;
+                  width: 100%;
+                  position: absolute;
+                  top: 50%;
+                  border-bottom: 1px solid rgb(0, 0, 0);
+                }
+                .discount {
+                  position: absolute;
+                  white-space: nowrap;
+                  padding: 2rpx 4rpx;
+                  background-color: rgba(0, 0, 0, 0.2);
+                  left: 110%;
+                  top: -80%;
+                  border-radius: 8rpx;
+                }
+              }
+            }
+          }
+
+          .dish-status-line {
+            font-size: 18rpx;
+            //background-color: rgba(0, 0, 0, 0.2);
+            //border-radius: 8rpx;
+            //padding: 6rpx;
+          }
+
+          .button-box {
+            display: flex;
+            font-size: 20rpx;
+            gap: 15rpx;
+            align-self: flex-end;
+            margin-right: 20rpx;
+            .btn {
+              padding: 8rpx 12rpx;
+              background-color: rgba(0, 0, 0, 0.2);
+              border-radius: 8rpx;
+              font-weight: 550;
+              transition: 0.2s ease;
+              &:active {
+                scale: 0.9;
+              }
+            }
           }
         }
       }

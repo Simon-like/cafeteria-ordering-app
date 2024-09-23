@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { componentList } from './index'
+import { useMerchantPagesStore } from '@/stores'
 import { ref } from 'vue'
 
 /**
@@ -10,19 +11,15 @@ import { ref } from 'vue'
  * @lastModifiedTime  2024-09-21
  */
 
-const channelId = ref<number>(0)
-
-const onSwitch = (e: number) => {
-  channelId.value = e
-}
+const MerchantPages = useMerchantPagesStore()
 </script>
 
 <template>
   <view class="index">
     <custom-nav-bar></custom-nav-bar>
     <HeaderBar></HeaderBar>
-    <component :is="componentList[channelId]"></component>
-    <MerchantTabbar @switch="onSwitch"></MerchantTabbar>
+    <component :is="componentList[MerchantPages.tabbarIndex]"></component>
+    <MerchantTabbar></MerchantTabbar>
   </view>
 </template>
 

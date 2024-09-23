@@ -1,0 +1,39 @@
+import { defineStore } from 'pinia'
+import { ref, reactive } from 'vue'
+/**
+ * @description 商户端组件索引值的仓库
+ * @author 应东林
+ * @date 2024-09-23
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-23
+ */
+// 定义 Store
+export const useMerchantPagesStore = defineStore(
+  'merchant_pages',
+  () => {
+    const tabbarIndex = ref<number>(0)
+    const shopIndex = ref<number>(0)
+	const myIndex = ref<number>(0)
+	
+
+    return {
+      tabbarIndex,
+      shopIndex,
+	  myIndex
+    }
+  },
+  // TODO: 持久化
+  {
+    //网页端 persist: true,
+    persist: {
+      storage: {
+        setItem(key, value) {
+          uni.setStorageSync(key, value)
+        },
+        getItem(key) {
+          return uni.getStorageSync(key)
+        },
+      },
+    },
+  },
+)

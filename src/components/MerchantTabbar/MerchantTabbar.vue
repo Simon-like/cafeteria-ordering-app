@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useMerchantPagesStore } from '@/stores'
 /**
  * @description 商家端tabbar
  * @author 应东林
@@ -45,18 +46,13 @@ const MerchantTabbarItem: Tabbartem[] = [
   },
 ]
 
-const emit = defineEmits(['switch'])
-const change = (index: number) => {
-  emit('switch', index)
-}
-
-const pageIndex = ref<number>(0)
+const MerchantPages = useMerchantPagesStore()
 </script>
 
 <template>
   <up-tabbar
-    :value="pageIndex"
-    @change="(name) => (pageIndex = name)"
+    :value="MerchantPages.tabbarIndex"
+    @change="(id) => (MerchantPages.tabbarIndex = id)"
     :fixed="false"
     :placeholder="false"
     activeColor="#d81e06"
@@ -67,7 +63,6 @@ const pageIndex = ref<number>(0)
       :text="item.text"
       :key="item.index"
       :icon="item.iconPath"
-      @click="change(item.index)"
     >
     </up-tabbar-item>
   </up-tabbar>

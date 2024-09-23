@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { componentList } from './index'
 import { ref } from 'vue'
-
+import { useAdminPagesStore } from '@/stores'
 /**
  * @description 管理端入口页面
  * @author 应东林
@@ -10,10 +10,10 @@ import { ref } from 'vue'
  * @lastModifiedTime  2024-09-21
  */
 
-const channelId = ref<number>(0)
+const AdminPages = useAdminPagesStore()
 
 const onSwitch = (e: number) => {
-  channelId.value = e
+  AdminPages.tabbarIndex = e
 }
 </script>
 
@@ -21,7 +21,7 @@ const onSwitch = (e: number) => {
   <view class="index">
     <custom-nav-bar></custom-nav-bar>
     <HeaderBar></HeaderBar>
-    <component :is="componentList[channelId]"></component>
+    <component :is="componentList[AdminPages.tabbarIndex]"></component>
     <AdminTabbar @switch="onSwitch"></AdminTabbar>
   </view>
 </template>

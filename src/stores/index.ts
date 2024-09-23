@@ -13,4 +13,5 @@ export default pinia
 export * from './modules/DoubleToken'
 export * from './modules/merchant_information'
 export * from './modules/admin_information'
-export * from './modules/tabbar_info'
+export * from './modules/merchant_pages'
+export * from './modules/admin_pages'

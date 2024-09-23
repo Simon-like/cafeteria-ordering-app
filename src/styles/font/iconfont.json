@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "8575380",
+      "name": "人民币1",
+      "font_class": "renminbi",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
       "icon_id": "566774",
       "name": "左箭头",
       "font_class": "zuojiantou",

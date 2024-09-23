@@ -91,6 +91,13 @@
         "navigationBarTitleText": "商户端主页面",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/merchant_end/shop/dish_info_edit/dish_info_edit",
+      "style": {
+        "navigationBarTitleText": "商家端菜品信息修改页面",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {
