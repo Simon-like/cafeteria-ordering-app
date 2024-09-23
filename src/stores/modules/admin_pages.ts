@@ -13,8 +13,13 @@ export const useAdminPagesStore = defineStore(
   () => {
     const tabbarIndex = ref<number>(0)
 
+    const initialize = () => {
+      tabbarIndex.value = 0
+    }
+
     return {
       tabbarIndex,
+      initialize,
     }
   },
   // TODO: 持久化
