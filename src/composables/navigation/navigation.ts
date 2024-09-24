@@ -30,7 +30,7 @@ export const gotoLoginAndRegister = () => {
   const AdminPagesStore = useAdminPagesStore()
   const MerchantPagesStore = useMerchantPagesStore()
   uni.navigateBack({
-    delta: 1,
+    delta: 2,
   })
   DoubleTokenStore.removeToken(2)
   MerchantPagesStore.initialize()

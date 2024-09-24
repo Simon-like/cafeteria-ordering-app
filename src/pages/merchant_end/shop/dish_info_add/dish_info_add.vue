@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 /**
- * @description 菜品信息修改页面
+ * @description 新增菜品信息页面
  * @author 应东林
- * @date 2024-09-23
+ * @date 2024-09-24
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-23
+ * @lastModifiedTime  2024-09-24
  */
 
 const back = () => {
@@ -15,10 +15,10 @@ const back = () => {
 </script>
 
 <template>
-  <view class="edit-view">
+  <view class="add-view">
     <custom-nav-bar></custom-nav-bar>
     <view class="section-header">
-      <view class="title">信息设置</view>
+      <view class="title">新增菜品</view>
       <view class="back-btn" @click="back"><i class="iconfont icon-zuojiantou"></i></view>
     </view>
     <view class="basic-info section">
@@ -29,55 +29,32 @@ const back = () => {
           <view class="value">生蚝</view>
         </view>
         <view class="info-line">
-          <view class="line-title">菜品分组：</view>
-          <view class="value">本店精品菜</view>
-        </view>
-        <view class="info-line">
-          <view class="line-title">今日库存：</view>
-          <view class="value">生蚝</view>
-        </view>
-        <view class="info-line">
           <view class="line-title">外送信息：</view>
-          <view class="value">生蚝</view>
+          <view class="value">本店精品菜</view>
         </view>
         <view class="info-line">
           <view class="line-title">封面：</view>
           <view class="value">生蚝</view>
         </view>
-      </view>
-    </view>
-    <view class="price-info section">
-      <view class="section-title">价格信息</view>
-      <view class="info-wrapper">
         <view class="info-line">
           <view class="line-title">菜品定价：</view>
-          <view class="value">15.9</view>
+          <view class="value">生蚝</view>
         </view>
         <view class="info-line">
-          <view class="line-title">折扣设置：</view>
-          <view class="value">0.75</view>
-        </view>
-      </view>
-    </view>
-    <view class="spec-info section">
-      <view class="section-title">规格信息</view>
-      <view class="info-wrapper">
-        <view class="info-line">
-          <view class="line-title">规格设置：</view>
-          <view class="value">15.9</view>
+          <view class="line-title">菜品描述：</view>
+          <view class="value">生蚝</view>
         </view>
       </view>
     </view>
 
     <view class="button-box">
-      <view class="save btn">保存</view>
-      <view class="discontinued btn">下架</view>
+      <view class="upload btn">提交</view>
     </view>
   </view>
 </template>
 
 <style lang="scss" scope>
-.edit-view {
+.add-view {
   width: 750rpx;
   height: 100vh;
   display: flex;
