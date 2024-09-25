@@ -20,9 +20,10 @@ export const refreshToken = () => {
 
   return new Promise<Data>((resolve, reject) => {
     uni.request({
-      method: 'POST',
+      method: 'GET',
       url: '/common/newToken/login',
       success(res) {
+        console.log('刷新token的第一层响应信息：', res)
         //成功获取新的token
         if (res.statusCode >= 200 && res.statusCode < 300) {
           const tokenData = res.data as Data

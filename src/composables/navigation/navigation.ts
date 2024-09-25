@@ -12,20 +12,20 @@ import { useMerchantPagesStore } from '@/stores'
 
 // 进入商户端首页
 export const gotoMerchantHome = () => {
-  uni.navigateTo({
+  uni.reLaunch({
     url: '/pages/merchant_end/merchant_index',
   })
 }
 
 // 进入管理端首页
 export const gotoAdminHome = () => {
-  uni.navigateTo({
+  uni.reLaunch({
     url: '/pages/admin_end/admin_index',
   })
 }
 
 export const gotoLogin = () => {
-  uni.navigateTo({
+  uni.reLaunch({
     url: '/pages/login_register/login_register',
   })
 }
@@ -34,8 +34,8 @@ export const gotoLoginAndRegister = () => {
   const DoubleTokenStore = useDoubleTokenStore()
   const AdminPagesStore = useAdminPagesStore()
   const MerchantPagesStore = useMerchantPagesStore()
-  uni.navigateBack({
-    delta: 2,
+  uni.reLaunch({
+    url: '/pages/login_register/login_register',
   })
   DoubleTokenStore.removeToken(2)
   MerchantPagesStore.initialize()
