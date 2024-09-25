@@ -1,4 +1,6 @@
 import { useDoubleTokenStore } from '@/stores'
+import { useAdminPagesStore } from '@/stores'
+import { useMerchantPagesStore } from '@/stores'
 
 /**
  * @description 页面跳转函数大全
@@ -30,8 +32,12 @@ export const gotoLogin = () => {
 // 退出登录回首页
 export const gotoLoginAndRegister = () => {
   const DoubleTokenStore = useDoubleTokenStore()
+  const AdminPagesStore = useAdminPagesStore()
+  const MerchantPagesStore = useMerchantPagesStore()
   uni.navigateBack({
-    delta: 1,
+    delta: 2,
   })
   DoubleTokenStore.removeToken(2)
+  MerchantPagesStore.initialize()
+  AdminPagesStore.initialize()
 }

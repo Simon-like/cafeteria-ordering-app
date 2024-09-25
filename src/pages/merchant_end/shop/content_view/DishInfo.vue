@@ -63,7 +63,6 @@ const old = reactive({
 })
 
 const scroll = (e: any) => {
-  console.log(e)
   old.scrollTop = e.detail.scrollTop
 }
 const goTop = (e: any) => {
@@ -82,6 +81,15 @@ const goTop = (e: any) => {
 const edit = () => {
   uni.navigateTo({
     url: '/pages/merchant_end/shop/dish_info_edit/dish_info_edit',
+    animationType: 'fade-in',
+    animationDuration: 200,
+  })
+}
+
+//新增菜品信息
+const add = () => {
+  uni.navigateTo({
+    url: '/pages/merchant_end/shop/dish_info_add/dish_info_add',
     animationType: 'fade-in',
     animationDuration: 200,
   })
@@ -107,7 +115,7 @@ const edit = () => {
       <AsideBar :itemList="category_list" @switch="onSwitch" />
       <view class="dish-content">
         <view class="box">
-          <view class="addDish-box">+ 新增菜品</view>
+          <view class="addDish-box" @click="add">+ 新增菜品</view>
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
