@@ -5,16 +5,18 @@ import {
   GetMerchantInfo,
   ChangeMerchantInfo,
   updateMerchantOperationStatus,
+  merchant_postImage,
 } from '@/services/merchant/merchant_api'
 import { onLoad } from '@dcloudio/uni-app'
 import type { MerchantInfo } from '@/types/merchant_return'
+import { string } from '@/uni_modules/uview-plus/libs/function/test'
 
 /**
- * @description 个人中心页面数据的替换，通过pinia仓库进行数据管理
+ * @description 增加了图片上传功能
  * @author 应东林  钟礼豪
  * @date 2024-09-19
  * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-09-19
+ * @lastModifiedTime  2024-09-25
  */
 const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
@@ -147,10 +149,76 @@ const openLogoPicker = () => {
   logoPickerPopup.value.open('center')
 }
 
-const submitLogo = (logoPath: string) => {
-  Merchant.logo = logoPath
+const submitLogo = (event: any) => {
+  const files = event.detail.value
+  if (files.length > 0) {
+    const file = files[0]
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(file)
+    reader.onload = () => {
+      const arrayBuffer = reader.result as ArrayBuffer
+      const fileBlob = new File([arrayBuffer], file.name, { type: file.type })
+      merchant_postImage(fileBlob)
+        .then((response) => {
+          Merchant.logo = response.data.url
+        })
+        .catch((error) => {
+          console.error('Upload failed:', error)
+        })
+    }
+  }
   logoPickerPopup.value.close()
-  // 这里可以添加上传logo到服务器的代码
+}
+// 打开相册选择图片
+const openAlbumPicker = () => {
+  uni.chooseImage({
+    count: 1, // 限制选择图片的数量为1
+    sourceType: ['album'], // 从相册选择
+    success: (res) => {
+      const tempFilePaths = res.tempFilePaths
+      if (tempFilePaths.length > 0) {
+        const file = tempFilePaths[0]
+        const fileBlob = new File([file], 'image', { type: 'image/jpeg' })
+        merchant_postImage(fileBlob)
+          .then((response) => {
+            Merchant.logo = response.data.url
+          })
+          .catch((error) => {
+            console.error('Upload failed:', error)
+            uni.showToast({
+              title: '上传失败',
+              icon: 'none',
+            })
+          })
+      }
+    },
+  })
+}
+
+// 使用相机拍照
+const openCamera = () => {
+  uni.chooseImage({
+    count: 1, // 限制拍摄图片的数量为1
+    sourceType: ['camera'], // 使用相机
+    success: (res) => {
+      const tempFilePaths = res.tempFilePaths
+      if (tempFilePaths.length > 0) {
+        const file = tempFilePaths[0]
+        const fileBlob = new File([file], 'image', { type: 'image/jpeg' })
+        merchant_postImage(fileBlob)
+          .then((response) => {
+            Merchant.logo = response.data.url
+          })
+          .catch((error) => {
+            console.error('Upload failed:', error)
+            uni.showToast({
+              title: '上传失败',
+              icon: 'none',
+            })
+          })
+      }
+    },
+  })
 }
 </script>
 
@@ -178,21 +246,10 @@ const submitLogo = (logoPath: string) => {
     <view class="edit-button" @click="onEdit"> 修改资料 </view>
 
     <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
-      <view class="picker-container">
-        <uni-file-picker
-          limit="1"
-          title="从相册选图"
-          @change="submitLogo"
-          :source-type="['album']"
-        ></uni-file-picker>
-        <uni-file-picker
-          limit="1"
-          title="使用相机"
-          @change="submitLogo"
-          :source-type="['camera']"
-        ></uni-file-picker
-        ><view class="submit-button" @click="submitLogo('123')"> 提交 </view>
-      </view>
+      <!-- 相册选择按钮 -->
+      <view class="upload-button" @click="openAlbumPicker">从相册选择图片</view>
+      <!-- 相机拍摄按钮 -->
+      <view class="upload-button" @click="openCamera">使用相机拍照</view>
     </uni-popup>
 
     <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">

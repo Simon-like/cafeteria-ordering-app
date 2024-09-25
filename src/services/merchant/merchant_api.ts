@@ -1,6 +1,6 @@
 import { http } from '@/utils/http'
 import type { TokenType } from '@/types/login_register'
-import type { MerchantInfo } from '@/types/merchant_return'
+import type { MerchantInfo, URL } from '@/types/merchant_return'
 export const merchant_Login_pp = (phoneNumber: string, password: string) => {
   return http<TokenType>({
     method: 'POST',
@@ -86,5 +86,14 @@ export const updateMerchantOperationStatus = (
       id,
       operationStatus,
     },
+  })
+}
+
+export const merchant_postImage = (file: File) => {
+  const formData = new FormData()
+  formData.append('image', file)
+  return http<URL>({
+    method: 'POST',
+    url: `/merchant/uploadMerchantImage?image=${formData}`,
   })
 }

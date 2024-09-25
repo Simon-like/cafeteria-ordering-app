@@ -9,3 +9,7 @@ export type MerchantInfo = {
   operationStatus: string //商家的运营状态，0表示正常营业，1表示暂停营业
   realName: string //店主真实姓名，用于订单处理和身份验证
 }
+
+export type URL = {
+  url: string
+}
