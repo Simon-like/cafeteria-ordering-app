@@ -36,6 +36,12 @@ const HandleUpdate = async () => {
 const popup = ref()
 const valiForm = ref<UniHelper.FormInstance>()
 const onEdit = () => {
+  valiFormData.name = Merchant.name
+  valiFormData.address = Merchant.address
+  valiFormData.contactPhone = Merchant.contactPhone
+  valiFormData.businessHours = Merchant.businessHours
+  valiFormData.realName = Merchant.realName
+  valiFormData.discription = Merchant.discription
   popup.value.open('center')
 }
 
@@ -64,7 +70,7 @@ const rules = {
       },
     ],
   },
-  hours: {
+  businessHours: {
     rules: [
       {
         required: true,
@@ -72,7 +78,7 @@ const rules = {
       },
     ],
   },
-  owner: {
+  realName: {
     rules: [
       {
         required: true,
@@ -80,7 +86,7 @@ const rules = {
       },
     ],
   },
-  number: {
+  contactPhone: {
     rules: [
       {
         required: true,
@@ -94,10 +100,10 @@ const rules = {
 const valiFormData = reactive({
   name: '',
   address: '',
-  number: '',
-  hours: '',
-  owner: '',
-  introduction: '',
+  contactPhone: '',
+  businessHours: '',
+  realName: '',
+  discription: '',
 })
 
 const submit = () => {
@@ -107,13 +113,13 @@ const submit = () => {
       console.log(res)
       // 更新商户信息
       let changeData: MerchantInfo = reactive({
-        merchantName: valiFormData.name,
-        merchantAddress: valiFormData.address,
-        contactPhone: valiFormData.number,
-        realName: valiFormData.owner,
-        discription: valiFormData.introduction,
+        name: valiFormData.name,
+        address: valiFormData.address,
+        contactPhone: valiFormData.contactPhone,
+        realName: valiFormData.realName,
+        discription: valiFormData.discription,
         logo: '',
-        businessHours: valiFormData.hours,
+        businessHours: valiFormData.businessHours,
         operationStatus: Merchant.operationStatus,
         id: Merchant.id,
       })
@@ -211,21 +217,24 @@ const submitLogo = (logoPath: string) => {
                 </uni-forms-item>
                 <uni-forms-item required name="number">
                   <template #label><text>联系电话</text></template>
-                  <uni-easyinput v-model="valiFormData.number" placeholder="请输入联系电话" />
+                  <uni-easyinput v-model="valiFormData.contactPhone" placeholder="请输入联系电话" />
                 </uni-forms-item>
                 <uni-forms-item required name="hours">
                   <template #label><text>营业时间</text></template>
-                  <uni-easyinput v-model="valiFormData.hours" placeholder="请输入营业时间" />
+                  <uni-easyinput
+                    v-model="valiFormData.businessHours"
+                    placeholder="请输入营业时间"
+                  />
                 </uni-forms-item>
                 <uni-forms-item required name="owner">
                   <template #label><text>所有人</text></template>
-                  <uni-easyinput v-model="valiFormData.owner" placeholder="请输入所有人" />
+                  <uni-easyinput v-model="valiFormData.realName" placeholder="请输入所有人" />
                 </uni-forms-item>
                 <uni-forms-item name="introduction">
                   <template #label><text>店铺简介</text></template>
                   <uni-easyinput
                     type="textarea"
-                    v-model="valiFormData.introduction"
+                    v-model="valiFormData.discription"
                     placeholder="请输入店铺简介"
                   />
                 </uni-forms-item>

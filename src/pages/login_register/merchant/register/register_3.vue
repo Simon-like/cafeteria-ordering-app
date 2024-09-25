@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { merchant_register } from '@/services/merchant/merchant_api'
 import { useMerchantStore } from '@/stores'
+import { gotoLogin } from '@/composables/navigation/navigation'
 const merchantStore = useMerchantStore()
 
 const handleRegister = async () => {
@@ -11,7 +12,9 @@ const handleRegister = async () => {
     merchantStore.address,
     merchantStore.password,
     merchantStore.college,
-  )
+  ).then((response) => {
+    gotoLogin()
+  })
 }
 </script>
 <template>

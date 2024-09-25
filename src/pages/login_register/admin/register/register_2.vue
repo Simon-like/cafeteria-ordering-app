@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
 import { admin_register } from '@/services/admin/admin_api'
+import { gotoLogin } from '@/composables/navigation/navigation'
 const adminStore = useAdminStore()
 const inviteCode = ref<string>()
 const handleRegister = async () => {
@@ -14,6 +15,7 @@ const handleRegister = async () => {
     adminStore.validationCode,
   ).then((response) => {
     console.log(response.data)
+    gotoLogin()
   })
 }
 </script>

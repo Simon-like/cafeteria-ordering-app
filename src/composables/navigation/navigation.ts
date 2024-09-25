@@ -22,6 +22,11 @@ export const gotoAdminHome = () => {
   })
 }
 
+export const gotoLogin = () => {
+  uni.navigateTo({
+    url: '/pages/login_register/login_register',
+  })
+}
 // 退出登录回首页
 export const gotoLoginAndRegister = () => {
   const DoubleTokenStore = useDoubleTokenStore()

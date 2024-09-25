@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores'
+import schoolPicker from '@/components/sugar-schoolPicker/schoolPicker/schoolPicker'
 const realName = ref<string>('')
 const name = ref<string>('')
 const address = ref<string>('')
@@ -44,6 +45,10 @@ const gotoNext = () => {
         <text>店铺地址</text>
         <input type="text" v-model="address" />
       </view>
+    </view>
+    <view class="input-item">
+      <text>选择省/市/大学</text>
+      <schoolPicker></schoolPicker>
     </view>
     <text class="tips">--店铺详细信息注册完成后可在门店管理页面中更改--</text>
     <view class="checkbox__container">
