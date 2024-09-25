@@ -12,6 +12,21 @@ const back = () => {
     delta: 1,
   })
 }
+
+const priceValue = ref<number>(0)
+const priceMinus = () => {
+  if (priceValue.value === 0) {
+    uni.showToast({
+      icon: 'none',
+      title: '数量已经达到最小值',
+    })
+  } else {
+    priceValue.value--
+  }
+}
+const priceAdd = () => {
+  priceValue.value++
+}
 </script>
 
 <template>
@@ -30,7 +45,7 @@ const back = () => {
         </view>
         <view class="info-line">
           <view class="line-title">外送信息：</view>
-          <view class="value">本店精品菜</view>
+          <view class="value">单点不送</view>
         </view>
         <view class="info-line">
           <view class="line-title">封面：</view>
@@ -38,12 +53,30 @@ const back = () => {
         </view>
         <view class="info-line">
           <view class="line-title">菜品定价：</view>
-          <view class="value">生蚝</view>
+          <view class="value">
+            <view class="value number">
+              <view class="minus" @click="priceMinus">-</view>
+              <input type="number" class="inventory-input" v-model="priceValue" />
+              <view class="add" @click="priceAdd">+</view>
+            </view>
+          </view>
         </view>
         <view class="info-line">
           <view class="line-title">菜品描述：</view>
-          <view class="value">生蚝</view>
         </view>
+        <uni-easyinput
+          type="textarea"
+          v-model="value"
+          autoHeight
+          placeholder="请描述该菜品特征,以便管理员审核"
+          :styles="{
+            color: '#000',
+            borderColor: '#7e7e5e',
+            borderRadius: '20px',
+            backgroundColor: 'rgba(255,255,255,0.4)',
+          }"
+          :placeholderStyle="'color:rgba(0, 0, 0, 0.5);font-size:14px'"
+        ></uni-easyinput>
       </view>
     </view>
 
@@ -103,6 +136,36 @@ const back = () => {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        .number {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8rpx;
+          .minus,
+          .add {
+            width: 30rpx;
+            height: 30rpx;
+            font-size: 30rpx;
+            text-align: center;
+            line-height: 30rpx;
+            border-radius: 50%;
+            color: rgba(0, 0, 0, 0.3);
+            font-weight: blod;
+            background-color: #fff;
+            transition: 0.2s ease;
+            &:active {
+              scale: 0.95;
+            }
+          }
+          input {
+            outline: none;
+            width: 80rpx;
+            background: transparent;
+            border-bottom: 1px solid #fff;
+            text-align: center;
+          }
+        }
       }
     }
   }

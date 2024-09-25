@@ -54,7 +54,7 @@ uni.addInterceptor('uploadFlie', httpInterceptor)
  */
 
 interface Data<T> {
-  code: string
+  code: number
   msg: string
   data: T
 }
@@ -69,18 +69,22 @@ export const http = <T>(options: UniApp.RequestOptions) => {
       success(res) {
         console.log('第一层响应信息：', res)
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          // 获取数据成功，调用resolve
-          resolve(res.data as Data<T>)
-        } else if (res.statusCode === 401) {
-          // 401错误(actoken过期)
-          //发起刷新token请求
-          refreshToken().then((res) => {
-            console.log('刷新的token：', res)
-            //重新上一次的请求
-            uni.request({
-              ...options,
+          if (res.data.code === 401) {
+            //发起刷新token请求
+            refreshToken().then((res) => {
+              console.log('刷新的token：', res)
+              //重新上一次的请求
+              uni.request({
+                ...options,
+                success(res) {
+                  resolve(res.data as Data<T>)
+                },
+              })
             })
-          })
+          } else {
+            // 获取数据成功，调用resolve
+            resolve(res.data as Data<T>)
+          }
         } else {
           // 通用错误，调用reject
           uni.showToast({
