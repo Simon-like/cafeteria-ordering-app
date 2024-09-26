@@ -5,8 +5,8 @@ import {
   GetMerchantInfo,
   ChangeMerchantInfo,
   updateMerchantOperationStatus,
-  merchant_postImage,
 } from '@/services/merchant/merchant_api'
+import { upload } from '@/utils/http'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 import type { MerchantInfo } from '@/types/merchant_return'
 
@@ -176,76 +176,30 @@ const openLogoPicker = () => {
   logoPickerPopup.value.open('center')
 }
 
-const submitLogo = (event: any) => {
-  const files = event.detail.value
-  if (files.length > 0) {
-    const file = files[0]
-    const reader = new FileReader()
-    reader.readAsArrayBuffer(file)
-    reader.onload = () => {
-      const arrayBuffer = reader.result as ArrayBuffer
-      const fileBlob = new File([arrayBuffer], file.name, { type: file.type })
-      merchant_postImage(fileBlob)
-        .then((response) => {
-          Merchant.logo = response.data.url
-        })
-        .catch((error) => {
-          console.error('Upload failed:', error)
-        })
-    }
-  }
-  logoPickerPopup.value.close()
-}
-// 打开相册选择图片
-const openAlbumPicker = () => {
-  uni.chooseImage({
-    count: 1, // 限制选择图片的数量为1
-    sourceType: ['album'], // 从相册选择
-    success: (res) => {
-      const tempFilePaths = res.tempFilePaths
-      if (tempFilePaths.length > 0) {
-        const file = tempFilePaths[0]
-        const fileBlob = new File([file], 'image', { type: 'image/jpeg' })
-        merchant_postImage(fileBlob)
-          .then((response) => {
-            Merchant.logo = response.data.url
-          })
-          .catch((error) => {
-            console.error('Upload failed:', error)
-            uni.showToast({
-              title: '上传失败',
-              icon: 'none',
-            })
-          })
-      }
-    },
+const fileList1 = ref<Object[]>([])
+
+// 新增图片
+const afterRead = async (event: Object) => {
+  // 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
+  let lists = [].concat(event.file)
+  lists.map((item) => {
+    fileList1.value.push({
+      ...item,
+    })
   })
 }
 
-// 使用相机拍照
-const openCamera = () => {
-  uni.chooseImage({
-    count: 1, // 限制拍摄图片的数量为1
-    sourceType: ['camera'], // 使用相机
-    success: (res) => {
-      const tempFilePaths = res.tempFilePaths
-      if (tempFilePaths.length > 0) {
-        const file = tempFilePaths[0]
-        const fileBlob = new File([file], 'image', { type: 'image/jpeg' })
-        merchant_postImage(fileBlob)
-          .then((response) => {
-            Merchant.logo = response.data.url
-          })
-          .catch((error) => {
-            console.error('Upload failed:', error)
-            uni.showToast({
-              title: '上传失败',
-              icon: 'none',
-            })
-          })
-      }
-    },
-  })
+// 删除图片
+const deletePic = (event: any) => {
+  fileList1.value.splice(event.index, 1)
+}
+
+const uploadImg = async () => {
+  for (let i = 0; i < fileList1.value.length; i++) {
+    console.log(fileList1.value[i])
+    const result = await upload(fileList1.value[i].url)
+    console.log(result)
+  }
 }
 
 // 营业时间的修改
@@ -286,9 +240,24 @@ const time_edit = () => {
 
     <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
       <!-- 相册选择按钮 -->
-      <view class="upload-button" @click="openAlbumPicker">从相册选择图片</view>
+      <!-- <view class="upload-button" @click="openAlbumPicker">从相册选择图片</view> -->
       <!-- 相机拍摄按钮 -->
-      <view class="upload-button" @click="openCamera">使用相机拍照</view>
+      <!-- <view class="upload-button" @click="openCamera">使用相机拍照</view> -->
+      <uni-card class="form-card">
+        <uni-section title="修改店铺logo" type="line">
+          <up-upload
+            :fileList="fileList1"
+            @delete="deletePic"
+            @afterRead="afterRead"
+            multiple
+            name="1"
+            :maxCount="1"
+            :previewFullImage="true"
+            class="img-picker"
+          ></up-upload>
+          <view class="uploadBtn" @click="uploadImg">确认上传</view>
+        </uni-section>
+      </uni-card>
     </uni-popup>
 
     <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0" @change="HandleGetInfo()">
@@ -401,6 +370,25 @@ const time_edit = () => {
     width: 700rpx;
     .scroll-Y {
       height: 500rpx;
+    }
+
+    .img-picker {
+      margin: 0 auto;
+    }
+
+    .uploadBtn {
+      margin: 0 auto;
+      margin-top: 46rpx;
+      width: 300rpx;
+      height: 60rpx;
+      line-height: 60rpx;
+      background-color: rgba(126, 126, 94, 0.7);
+      text-align: center;
+      transition: all 0.2s ease;
+      &:active {
+        opacity: 0.8;
+        transform: scale(0.95);
+      }
     }
     .form-wrapper {
       :deep() {

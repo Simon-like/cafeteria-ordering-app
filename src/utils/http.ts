@@ -77,6 +77,7 @@ export const http = <T>(options: UniApp.RequestOptions) => {
               uni.request({
                 ...options,
                 success(res) {
+                  console.log('第一层响应信息：', res)
                   resolve(res.data as Data<T>)
                 },
               })
@@ -102,6 +103,19 @@ export const http = <T>(options: UniApp.RequestOptions) => {
           title: '网络错误，换个网络试试',
         })
         reject(err)
+      },
+    })
+  })
+}
+
+export const upload = (url: string) => {
+  return new Promise((resolve, reject) => {
+    uni.uploadFile({
+      url: baseURL + '/merchant/uploadMerchantImage',
+      filePath: url,
+      name: 'file',
+      success: (res) => {
+        resolve(res)
       },
     })
   })

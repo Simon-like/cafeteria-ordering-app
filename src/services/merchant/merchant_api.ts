@@ -88,12 +88,3 @@ export const updateMerchantOperationStatus = (
     },
   })
 }
-
-export const merchant_postImage = (file: File) => {
-  const formData = new FormData()
-  formData.append('image', file)
-  return http<URL>({
-    method: 'POST',
-    url: `/merchant/uploadMerchantImage?image=${formData}`,
-  })
-}
