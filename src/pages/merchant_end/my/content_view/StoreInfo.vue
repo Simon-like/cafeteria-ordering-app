@@ -7,7 +7,7 @@ import {
   updateMerchantOperationStatus,
   merchant_postImage,
 } from '@/services/merchant/merchant_api'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onReady } from '@dcloudio/uni-app'
 import type { MerchantInfo } from '@/types/merchant_return'
 
 /**
@@ -21,15 +21,16 @@ const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
   Object.assign(Merchant, res.data)
+  let [time_start, time_end] = res.data.businessHours.split('-')
+  Merchant.time_start = time_start
+  Merchant.time_end = time_end
 }
 
 onLoad(HandleGetInfo)
 
 const HandleUpdate = async () => {
-  console.log('nowStatus:', Merchant.operationStatus)
   Merchant.operationStatus = Merchant.operationStatus === 0 ? 1 : 0
   updateMerchantOperationStatus(Merchant.id, Merchant.operationStatus)
-  console.log('changedStatus:', Merchant.operationStatus)
 }
 
 const popup = ref()
@@ -52,6 +53,25 @@ const confirm = () => {
   popup.value.close()
 } //对话框确认按钮
 
+function compareTime(time1: string, time2: string): number {
+  // 将时间字符串分割成小时和分钟
+  const [hours1, minutes1] = time1.split(':').map(Number)
+  const [hours2, minutes2] = time2.split(':').map(Number)
+
+  // 将时间转换为分钟进行比较
+  const totalMinutes1 = hours1 * 60 + minutes1
+  const totalMinutes2 = hours2 * 60 + minutes2
+
+  // 比较并返回结果
+  if (totalMinutes1 < totalMinutes2) {
+    return -1 // time1 早于 time2
+  } else if (totalMinutes1 > totalMinutes2) {
+    return 1 // time1 晚于 time2
+  } else {
+    return 0 // time1 和 time2 相等
+  }
+}
+
 const rules = {
   name: {
     rules: [
@@ -73,7 +93,7 @@ const rules = {
     rules: [
       {
         required: true,
-        errorMessage: '营业时间不能为空',
+        errorMessage: '请选择营业时间',
       },
     ],
   },
@@ -94,6 +114,10 @@ const rules = {
     ],
   },
 }
+// onReady(() => {
+//   // 需要在onReady中设置规则
+//   valiForm.setRules(rules)
+// })
 
 // 校验表单数据
 const valiFormData = reactive({
@@ -109,32 +133,38 @@ const submit = () => {
   valiForm.value
     ?.validate()
     .then((res: string) => {
-      console.log(res)
-      // 更新商户信息
-      let changeData: MerchantInfo = reactive({
-        name: valiFormData.name,
-        address: valiFormData.address,
-        contactPhone: valiFormData.contactPhone,
-        realName: valiFormData.realName,
-        discription: valiFormData.discription,
-        logo: '',
-        businessHours: valiFormData.businessHours,
-        operationStatus: Merchant.operationStatus,
-        id: Merchant.id,
-      })
-      ChangeMerchantInfo(changeData)
-        .then((res) => {
-          uni.showToast({
-            title: `修改成功`,
-          })
-          popup.value.close()
-          HandleGetInfo()
+      if (compareTime(Merchant.time_start, Merchant.time_end) !== -1) {
+        uni.showToast({
+          icon: 'error',
+          title: `营业时间填写错误！`,
         })
-        .catch((err) => {
-          uni.showToast({
-            title: `修改失败`,
-          })
+      } else {
+        // 更新商户信息
+        let changeData: MerchantInfo = reactive({
+          name: valiFormData.name,
+          address: valiFormData.address,
+          contactPhone: valiFormData.contactPhone,
+          realName: valiFormData.realName,
+          discription: valiFormData.discription,
+          logo: '',
+          businessHours: Merchant.businessHours,
+          operationStatus: Merchant.operationStatus,
+          id: Merchant.id,
         })
+        ChangeMerchantInfo(changeData)
+          .then((res) => {
+            uni.showToast({
+              title: `修改成功`,
+            })
+            popup.value.close()
+            // HandleGetInfo()
+          })
+          .catch((err) => {
+            uni.showToast({
+              title: `修改失败`,
+            })
+          })
+      }
     })
     .catch((err: string) => {
       console.log('err', err)
@@ -217,6 +247,14 @@ const openCamera = () => {
     },
   })
 }
+
+// 营业时间的修改
+const time_start_show = ref<boolean>(false)
+const time_end_show = ref<boolean>(false)
+const time_edit = () => {
+  valiFormData.businessHours = Merchant.businessHours =
+    Merchant.time_start + ' - ' + Merchant.time_end
+}
 </script>
 
 <template>
@@ -228,7 +266,7 @@ const openCamera = () => {
     <view class="store-name">店铺名称: {{ Merchant.name }}</view>
     <view class="store-address">店铺地址: {{ Merchant.address }}</view>
     <view class="contact-number">联系电话: {{ Merchant.contactPhone }}</view>
-    <view class="opening-hours">营业时间: {{ Merchant.businessHours }}</view>
+    <view class="opening-hours">营业时间:{{ Merchant.businessHours }}</view>
     <view class="owner">所有人: {{ Merchant.realName }}</view>
     <view class="store-introduction">
       <text>店铺简介: </text>
@@ -253,7 +291,7 @@ const openCamera = () => {
       <view class="upload-button" @click="openCamera">使用相机拍照</view>
     </uni-popup>
 
-    <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
+    <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0" @change="HandleGetInfo()">
       <uni-card class="form-card">
         <uni-section title="修改资料" type="line">
           <scroll-view scroll-y="true" class="scroll-Y">
@@ -261,9 +299,9 @@ const openCamera = () => {
               <!-- 基础表单 -->
               <uni-forms
                 ref="valiForm"
-                :rules="rules"
                 :modelValue="valiFormData"
                 label-align="right"
+                :rules="rules"
               >
                 <uni-forms-item required name="name">
                   <template #label><text>店铺名称</text></template>
@@ -279,10 +317,25 @@ const openCamera = () => {
                 </uni-forms-item>
                 <uni-forms-item required name="hours">
                   <template #label><text>营业时间</text></template>
-                  <uni-easyinput
-                    v-model="valiFormData.businessHours"
-                    placeholder="请输入营业时间"
-                  />
+                  <view class="picker">
+                    <up-datetime-picker
+                      hasInput
+                      :show="time_start_show"
+                      v-model="Merchant.time_start"
+                      format="HH:mm"
+                      mode="time"
+                      @confirm="time_edit"
+                    ></up-datetime-picker>
+                    -
+                    <up-datetime-picker
+                      hasInput
+                      :show="time_end_show"
+                      v-model="Merchant.time_end"
+                      format=":mm"
+                      mode="time"
+                      @confirm="time_edit"
+                    ></up-datetime-picker>
+                  </view>
                 </uni-forms-item>
                 <uni-forms-item required name="owner">
                   <template #label><text>所有人</text></template>
@@ -355,6 +408,14 @@ const openCamera = () => {
           font-size: 30rpx;
           margin-right: 30rpx;
         }
+
+        .picker {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5rpx;
+        }
+
         .submit-button {
           margin: 0 auto;
           margin-top: 46rpx;

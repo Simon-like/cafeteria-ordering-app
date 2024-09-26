@@ -7,14 +7,16 @@ export const useMerchantStore = defineStore(
   () => {
     // 商户信息
     const phoneNumber = ref<string>('')
-    const realName = ref<string>('')
-    const name = ref<string>('')
+    const realName = ref<string>('') //所有人名称
+    const name = ref<string>('') //店铺名称
     const address = ref<string>('')
     const password = ref<string>('')
     const college = ref<string>('')
     const validationCode = ref<string>()
     //return新增的
     const businessHours = ref<string>('')
+    const time_start = ref<string>('')
+    const time_end = ref<string>('')
     const contactPhone = ref<string>('')
     const discription = ref<string>('')
     const operationStatus = ref<number>(1)
@@ -36,6 +38,8 @@ export const useMerchantStore = defineStore(
       logo,
       id,
       validationCode,
+      time_start,
+      time_end,
     }
   },
   // TODO: 持久化
