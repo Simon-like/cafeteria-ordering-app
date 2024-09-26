@@ -9,7 +9,6 @@ import {
 } from '@/services/merchant/merchant_api'
 import { onLoad } from '@dcloudio/uni-app'
 import type { MerchantInfo } from '@/types/merchant_return'
-import { string } from '@/uni_modules/uview-plus/libs/function/test'
 
 /**
  * @description 增加了图片上传功能
@@ -22,16 +21,14 @@ const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
   Object.assign(Merchant, res.data)
-  Merchant.operationStatus = '1'
 }
 
 onLoad(HandleGetInfo)
 
 const HandleUpdate = async () => {
   console.log('nowStatus:', Merchant.operationStatus)
+  Merchant.operationStatus = Merchant.operationStatus === 0 ? 1 : 0
   updateMerchantOperationStatus(Merchant.id, Merchant.operationStatus)
-  if (Merchant.operationStatus === '1') Merchant.operationStatus = '0'
-  else Merchant.operationStatus = '1'
   console.log('changedStatus:', Merchant.operationStatus)
 }
 
@@ -240,7 +237,11 @@ const openCamera = () => {
       </view>
     </view>
     <view class="Operation">
-      <label> <checkbox @click="HandleUpdate()" /><text>是否营业</text> </label>
+      <label>
+        <checkbox :checked="!Merchant.operationStatus" @click="HandleUpdate()" /><text
+          >是否营业</text
+        >
+      </label>
     </view>
 
     <view class="edit-button" @click="onEdit"> 修改资料 </view>
@@ -391,5 +392,9 @@ const openCamera = () => {
       transform: scale(0.95);
     }
   }
+}
+.upload-button {
+  margin: 50rpx auto;
+  background-color: #fff;
 }
 </style>

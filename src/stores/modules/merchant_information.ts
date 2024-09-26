@@ -17,7 +17,7 @@ export const useMerchantStore = defineStore(
     const businessHours = ref<string>('')
     const contactPhone = ref<string>('')
     const discription = ref<string>('')
-    const operationStatus = ref<string>('1')
+    const operationStatus = ref<number>(1)
     const logo = ref<string>('')
     const id = ref<string>('')
 

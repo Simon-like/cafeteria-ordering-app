@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-const title_name = ref<string>('Simon正宗火锅店')
-const work_status = ref<string>('营业中')
+import { ref, watchEffect } from 'vue'
+import { useMerchantStore } from '@/stores'
+const merchantStore = useMerchantStore()
+const work_status = ref()
+// 使用watchEffect来监听operationStatus的变化
+watchEffect(() => {
+  work_status.value = ref<string>(merchantStore.operationStatus === 0 ? '营业中' : '未营业')
+})
 </script>
 
 <template>
   <view class="header-bar">
     <view class="title-box">
-      <view class="title">{{ title_name }}</view>
+      <view class="title">{{ merchantStore.name }}</view>
       <view class="work-status"
-        ><i class="iconfont icon-dian" :class="{ work: work_status === '营业中' }"></i
-        >{{ work_status }}</view
+        ><i class="iconfont icon-dian" :class="{ work: work_status.value === '营业中' }"></i
+        >{{ work_status.value }}</view
       >
     </view>
   </view>
@@ -39,7 +44,7 @@ const work_status = ref<string>('营业中')
     .work-status {
       font-size: 25rpx;
       .iconfont {
-        color: rgba(139, 139, 208, 0.8);
+        color: rgba(255, 0, 0, 0.8);
 
         &.work {
           color: rgba(0, 245, 0, 0.8);
