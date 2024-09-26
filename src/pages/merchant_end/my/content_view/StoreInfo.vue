@@ -11,11 +11,11 @@ import { onLoad, onReady } from '@dcloudio/uni-app'
 import type { MerchantInfo } from '@/types/merchant_return'
 
 /**
- * @description 增加了图片上传功能
+ * @description 增加了图片上传功能，完善了营业时间的选择
  * @author 应东林  钟礼豪
  * @date 2024-09-19
- * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-09-25
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-26
  */
 const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
