@@ -27,6 +27,7 @@ const priceMinus = () => {
 const priceAdd = () => {
   priceValue.value++
 }
+const dish_feature = ref<string>('')
 </script>
 
 <template>
@@ -66,7 +67,7 @@ const priceAdd = () => {
         </view>
         <uni-easyinput
           type="textarea"
-          v-model="value"
+          v-model="dish_feature"
           autoHeight
           placeholder="请描述该菜品特征,以便管理员审核"
           :styles="{
