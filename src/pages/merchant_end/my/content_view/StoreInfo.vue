@@ -239,10 +239,6 @@ const time_edit = () => {
     <view class="edit-button" @click="onEdit"> 修改资料 </view>
 
     <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
-      <!-- 相册选择按钮 -->
-      <!-- <view class="upload-button" @click="openAlbumPicker">从相册选择图片</view> -->
-      <!-- 相机拍摄按钮 -->
-      <!-- <view class="upload-button" @click="openCamera">使用相机拍照</view> -->
       <uni-card class="form-card">
         <uni-section title="修改店铺logo" type="line">
           <up-upload

@@ -51,13 +51,24 @@ export const admin_register = (
   })
 }
 
-export const admin_forget = (newPassword: string, phoneNumber: string) => {
+export const admin_forget = (newPassword: string, phoneNumber: string, code: string) => {
   return http({
     method: 'POST',
     url: '/administer/findPassword',
     data: {
       newPassword,
       phoneNumber,
+      code,
+    },
+  })
+}
+export const admin_checkCode = (phoneNumber: string, validationCode: string) => {
+  return http({
+    method: 'POST',
+    url: '/administer/ValidCaptcha',
+    data: {
+      phoneNumber,
+      validationCode,
     },
   })
 }

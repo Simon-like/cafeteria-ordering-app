@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
+import { merchant_getvalidationCode, merchant_checkCode } from '@/services/merchant/merchant_api'
 import { useMerchantStore } from '@/stores'
 
 /**
@@ -16,22 +16,41 @@ const validationCode = ref<string>('')
 const password_1 = ref<string>('')
 const password_2 = ref<string>('')
 const merchantStore = useMerchantStore()
-const gotoNext = () => {
-  //后续添加验证码验证
+const gotoNext = async () => {
+  const res = await merchant_checkcode(phoneNumber.value, validationCode.value)
   if (password_1.value === password_2.value) {
-    merchantStore.phoneNumber = phoneNumber.value
-    merchantStore.password = password_1.value
-    uni.navigateTo({
-      url: '/pages/login_register/merchant/register/register_2',
-    })
+    if (+res.code === 1) {
+      merchantStore.phoneNumber = phoneNumber.value
+      merchantStore.password = password_1.value
+      uni.navigateTo({
+        url: '/pages/login_register/merchant/register/register_2',
+      })
+    } else {
+      alert('验证码错误')
+      return
+    }
+  } else {
+    alert('两次输入密码不同')
+    return
   }
 }
-const getValidationCode = async () => {
-  merchant_getvalidationCode(phoneNumber.value).then((response) => {
-    console.log(response)
-  })
-  // 处理获取验证码的逻辑，例如计时器等
+if (!phoneNumber.value) {
+  alert('请输入手机号')
+  return
 }
+merchant_getvalidationCode(phoneNumber.value)
+  .then((response) => {
+    console.log(response)
+    if (response) {
+      startCountdown()
+    } else {
+      alert('获取验证码失败，请重试')
+    }
+  })
+  .catch((error) => {
+    console.error(error)
+    alert('获取验证码失败，请重试')
+  })
 </script>
 <template>
   <view class="body">

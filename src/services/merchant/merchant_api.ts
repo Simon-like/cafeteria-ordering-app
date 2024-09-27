@@ -52,11 +52,11 @@ export const merchant_register = (
   })
 }
 
-export const merchant_forget = (phoneNumber: string, password: string) => {
+export const merchant_forget = (phoneNumber: string, password: string, code: string) => {
   return http({
     method: 'POST',
     url: '/merchant/findPassword',
-    data: { phoneNumber, password },
+    data: { phoneNumber, password, code },
   })
 }
 
@@ -85,6 +85,17 @@ export const updateMerchantOperationStatus = (
     data: {
       id,
       operationStatus,
+    },
+  })
+}
+
+export const merchant_checkCode = (phoneNumber: string, validationCode: string) => {
+  return http({
+    method: 'POST',
+    url: '/merchant/ValidCaptcha',
+    data: {
+      phoneNumber,
+      validationCode,
     },
   })
 }

@@ -1,23 +1,39 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
-import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
+import { merchant_getvalidationCode, merchant_checkCode } from '@/services/merchant/merchant_api'
 const merchantStore = useMerchantStore()
 const phoneNumber = ref<string>()
 const validationCode = ref<string>()
 
 const getValidationCode = async () => {
-  merchant_getvalidationCode(phoneNumber.value).then((response) => {
-    console.log(response)
-  })
-  // 处理获取验证码的逻辑，例如计时器等
+  if (!phoneNumber.value) {
+    alert('请输入手机号')
+    return
+  }
+  merchant_getvalidationCode(phoneNumber.value)
+    .then((response) => {
+      console.log(response)
+      if (response) {
+        startCountdown()
+      } else {
+        alert('获取验证码失败，请重试')
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+      alert('获取验证码失败，请重试')
+    })
 }
-const gotoNext = () => {
-  merchantStore.phoneNumber = phoneNumber.value
-  merchantStore.validationCode = validationCode.value
-  uni.navigateTo({
-    url: '/pages/login_register/merchant/forget/forget_1',
-  })
+const gotoNext = async () => {
+  const res = await merchant_checkCode(phoneNumber.value, validationCode.value)
+  if (+res.code === 1) {
+    merchantStore.phoneNumber = phoneNumber.value
+    merchantStore.validationCode = validationCode.value
+    uni.navigateTo({
+      url: '/pages/login_register/merchant/forget/forget_1',
+    })
+  }
 }
 </script>
 

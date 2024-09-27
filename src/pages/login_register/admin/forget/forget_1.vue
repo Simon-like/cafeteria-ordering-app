@@ -2,12 +2,23 @@
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
 import { admin_forget } from '@/services/admin/admin_api'
+import { gotoLogin } from '@/composables/navigation/navigation'
 const adminStore = useAdminStore()
 const password_1 = ref<string>()
 const password_2 = ref<string>()
 const handleForget = async () => {
-  if (password_1.value === password_2.value) adminStore.password = password_1.value
-  admin_forget(adminStore.phoneNumber, adminStore.password)
+  if (password_1.value === password_2.value) {
+    adminStore.password = password_1.value
+  } else {
+    alert('两次输入密码不同')
+    return
+  }
+  admin_forget(adminStore.phoneNumber, adminStore.password, adminStore.validationCode).then(
+    (response) => {
+      alert('修改成功')
+      gotoLogin()
+    },
+  )
 }
 </script>
 <template>

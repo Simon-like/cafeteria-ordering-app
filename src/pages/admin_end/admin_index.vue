@@ -20,7 +20,6 @@ const onSwitch = (e: number) => {
 <template>
   <view class="index">
     <custom-nav-bar></custom-nav-bar>
-    <HeaderBar></HeaderBar>
     <component :is="componentList[AdminPages.tabbarIndex]"></component>
     <AdminTabbar @switch="onSwitch"></AdminTabbar>
   </view>

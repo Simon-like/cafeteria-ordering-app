@@ -2,12 +2,25 @@
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
 import { merchant_forget } from '@/services/merchant/merchant_api'
+import { gotoLogin } from '@/composables/navigation/navigation'
 const merchantStore = useMerchantStore()
 const password_1 = ref<string>()
 const password_2 = ref<string>()
 const handleForget = async () => {
-  if (password_1.value === password_2.value) merchantStore.password = password_1.value
-  merchant_forget(merchantStore.phoneNumber, merchantStore.password)
+  if (password_1.value === password_2.value) {
+    merchantStore.password = password_1.value
+  } else {
+    alert('两次输入密码不同')
+    return
+  }
+  merchant_forget(
+    merchantStore.phoneNumber,
+    merchantStore.password,
+    merchantStore.validationCode,
+  ).tjen((response) => {
+    alert('修改成功')
+    gotoLogin()
+  })
 }
 </script>
 <template>

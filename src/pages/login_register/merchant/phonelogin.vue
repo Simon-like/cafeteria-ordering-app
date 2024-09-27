@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { merchant_Login_pv, merchant_getvalidationCode } from '@/services/merchant/merchant_api'
+import {
+  merchant_Login_pv,
+  merchant_getvalidationCode,
+  merchant_checkCode,
+} from '@/services/merchant/merchant_api'
 import { gotoMerchantHome } from '@/composables/navigation/navigation'
 import { useDoubleTokenStore } from '@/stores'
 
@@ -12,10 +16,12 @@ const isCounting = ref(false) // 是否正在倒计时
 
 const handleLogin_pv = async () => {
   const res = await merchant_Login_pv(phoneNumber.value, validationCode.value)
-  const accessToken = res.data.accessToken
-  const refreshToken = res.data.refreshToken
-  tokenStore.addToken(accessToken, refreshToken)
-  gotoMerchantHome()
+  if (+res.code === 1) {
+    const accessToken = res.data.accessToken
+    const refreshToken = res.data.refreshToken
+    tokenStore.addToken(accessToken, refreshToken)
+    gotoMerchantHome()
+  }
 }
 
 const getValidationCode = async () => {
@@ -62,7 +68,7 @@ const startCountdown = () => {
       <view class="password">
         <text>验证码</text>
         <input v-model="validationCode" type="text" class="input_password" />
-        <button :disabled="isCounting" @click="getValidationCode">
+        <button :disabled="!!isCounting" @click="getValidationCode">
           {{ isCounting ? `${countdown}s` : '获取验证码(60s)' }}
         </button>
       </view>

@@ -9,16 +9,31 @@ const validationCode = ref('')
 const tokenStore = useDoubleTokenStore()
 const handleLogin_pv = async () => {
   const res = await admin_Login_pv(phoneNumber.value, validationCode.value)
-  const accessToken = res.data.accessToken
-  const refreshToken = res.data.refreshToken
-  tokenStore.addToken(accessToken, refreshToken)
-  gotoAdminHome()
+  if (+res.code === 1) {
+    const accessToken = res.data.accessToken
+    const refreshToken = res.data.refreshToken
+    tokenStore.addToken(accessToken, refreshToken)
+    gotoAdminHome()
+  }
 }
 const getValidationCode = async () => {
-  admin_getvalidationCode(phoneNumber.value).then((response) => {
-    console.log(response)
-  })
-  // 处理获取验证码的逻辑，例如计时器等
+  if (!phoneNumber.value) {
+    alert('请输入手机号')
+    return
+  }
+  admin_getvalidationCode(phoneNumber.value)
+    .then((response) => {
+      console.log(response)
+      if (response) {
+        startCountdown()
+      } else {
+        alert('获取验证码失败，请重试')
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+      alert('获取验证码失败，请重试')
+    })
 }
 </script>
 <template>

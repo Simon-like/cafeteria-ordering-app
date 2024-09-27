@@ -1,22 +1,49 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
+import { admin_checkCode } from '@/services/admin/admin_api'
 const adminStore = useAdminStore()
 const phoneNumber = ref<string>()
 const validationCode = ref<string>()
 
 const getValidationCode = async () => {
-  merchant_getvalidationCode(phoneNumber.value).then((response) => {
-    console.log(response)
-  })
-  // 处理获取验证码的逻辑，例如计时器等
+  if (!phoneNumber.value) {
+    alert('请输入手机号')
+    return
+  }
+  admin_getvalidationCode(phoneNumber.value)
+    .then((response) => {
+      console.log(response)
+      if (response) {
+        startCountdown()
+      } else {
+        alert('获取验证码失败，请重试')
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+      alert('获取验证码失败，请重试')
+    })
 }
-const gotoNext = () => {
-  adminStore.phoneNumber = phoneNumber.value
-  adminStore.validationCode = validationCode.value
-  uni.navigateTo({
-    url: '/pages/login_register/admin/forget/forget_1',
-  })
+const gotoNext = async () => {
+  if (!phoneNumber.value) {
+    alert('请输入手机号')
+    return
+  }
+  if (!validationCode.value) {
+    alert('请输入验证码')
+    return
+  }
+  const res = await admin_checkCode(phoneNumber.value, validation.value)
+  if (+res.code === 1) {
+    adminStore.phoneNumber = phoneNumber.value
+    adminStore.validationCode = validationCode.value
+    uni.navigateTo({
+      url: '/pages/login_register/admin/forget/forget_1',
+    })
+  } else {
+    alert('验证码错误')
+  }
 }
 </script>
 

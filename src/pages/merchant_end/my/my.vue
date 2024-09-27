@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { AsideItem } from '../../../types/aside'
+import type { AsideItem } from '@/types/aside'
 import { componentList } from '@/pages/merchant_end/my/content_view/index'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
 import { GetMerchantInfo } from '@/services/merchant/merchant_api'
