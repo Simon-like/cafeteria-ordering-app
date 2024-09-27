@@ -9,18 +9,14 @@ const password_2 = ref<string>()
 const handleForget = async () => {
   if (password_1.value === password_2.value) {
     merchantStore.password = password_1.value
+    merchant_forget(merchantStore.phoneNumber, merchantStore.password).then((response) => {
+      alert('修改成功')
+      gotoLogin()
+    })
   } else {
     alert('两次输入密码不同')
     return
   }
-  merchant_forget(
-    merchantStore.phoneNumber,
-    merchantStore.password,
-    merchantStore.validationCode,
-  ).tjen((response) => {
-    alert('修改成功')
-    gotoLogin()
-  })
 }
 </script>
 <template>

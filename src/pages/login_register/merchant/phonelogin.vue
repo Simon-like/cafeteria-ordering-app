@@ -61,16 +61,14 @@ const startCountdown = () => {
   <view class="body">
     <view class="title"> 登录 </view>
     <view class="input">
-      <view class="phoneNumber">
+      <view class="input-items">
         <text>手机号</text>
-        <input v-model="phoneNumber" type="text" />
+        <input v-model="phoneNumber" type="text" class="input_phoneNumber" />
       </view>
-      <view class="password">
+      <view class="input-items">
         <text>验证码</text>
-        <input v-model="validationCode" type="text" class="input_password" />
-        <button :disabled="!!isCounting" @click="getValidationCode">
-          {{ isCounting ? `${countdown}s` : '获取验证码(60s)' }}
-        </button>
+        <input v-model="validationCode" type="text" />
+        <button @click="getValidationCode">获取验证码(60s)</button>
       </view>
       <button class="login" @click="handleLogin_pv">登录</button>
     </view>
@@ -96,36 +94,22 @@ const startCountdown = () => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  align-items: center;
+  margin-left: 200rpx;
   justify-content: center;
-
-  .phoneNumber {
+  .input-items {
     display: flex;
-    align-items: center;
     margin-bottom: 40rpx;
-    margin-left: 0;
-
+    margin-right: 80rpx;
+    .input_phoneNumber {
+      width: 400rpx;
+    }
     input {
       margin-left: 20px;
       padding: 4px 0 3px 8px;
       border: 1px solid #ccc;
       background-color: #ccc;
       border-radius: 8px;
-    }
-  }
-
-  .password {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20rpx;
-    margin-left: 0;
-    .input_password {
-      margin-left: 20px;
-      padding: 4px 0 3px 8px;
-      border: 1px solid #ccc;
-      background-color: #ccc;
-      border-radius: 8px;
-      width: 150rpx;
+      width: 170rpx;
     }
     button {
       margin-left: 20rpx;
@@ -142,6 +126,7 @@ const startCountdown = () => {
       justify-content: center;
     }
   }
+
   .login {
     margin: 50rpx 160rpx;
     width: 470rpx;

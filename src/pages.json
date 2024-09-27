@@ -27,13 +27,13 @@
     {
       "path": "pages/login_register/merchant/forget/forget",
       "style": {
-        "navigationBarTitleText": "找回密码"
+        "navigationBarTitleText": "商家端找回密码"
       }
     },
     {
       "path": "pages/login_register/merchant/forget/forget_1",
       "style": {
-        "navigationBarTitleText": "确认密码"
+        "navigationBarTitleText": "商家端确认密码"
       }
     },
     {
@@ -67,6 +67,12 @@
       }
     },
     {
+      "path": "pages/login_register/admin/phonelogin",
+      "style": {
+        "navigationBarTitleText": "管理端手机号登录"
+      }
+    },
+    {
       "path": "pages/login_register/admin/register/register_1",
       "style": {
         "navigationBarTitleText": "管理端注册第一步"
@@ -76,6 +82,18 @@
       "path": "pages/login_register/admin/register/register_2",
       "style": {
         "navigationBarTitleText": "管理端注册第二步"
+      }
+    },
+    {
+      "path": "pages/login_register/admin/forget/forget",
+      "style": {
+        "navigationBarTitleText": "管理端找回密码"
+      }
+    },
+    {
+      "path": "pages/login_register/admin/forget/forget_1",
+      "style": {
+        "navigationBarTitleText": "管理端修改密码"
       }
     },
     {

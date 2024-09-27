@@ -17,9 +17,13 @@ const password_1 = ref<string>('')
 const password_2 = ref<string>('')
 const merchantStore = useMerchantStore()
 const gotoNext = async () => {
-  const res = await merchant_checkcode(phoneNumber.value, validationCode.value)
-  if (password_1.value === password_2.value) {
-    if (+res.code === 1) {
+  const res = await merchant_checkCode(phoneNumber.value, validationCode.value)
+  if (+res.code === 1) {
+    if (!phoneNumber.value) {
+      alert('请输入手机号')
+      return
+    }
+    if (password_1.value === password_2.value) {
       merchantStore.phoneNumber = phoneNumber.value
       merchantStore.password = password_1.value
       uni.navigateTo({
@@ -34,23 +38,23 @@ const gotoNext = async () => {
     return
   }
 }
-if (!phoneNumber.value) {
-  alert('请输入手机号')
-  return
-}
-merchant_getvalidationCode(phoneNumber.value)
-  .then((response) => {
-    console.log(response)
-    if (response) {
-      startCountdown()
-    } else {
+
+const getValidationCode = async () => {
+  merchant_getvalidationCode(phoneNumber.value)
+    .then((response) => {
+      if (response) {
+        console.log(response)
+      } else {
+        alert('获取验证码失败，请重试')
+        return
+      }
+    })
+    .catch((error) => {
+      console.error(error)
       alert('获取验证码失败，请重试')
-    }
-  })
-  .catch((error) => {
-    console.error(error)
-    alert('获取验证码失败，请重试')
-  })
+      return
+    })
+}
 </script>
 <template>
   <view class="body">
