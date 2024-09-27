@@ -4,11 +4,11 @@ import { merchant_getvalidationCode, merchant_checkCode } from '@/services/merch
 import { useMerchantStore } from '@/stores'
 
 /**
- * @description 修复了password传参问题
+ * @description 修复了password传参问题,alert函数在移动端不可用！后面请统一使用uni.Toast
  * @author 钟礼豪
  * @date 2024-09-14
- * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-09-19
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-27
  */
 
 const phoneNumber = ref<string>('')
@@ -16,13 +16,24 @@ const validationCode = ref<string>('')
 const password_1 = ref<string>('')
 const password_2 = ref<string>('')
 const merchantStore = useMerchantStore()
+const is_phone_repeat = ref<boolean>(false)
 const gotoNext = async () => {
+  if (!phoneNumber.value) {
+    uni.showToast({
+      icon: 'none',
+      title: '请输入手机号',
+    })
+    return
+  }
+  if (is_phone_repeat.value) {
+    uni.showToast({
+      icon: 'none',
+      title: '该手机号已被注册！',
+    })
+    return
+  }
   const res = await merchant_checkCode(phoneNumber.value, validationCode.value)
   if (+res.code === 1) {
-    if (!phoneNumber.value) {
-      alert('请输入手机号')
-      return
-    }
     if (password_1.value === password_2.value) {
       merchantStore.phoneNumber = phoneNumber.value
       merchantStore.password = password_1.value
@@ -30,11 +41,18 @@ const gotoNext = async () => {
         url: '/pages/login_register/merchant/register/register_2',
       })
     } else {
-      alert('验证码错误')
+      uni.showToast({
+        icon: 'none',
+        title: '验证码错误',
+      })
       return
     }
   } else {
-    alert('两次输入密码不同')
+    uni.showToast({
+      icon: 'none',
+      title: '两次输入密码不同',
+    })
+
     return
   }
 }
@@ -42,16 +60,24 @@ const gotoNext = async () => {
 const getValidationCode = async () => {
   merchant_getvalidationCode(phoneNumber.value)
     .then((response) => {
-      if (response) {
-        console.log(response)
+      if (+response.code === 20000) {
+        is_phone_repeat.value = false
+      } else if (+response.code === 20001) {
+        is_phone_repeat.value = true
       } else {
-        alert('获取验证码失败，请重试')
+        uni.showToast({
+          icon: 'none',
+          title: '获取验证码失败，请重试',
+        })
         return
       }
     })
     .catch((error) => {
       console.error(error)
-      alert('获取验证码失败，请重试')
+      uni.showToast({
+        icon: 'none',
+        title: '获取验证码失败，请重试',
+      })
       return
     })
 }

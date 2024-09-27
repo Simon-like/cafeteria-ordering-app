@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api'
 import { gotoAdminHome } from '@/composables/navigation/navigation'
 import { useDoubleTokenStore } from '@/stores'
-import { ValidationCodeButton } from '@/components/ValidationCodeButton/ValidationCodeButton'
+import ValidationCodeButton from '@/components/ValidationCodeButton/ValidationCodeButton'
 const phoneNumber = ref('')
 const validationCode = ref('')
 

@@ -2,13 +2,25 @@
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
 import { merchant_getvalidationCode, merchant_checkCode } from '@/services/merchant/merchant_api'
+
+/**
+ * @description alert函数在移动端不可用！后面请统一使用uni.Toast
+ * @author 钟礼豪
+ * @date 2024-09-不知道什么时候
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-27
+ */
 const merchantStore = useMerchantStore()
 const phoneNumber = ref<string>()
 const validationCode = ref<string>()
 
 const getValidationCode = async () => {
   if (!phoneNumber.value) {
-    alert('请输入手机号')
+    uni.showToast({
+      icon: 'none',
+      title: '请输入手机号',
+    })
+
     return
   }
   try {
@@ -16,8 +28,10 @@ const getValidationCode = async () => {
     console.log(response)
     // 这里可以添加更多的成功处理逻辑
   } catch (error) {
-    console.error(error)
-    alert('获取验证码失败，请重试')
+    uni.showToast({
+      icon: 'none',
+      title: '获取验证码失败，请重试',
+    })
   }
 }
 const gotoNext = async () => {

@@ -1,33 +1,83 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { admin_getvalidationCode } from '@/services/admin/admin_api'
+import { admin_getvalidationCode, admin_checkCode } from '@/services/admin/admin_api'
 import { useAdminStore } from '@/stores/modules/admin_information'
 /**
- * @description 增加了管理端仓库和相关调用
+ * @description 增加了管理端仓库和相关调用，完善了验证验证码功能
  * @author 钟礼豪
  * @date 2024-09-19
- * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-09-19
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-27
  */
 const adminStore = useAdminStore()
 const phoneNumber = ref<string>('')
 const password_1 = ref<string>('')
 const password_2 = ref<string>('')
 const validationCode = ref<string>('')
-const gotoNext = () => {
-  if (password_1.value === password_2.value) {
-    ;(adminStore.phoneNumber = phoneNumber.value),
-      (adminStore.password = password_1.value),
-      (adminStore.validationCode = validationCode.value)
-    uni.navigateTo({
-      url: '/pages/login_register/admin/register/register_2',
+const is_phone_repeat = ref<boolean>(false)
+const gotoNext = async () => {
+  if (!phoneNumber.value) {
+    uni.showToast({
+      icon: 'none',
+      title: '请输入手机号',
     })
+    return
+  }
+  if (is_phone_repeat.value) {
+    uni.showToast({
+      icon: 'none',
+      title: '该手机号已被注册！',
+    })
+    return
+  }
+  const res = await admin_checkCode(phoneNumber.value, validationCode.value)
+  if (+res.code === 1) {
+    if (password_1.value === password_2.value) {
+      adminStore.phoneNumber = phoneNumber.value
+      adminStore.password = password_1.value
+      uni.navigateTo({
+        url: '/pages/login_register/admin/register/register_2',
+      })
+    } else {
+      uni.showToast({
+        icon: 'none',
+        title: '验证码错误',
+      })
+      return
+    }
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '两次输入密码不同',
+    })
+
+    return
   }
 }
+
 const handleValidationCode = async () => {
-  admin_getvalidationCode(phoneNumber.value).then((response) => {
-    console.log(response)
-  })
+  admin_getvalidationCode(phoneNumber.value)
+    .then((response) => {
+      if (+response.code === 20000) {
+        is_phone_repeat.value = false
+      } else if (+response.code === 20001) {
+        is_phone_repeat.value = true
+      } else {
+        uni.showToast({
+          icon: 'none',
+          title: '获取验证码失败，请重试',
+        })
+        return
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+      uni.showToast({
+        icon: 'none',
+        title: '获取验证码失败，请重试',
+      })
+      return
+    })
 }
 </script>
 <template>

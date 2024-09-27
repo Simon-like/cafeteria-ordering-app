@@ -97,5 +97,8 @@ export const merchant_checkCode = (phoneNumber: string, validationCode: string) 
       phoneNumber,
       validationCode,
     },
+    header: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   })
 }

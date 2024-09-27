@@ -15,17 +15,14 @@ import { gotoAdminHome } from '@/composables/navigation/navigation'
 const phoneNumber = ref('')
 const password = ref('')
 const tokenStore = useDoubleTokenStore()
-const handleLogin_pp = () => {
-  gotoAdminHome()
-
-  // const res = await admin_Login_pp(phoneNumber.value, password.value)
-  // const accessToken = res.data.accessToken
-  // const refreshToken = res.data.refreshToken
-  // tokenStore.addToken(accessToken, refreshToken)
-  // if (+res.code === 1) {
-  //   gotoAdminHome()
-  //   tabbarToggle('admin')
-  // }
+const handleLogin_pp = async () => {
+  const res = await admin_Login_pp(phoneNumber.value, password.value)
+  const accessToken = res.data.accessToken
+  const refreshToken = res.data.refreshToken
+  tokenStore.addToken(accessToken, refreshToken)
+  if (+res.code === 1) {
+    gotoAdminHome()
+  }
 }
 </script>
 <template>

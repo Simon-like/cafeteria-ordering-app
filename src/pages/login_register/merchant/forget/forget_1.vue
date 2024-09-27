@@ -3,6 +3,14 @@ import { ref } from 'vue'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
 import { merchant_forget } from '@/services/merchant/merchant_api'
 import { gotoLogin } from '@/composables/navigation/navigation'
+/**
+ * @description alert函数在移动端不可用！后面请统一使用uni.Toast
+ * @author 钟礼豪
+ * @date 2024-09-不知道什么时候
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-09-27
+ */
+
 const merchantStore = useMerchantStore()
 const password_1 = ref<string>()
 const password_2 = ref<string>()
@@ -10,11 +18,17 @@ const handleForget = async () => {
   if (password_1.value === password_2.value) {
     merchantStore.password = password_1.value
     merchant_forget(merchantStore.phoneNumber, merchantStore.password).then((response) => {
-      alert('修改成功')
+      uni.showToast({
+        icon: 'none',
+        title: '修改成功',
+      })
       gotoLogin()
     })
   } else {
-    alert('两次输入密码不同')
+    uni.showToast({
+      icon: 'none',
+      title: '两次输入密码不同',
+    })
     return
   }
 }
