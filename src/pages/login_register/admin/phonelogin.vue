@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api'
 import { gotoAdminHome } from '@/composables/navigation/navigation'
 import { useDoubleTokenStore } from '@/stores'
+import { ValidationCodeButton } from '@/components/ValidationCodeButton/ValidationCodeButton'
 const phoneNumber = ref('')
 const validationCode = ref('')
 
@@ -16,25 +17,6 @@ const handleLogin_pv = async () => {
     gotoAdminHome()
   }
 }
-const getValidationCode = async () => {
-  if (!phoneNumber.value) {
-    alert('请输入手机号')
-    return
-  }
-  admin_getvalidationCode(phoneNumber.value)
-    .then((response) => {
-      console.log(response)
-      if (response) {
-        startCountdown()
-      } else {
-        alert('获取验证码失败，请重试')
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-      alert('获取验证码失败，请重试')
-    })
-}
 </script>
 <template>
   <view class="body">
@@ -47,7 +29,7 @@ const getValidationCode = async () => {
       <view class="input-items">
         <text>验证码</text>
         <input v-model="validationCode" type="text" />
-        <button @click="getValidationCode">获取验证码(60s)</button>
+        <ValidationCodeButton></ValidationCodeButton>
       </view>
       <button class="login" @click="handleLogin_pv">登录</button>
     </view>
@@ -89,20 +71,6 @@ const getValidationCode = async () => {
       background-color: #ccc;
       border-radius: 8px;
       width: 170rpx;
-    }
-    button {
-      margin-left: 20rpx;
-      margin-top: 2rpx;
-      padding: 0;
-      font-size: 12px;
-      width: 200rpx;
-      height: 50rpx;
-      border: #000 solid 1rpx;
-      background-color: transparent;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
 

@@ -11,19 +11,14 @@ const getValidationCode = async () => {
     alert('请输入手机号')
     return
   }
-  merchant_getvalidationCode(phoneNumber.value)
-    .then((response) => {
-      console.log(response)
-      if (response) {
-        startCountdown()
-      } else {
-        alert('获取验证码失败，请重试')
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-      alert('获取验证码失败，请重试')
-    })
+  try {
+    const response = await merchant_getvalidationCode(phoneNumber.value)
+    console.log(response)
+    // 这里可以添加更多的成功处理逻辑
+  } catch (error) {
+    console.error(error)
+    alert('获取验证码失败，请重试')
+  }
 }
 const gotoNext = async () => {
   const res = await merchant_checkCode(phoneNumber.value, validationCode.value)
