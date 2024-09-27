@@ -6,7 +6,7 @@ import { ref, reactive, nextTick } from 'vue'
  * @author 应东林
  * @date 2024-09-17
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-22
+ * @lastModifiedTime  2024-09-26
  */
 
 // 分组信息
@@ -45,17 +45,19 @@ const statusSwitch = (index: number) => {
 //菜品信息
 
 const dish_info_list = ref([
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
-  { name: 'hh' },
+  { name: 'hh', index: 0, dishDesc_show: false },
+  { name: 'hh', index: 1, dishDesc_show: false },
+  { name: 'hh', index: 2, dishDesc_show: false },
+  { name: 'hh', index: 3, dishDesc_show: false },
+  { name: 'hh', index: 4, dishDesc_show: false },
+  { name: 'hh', index: 5, dishDesc_show: false },
+  { name: 'hh', index: 6, dishDesc_show: false },
+  { name: 'hh', index: 7, dishDesc_show: false },
+  { name: 'hh', index: 8, dishDesc_show: false },
+  { name: 'hh', index: 9, dishDesc_show: false },
 ])
+
+const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', '加牛肚'])
 
 const scrollTop = ref<number>(0)
 const old = reactive({
@@ -74,6 +76,14 @@ const goTop = (e: any) => {
   uni.showToast({
     icon: 'none',
     title: '已返回顶部',
+  })
+}
+
+const dishDesc_switch = (dishIndex: number) => {
+  dish_info_list.value.forEach((item, index) => {
+    if (index === dishIndex) {
+      item.dishDesc_show = !item.dishDesc_show
+    }
   })
 }
 
@@ -120,25 +130,42 @@ const add = () => {
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
           <view class="dish-wrapper" v-for="value in dish_info_list">
-            <view class="dish-img">{{ value.name }}</view>
-            <view class="dish-info">
-              <view class="dish-name">海参</view>
-              <view class="dish-value-line">
-                <view class="today-inventory">今日库存(/份) 24</view>
-              </view>
-              <view class="dish-price-line">
-                <view class="current price"> <i class="iconfont icon-renminbi"></i>24.0 </view>
-                <view class="original price">
-                  <i class="iconfont icon-renminbi"></i>40.0
-                  <view class="underline"></view>
-                  <view class="discount">6折</view>
+            <view class="explicit-info">
+              <view class="dish-img">{{ value.name }}</view>
+              <view class="dish-info">
+                <view class="dish-name">海参</view>
+                <view class="dish-value-line">
+                  <view class="today-inventory">今日库存(/份) 24</view>
+                </view>
+                <view class="dish-price-line">
+                  <view class="current price"> <i class="iconfont icon-renminbi"></i>24.0 </view>
+                  <view class="original price">
+                    <i class="iconfont icon-renminbi"></i>40.0
+                    <view class="underline"></view>
+                    <view class="discount">6折</view>
+                  </view>
+                </view>
+                <view class="dish-status-line">单点不送</view>
+                <view class="button-box">
+                  <view class="edit btn" @click="edit">修改信息</view>
+                  <view class="discontinued btn">下架</view>
                 </view>
               </view>
-              <view class="dish-status-line">单点不送</view>
-              <view class="button-box">
-                <view class="edit btn" @click="edit">修改信息</view>
-                <view class="discontinued btn">下架</view>
+            </view>
+            <view class="implicit-info" :class="{ active: value.dishDesc_show }">
+              <view class="spec-line" v-for="(item, index) in specifications" :key="item">
+                <view class="title">规格{{ index + 1 }}:</view>
+                <view class="specItem">{{ item }}</view>
               </view>
+            </view>
+            <view class="Btn" @click="dishDesc_switch(value.index)">
+              <i
+                class="iconfont"
+                :class="{
+                  'icon-jiantouarrow483': !value.dishDesc_show,
+                  'icon-jiantou-copy': value.dishDesc_show,
+                }"
+              ></i>
             </view>
           </view>
         </scroll-view>
@@ -245,91 +272,131 @@ const add = () => {
       .dish-wrapper {
         width: 100%;
         position: relative;
-        height: 240rpx;
         background-color: rgba(0, 0, 0, 0.1);
         margin-bottom: 10rpx;
+        padding: 0 5rpx;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        padding: 18rpx 5rpx;
-        gap: 20rpx;
-        .dish-img {
-          width: 150rpx;
-          height: 150rpx;
-          background-color: rgba(0, 0, 0, 0.2);
+        .explicit-info {
+          width: 100%;
+          padding: 18rpx 5rpx;
+          height: 240rpx;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20rpx;
+          .dish-img {
+            width: 150rpx;
+            height: 150rpx;
+            background-color: rgba(0, 0, 0, 0.2);
+          }
+          .dish-info {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6rpx;
+            .dish-name {
+              font-weight: 600;
+            }
+            .dish-value-line {
+              font-size: 18rpx;
+              display: flex;
+              align-items: center;
+            }
+            .dish-price-line {
+              display: flex;
+              gap: 5rpx;
+              align-items: bottom;
+              .price {
+                position: relative;
+                font-size: 22rpx;
+                .iconfont {
+                  color: rgba(236, 154, 0, 0.9);
+                  font-size: 20rpx;
+                }
+                &.original {
+                  scale: 0.8;
+                  .underline {
+                    height: 0;
+                    width: 100%;
+                    position: absolute;
+                    top: 50%;
+                    border-bottom: 1px solid rgb(0, 0, 0);
+                  }
+                  .discount {
+                    position: absolute;
+                    white-space: nowrap;
+                    padding: 2rpx 4rpx;
+                    background-color: rgba(0, 0, 0, 0.2);
+                    left: 110%;
+                    top: -80%;
+                    border-radius: 8rpx;
+                  }
+                }
+              }
+            }
+
+            .dish-status-line {
+              font-size: 18rpx;
+            }
+
+            .button-box {
+              display: flex;
+              font-size: 20rpx;
+              gap: 15rpx;
+              align-self: flex-end;
+              margin-right: 20rpx;
+              .btn {
+                padding: 8rpx 12rpx;
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 8rpx;
+                font-weight: 550;
+                transition: 0.2s ease;
+                &:active {
+                  scale: 0.9;
+                }
+              }
+            }
+          }
         }
-        .dish-info {
-          flex: 1;
-          height: 100%;
+        .implicit-info {
+          width: 100%;
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
-          gap: 6rpx;
-          .dish-name {
-            font-weight: 600;
+          gap: 40rpx;
+          max-height: 0;
+          overflow: hidden;
+          opacity: 0;
+          visibility: hidden;
+          &.active {
+            padding: 18rpx 15rpx;
+            transition: all 0.5 ease;
+            opacity: 1;
+            max-height: 100vh;
+            visibility: visible;
+            border-top: 1px solid #000;
           }
-          .dish-value-line {
-            font-size: 18rpx;
+          .spec-line {
             display: flex;
+            width: 100%;
+            justify-content: space-between;
             align-items: center;
-          }
-          .dish-price-line {
-            display: flex;
-            gap: 5rpx;
-            align-items: bottom;
-            .price {
-              position: relative;
-              font-size: 22rpx;
-              .iconfont {
-                color: rgba(236, 154, 0, 0.9);
-                font-size: 20rpx;
-              }
-              &.original {
-                scale: 0.8;
-                .underline {
-                  height: 0;
-                  width: 100%;
-                  position: absolute;
-                  top: 50%;
-                  border-bottom: 1px solid rgb(0, 0, 0);
-                }
-                .discount {
-                  position: absolute;
-                  white-space: nowrap;
-                  padding: 2rpx 4rpx;
-                  background-color: rgba(0, 0, 0, 0.2);
-                  left: 110%;
-                  top: -80%;
-                  border-radius: 8rpx;
-                }
-              }
+            .specItem {
+              border: 1px solid rgb(0, 0, 0);
+              border-radius: 16rpx;
+              padding: 5rpx;
+              text-align: center;
             }
           }
-
-          .dish-status-line {
-            font-size: 18rpx;
-            //background-color: rgba(0, 0, 0, 0.2);
-            //border-radius: 8rpx;
-            //padding: 6rpx;
-          }
-
-          .button-box {
-            display: flex;
-            font-size: 20rpx;
-            gap: 15rpx;
-            align-self: flex-end;
-            margin-right: 20rpx;
-            .btn {
-              padding: 8rpx 12rpx;
-              background-color: rgba(0, 0, 0, 0.2);
-              border-radius: 8rpx;
-              font-weight: 550;
-              transition: 0.2s ease;
-              &:active {
-                scale: 0.9;
-              }
-            }
-          }
+        }
+        .Btn {
+          width: 100%;
+          text-align: center;
+          color: #000;
+          font-size: 50rpx;
         }
       }
     }

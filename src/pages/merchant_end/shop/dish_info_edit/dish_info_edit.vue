@@ -71,6 +71,8 @@ const discountAdd = () => {
 const limitDecimalPlaces = () => {
   discountValue.value = +discountValue.value.toFixed(2)
 }
+
+const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', '加牛肚'])
 </script>
 
 <template>
@@ -148,9 +150,12 @@ const limitDecimalPlaces = () => {
     <view class="spec-info section">
       <view class="section-title">规格信息</view>
       <view class="info-wrapper">
+        <view class="info-line" v-for="(item, index) in specifications" :key="item">
+          <view class="line-title">规格{{ index + 1 }}:</view>
+          <view class="value spec">{{ item }}</view>
+        </view>
         <view class="info-line">
-          <view class="line-title">规格设置：</view>
-          <view class="value">15.9</view>
+          <view class="spec-add"><i class="iconfont icon-jia"></i><text>新增规格</text></view>
         </view>
       </view>
     </view>
@@ -169,7 +174,7 @@ const limitDecimalPlaces = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 45rpx 20rpx 0 20rpx;
+  padding: 45rpx 20rpx 0rpx 20rpx;
   gap: 60rpx;
   .section-header {
     position: relative;
@@ -217,6 +222,27 @@ const limitDecimalPlaces = () => {
         .discountPrice {
           margin-left: auto;
           color: rgba(0, 0, 0, 0.2);
+        }
+
+        .spec {
+          border: 1px solid rgb(0, 0, 0);
+          border-radius: 16rpx;
+          padding: 5rpx;
+          text-align: center;
+        }
+        .spec-add {
+          padding: 5rpx;
+          text-align: center;
+          border-radius: 16rpx;
+          background-color: #fff;
+          transition: 0.2s ease;
+          &:active {
+            scale: 0.95;
+          }
+          i {
+            color: rgba(0, 0, 0, 0.3);
+            margin-right: 5rpx;
+          }
         }
 
         .number {
@@ -278,7 +304,8 @@ const limitDecimalPlaces = () => {
   }
 
   .button-box {
-    margin-top: 90rpx;
+    margin-top: 60rpx;
+
     width: 100%;
     display: flex;
     gap: 70rpx;
