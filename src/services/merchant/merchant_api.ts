@@ -102,3 +102,10 @@ export const merchant_checkCode = (phoneNumber: string, validationCode: string) 
     },
   })
 }
+
+export const GetUniversity = () => {
+  return http({
+    method: 'GET',
+    url: '/getUniversityList',
+  })
+}

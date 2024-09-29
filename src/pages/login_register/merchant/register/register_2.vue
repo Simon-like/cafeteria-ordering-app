@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores'
+import { onLoad } from '@dcloudio/uni-app'
+
 const realName = ref<string>('')
 const name = ref<string>('')
 const address = ref<string>('')
 const college = ref<string>('')
 const merchantStore = useMerchantStore()
+
 const gotoNext = () => {
   merchantStore.realName = realName.value
   merchantStore.name = name.value
@@ -14,13 +17,37 @@ const gotoNext = () => {
     url: '/pages/login_register/merchant/register/register_3',
   })
 }
-//大学列表测试
-const options = ref([
-  { label: '北京大学', value: '1' },
-  { label: '清华大学', value: '2' },
-  { label: '复旦大学', value: '3' },
-])
+
+const universities = ref<{ UniversityName: string; UniversityId: string }[]>([])
+
+// 获取大学列表的函数
+const fetchUniversities = async () => {
+  try {
+    // 模拟接口返回的数据
+    const mockResponse = [
+      { UniversityName: '清华大学', UniversityId: '001' },
+      { UniversityName: '北京大学', UniversityId: '002' },
+      { UniversityName: '复旦大学', UniversityId: '003' },
+      { UniversityName: '浙江大学', UniversityId: '004' },
+      { UniversityName: '上海交通大学', UniversityId: '005' },
+    ]
+    universities.value = mockResponse // 存储整个对象数组
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 在页面加载时调用获取大学列表的函数
+onLoad(fetchUniversities)
+
+// 当选择大学时触发的函数
+const onUniversityChange = (e) => {
+  const index = e.detail.value
+  const selectedUniversity = universities.value[index]
+  college.value = selectedUniversity.UniversityName // 这里要取出大学的名称
+}
 </script>
+
 <template>
   <view class="body">
     <view class="title"> 注册 </view>
@@ -51,10 +78,19 @@ const options = ref([
         <text>店铺地址</text>
         <input type="text" v-model="address" />
       </view>
+      <view class="input-item">
+        <text>选择大学</text>
+        <picker
+          class="uni"
+          mode="selector"
+          :range="universities.map((u) => u.UniversityName)"
+          @change="onUniversityChange"
+          ><view class="uni-text">{{ college || '请选择大学' }}</view>
+          <!-- 显示选择的大学 --></picker
+        >
+      </view>
     </view>
-    <view class="input-item">
-      <text>选择省/市/大学</text>
-    </view>
+
     <text class="tips">--店铺详细信息注册完成后可在门店管理页面中更改--</text>
     <view class="checkbox__container">
       <label> <checkbox /><text>我已阅读并同意xxxxxx</text> </label>
@@ -122,7 +158,21 @@ const options = ref([
       padding-left: 10rpx;
       background-color: #ccc;
       border: #000 solid 1rpx;
-      width: 400rpx; // 输入框宽度，减去文本宽度和间距
+      width: 400rpx;
+    }
+
+    .uni {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      justify-content: space-between;
+      .uni-text {
+        width: 400rpx;
+        border: 1px solid #ccc;
+        padding: 10rpx;
+        text-align: center; // 文本居中
+        background-color: #fff; // 设置背景颜色
+      }
     }
   }
 }
