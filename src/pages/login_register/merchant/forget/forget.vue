@@ -2,13 +2,13 @@
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores/modules/merchant_information'
 import { merchant_getvalidationCode, merchant_checkCode } from '@/services/merchant/merchant_api'
-
+import ValidationCodeButton from '@/components/ValidationCodeButton/merchant_ValidationCodeButton'
 /**
  * @description alert函数在移动端不可用！后面请统一使用uni.Toast
  * @author 钟礼豪
  * @date 2024-09-不知道什么时候
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-27 
+ * @lastModifiedTime  2024-09-27
  */
 const merchantStore = useMerchantStore()
 const phoneNumber = ref<string>()
@@ -57,7 +57,7 @@ const gotoNext = async () => {
       <view class="password">
         <text>验证码</text>
         <input type="text" class="input_password" v-model="validationCode" />
-        <button @click="getValidationCode">获取验证码(60s)</button>
+        <ValidationCodeButton :phoneNumber="phoneNumber"></ValidationCodeButton>
       </view>
       <button class="next" @click="gotoNext()">下一步</button>
     </view>

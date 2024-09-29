@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
 import { admin_checkCode, admin_getvalidationCode } from '@/services/admin/admin_api'
+import ValidationCodeButton from '@/components/ValidationCodeButton/admin_ValidationCodeButton'
 /**
  * @description alert函数在移动端不可用！后面请统一使用uni.Toast
  * @author 钟礼豪
@@ -13,35 +14,6 @@ import { admin_checkCode, admin_getvalidationCode } from '@/services/admin/admin
 const adminStore = useAdminStore()
 const phoneNumber = ref<string>()
 const validationCode = ref<string>()
-
-const getValidationCode = async () => {
-  if (!phoneNumber.value) {
-    uni.showToast({
-      icon: 'none',
-      title: '请输入手机号',
-    })
-    return
-  }
-  admin_getvalidationCode(phoneNumber.value)
-    .then((response) => {
-      console.log(response)
-      if (response) {
-        console.log(response)
-      } else {
-        uni.showToast({
-          icon: 'none',
-          title: '获取验证码失败，请重试',
-        })
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-      uni.showToast({
-        icon: 'none',
-        title: '获取验证码失败，请重试',
-      })
-    })
-}
 const gotoNext = async () => {
   if (!phoneNumber.value) {
     uni.showToast({
@@ -84,7 +56,7 @@ const gotoNext = async () => {
       <view class="password">
         <text>验证码</text>
         <input type="text" class="input_password" v-model="validationCode" />
-        <button @click="getValidationCode">获取验证码(60s)</button>
+        <ValidationCodeButton :phoneNumber="phoneNumber"></ValidationCodeButton>
       </view>
       <button class="next" @click="gotoNext()">下一步</button>
     </view>

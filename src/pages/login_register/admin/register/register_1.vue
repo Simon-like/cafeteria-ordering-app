@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { admin_getvalidationCode, admin_checkCode } from '@/services/admin/admin_api'
+import { admin_checkCode } from '@/services/admin/admin_api'
 import { useAdminStore } from '@/stores/modules/admin_information'
+import ValidationCodeButton from '@/components/ValidationCodeButton/admin_ValidationCodeButton'
 /**
  * @description 增加了管理端仓库和相关调用，完善了验证验证码功能
  * @author 钟礼豪
@@ -10,8 +11,11 @@ import { useAdminStore } from '@/stores/modules/admin_information'
  * @lastModifiedTime  2024-09-27
  */
 const adminStore = useAdminStore()
+const phoneNumber = ref<string>('')
 const password_1 = ref<string>('')
 const password_2 = ref<string>('')
+const validationCode = ref<string>('')
+const realName = ref<string>('')
 const is_phone_repeat = ref<boolean>(false)
 const gotoNext = async () => {
   if (!adminStore.phoneNumber) {
@@ -32,6 +36,9 @@ const gotoNext = async () => {
   if (+res.code === 1) {
     if (password_1.value === password_2.value) {
       adminStore.password = password_1.value
+      adminStore.phoneNumber = phoneNumber.value
+      adminStore.validationCode = validationCode.value
+      adminStore.realName = realName.value
       uni.navigateTo({
         url: '/pages/login_register/admin/register/register_2',
       })
@@ -47,34 +54,8 @@ const gotoNext = async () => {
       icon: 'none',
       title: '两次输入密码不同',
     })
-
     return
   }
-}
-
-const handleValidationCode = async () => {
-  admin_getvalidationCode(adminStore.phoneNumber)
-    .then((response) => {
-      if (+response.code === 20000) {
-        is_phone_repeat.value = false
-      } else if (+response.code === 20001) {
-        is_phone_repeat.value = true
-      } else {
-        uni.showToast({
-          icon: 'none',
-          title: '获取验证码失败，请重试',
-        })
-        return
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-      uni.showToast({
-        icon: 'none',
-        title: '获取验证码失败，请重试',
-      })
-      return
-    })
 }
 </script>
 <template>
@@ -91,37 +72,32 @@ const handleValidationCode = async () => {
       </view>
     </view>
     <view class="input">
-      <view class="input-item">
+      <view class="input-items">
         <text>手机号</text>
-        <input placeholder="请输入使用人手机号" type="text" v-model="adminStore.phoneNumber" />
+        <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
       </view>
-      <view class="input-item">
+      <view class="input-items">
         <text>验证码</text>
-        <input
-          class="verification"
-          placeholder="请输入验证码"
-          type="text"
-          v-model="adminStore.validationCode"
-        />
-        <button class="verification_btn" @click="handleValidationCode()">获取验证码(60s)</button>
+        <input placeholder="请输入验证码" type="text" v-model="validationCode" class="code" />
+        <ValidationCodeButton :phoneNumber="phoneNumber"></ValidationCodeButton>
       </view>
-      <view class="input-item">
-        <text>请输入使用人姓名</text>
-        <input type="text" placeholder="请输入使用人姓名" v-model="adminStore.realName" />
+      <view class="input-items">
+        <text>使用人姓名</text>
+        <input placeholder="请输入使用人姓名" type="text" v-model="realName" />
       </view>
-      <view class="input-item">
+      <view class="input-items">
         <text>设置登录密码</text>
         <input placeholder="请输入密码" type="text" v-model="password_1" />
       </view>
-      <view class="input-item">
+      <view class="input-items">
         <text>确认登录密码</text>
         <input placeholder="请输入密码" type="text" v-model="password_2" />
       </view>
     </view>
     <view class="checkbox__container">
-      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
+      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label
+      ><button class="next" @click="gotoNext()">下一步</button>
     </view>
-    <button class="next" @click="gotoNext()">下一步</button>
   </view>
 </template>
 
@@ -167,40 +143,31 @@ const handleValidationCode = async () => {
 }
 .input {
   display: flex;
-  flex-direction: column; // 使每个 input-item 垂直排列
+  flex-direction: column;
+  width: 100%;
+  text-align: right;
   margin-top: 30rpx;
-  .input-item {
+  .input-items {
     display: flex;
-    align-items: center; // 垂直居中对齐
-    margin-bottom: 20rpx; // 每个 input 项的间距
-
+    margin-bottom: 40rpx;
+    margin-right: 20rpx;
+    align-items: center;
     text {
-      width: 270rpx; // 文本宽度
-      margin-right: 10rpx; // 文本和 input 之间的间距
-      text-align: right; // 右对齐文本
+      width: 180rpx;
+      margin-left: 60rpx;
+      white-space: nowrap;
     }
-
     input {
-      padding-left: 10rpx;
+      font-size: 16px;
+      padding-left: 3rpx;
       background-color: #ccc;
       border: #000 solid 1rpx;
-      width: 400rpx; // 输入框宽度，减去文本宽度和间距
+      width: 420rpx;
+      margin-left: 20rpx;
+      text-align: left;
     }
-    .verification {
-      width: 220rpx;
-      margin-left: 5rpx;
-    }
-    .verification_btn {
-      font-size: xx-small;
-      width: 170rpx;
-      display: flex;
-      justify-content: center;
-      padding-left: 2rpx;
-      padding-right: 2rpx;
-      margin-right: 80rpx;
-      margin-left: 10rpx;
-      white-space: nowrap;
-      align-items: center;
+    .code {
+      width: 200rpx;
     }
   }
 }
@@ -208,9 +175,16 @@ const handleValidationCode = async () => {
   margin: 20rpx 0;
   display: flex;
   justify-content: center;
-}
-button {
-  width: 45%;
-  border: #000 solid 1rpx;
+  flex-direction: column;
+  margin-left: 200rpx;
+
+  .next {
+    font-size: 16px;
+    margin-top: 50rpx;
+    display: flex;
+    width: 45%;
+    height: 80rpx;
+    border: #000 solid 1rpx;
+  }
 }
 </style>

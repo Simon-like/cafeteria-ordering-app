@@ -1,10 +1,10 @@
 <template>
   <button :disabled="isCounting" @click="getValidationCode">
-    {{ isCounting ? `${countdown}s` : '获取验证码' }}
+    {{ isCounting ? `获取验证码(${countdown}s)` : '获取验证码' }}
   </button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
 
@@ -12,31 +12,28 @@ const props = defineProps({
   phoneNumber: String,
 })
 
-const emit = defineEmits(['success', 'error'])
-
 const countdown = ref(60)
 const isCounting = ref(false)
 
 const getValidationCode = async () => {
   if (!props.phoneNumber) {
-    alert('请输入手机号')
+    uni.showToast({
+      icon: 'none',
+      title: '请输入手机号',
+    })
     return
   }
-  try {
-    const response = await merchant_getvalidationCode(props.phoneNumber)
-    console.log(response)
-    if (response) {
-      startCountdown()
-      emit('success', response)
-    } else {
-      emit('error', '获取验证码失败，请重试')
-    }
-  } catch (error) {
-    console.error(error)
-    emit('error', '获取验证码失败，请重试')
+  const response = await merchant_getvalidationCode(props.phoneNumber)
+  console.log(response)
+  if (response) {
+    startCountdown()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取验证码失败，请重试',
+    })
   }
 }
-
 const startCountdown = () => {
   isCounting.value = true
   const interval = setInterval(() => {

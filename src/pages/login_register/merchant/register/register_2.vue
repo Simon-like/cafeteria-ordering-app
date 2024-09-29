@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores'
-import schoolPicker from '@/components/sugar-schoolPicker/schoolPicker/schoolPicker'
 const realName = ref<string>('')
 const name = ref<string>('')
 const address = ref<string>('')
+const college = ref<string>('')
 const merchantStore = useMerchantStore()
 const gotoNext = () => {
   merchantStore.realName = realName.value
@@ -14,6 +14,12 @@ const gotoNext = () => {
     url: '/pages/login_register/merchant/register/register_3',
   })
 }
+//大学列表测试
+const options = ref([
+  { label: '北京大学', value: '1' },
+  { label: '清华大学', value: '2' },
+  { label: '复旦大学', value: '3' },
+])
 </script>
 <template>
   <view class="body">
@@ -48,7 +54,6 @@ const gotoNext = () => {
     </view>
     <view class="input-item">
       <text>选择省/市/大学</text>
-      <schoolPicker></schoolPicker>
     </view>
     <text class="tips">--店铺详细信息注册完成后可在门店管理页面中更改--</text>
     <view class="checkbox__container">

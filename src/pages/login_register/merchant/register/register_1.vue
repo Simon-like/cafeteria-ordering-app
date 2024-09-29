@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { merchant_getvalidationCode, merchant_checkCode } from '@/services/merchant/merchant_api'
+import { merchant_checkCode } from '@/services/merchant/merchant_api'
 import { useMerchantStore } from '@/stores'
-
+import ValidationCodeButton from '@/components/ValidationCodeButton/merchant_ValidationCodeButton'
 /**
  * @description 修复了password传参问题,alert函数在移动端不可用！后面请统一使用uni.Toast
  * @author 钟礼豪
@@ -56,35 +56,6 @@ const gotoNext = async () => {
     return
   }
 }
-
-const getValidationCode = async () => {
-  merchant_getvalidationCode(phoneNumber.value)
-    .then((response) => {
-      if (+response.code === 20000) {
-        is_phone_repeat.value = false
-      } else if (+response.code === 20001) {
-        is_phone_repeat.value = true
-        uni.showToast({
-          icon: 'none',
-          title: '该手机号已被注册！',
-        })
-      } else {
-        uni.showToast({
-          icon: 'none',
-          title: '获取验证码失败，请重试',
-        })
-        return
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-      uni.showToast({
-        icon: 'none',
-        title: '获取验证码失败，请重试',
-      })
-      return
-    })
-}
 </script>
 <template>
   <view class="body">
@@ -104,25 +75,20 @@ const getValidationCode = async () => {
       </view>
     </view>
     <view class="input">
-      <view class="input-item">
+      <view class="input-items">
         <text>手机号</text>
         <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
       </view>
-      <view class="input-item">
+      <view class="input-items">
         <text>验证码</text>
-        <input
-          class="verification"
-          placeholder="请输入验证码"
-          type="text"
-          v-model="validationCode"
-        />
-        <button class="verification_btn" @click="getValidationCode()">获取验证码(60s)</button>
+        <input placeholder="请输入验证码" type="text" v-model="validationCode" class="code" />
+        <ValidationCodeButton :phoneNumber="phoneNumber" class="btn"></ValidationCodeButton>
       </view>
-      <view class="input-item">
+      <view class="input-items">
         <text>设置登录密码</text>
         <input placeholder="请输入密码" type="text" v-model="password_1" />
       </view>
-      <view class="input-item">
+      <view class="input-items">
         <text>确认登录密码</text>
         <input placeholder="请输入密码" type="text" v-model="password_2" />
       </view>
@@ -177,39 +143,32 @@ const getValidationCode = async () => {
 }
 .input {
   display: flex;
-  flex-direction: column; // 使每个 input-item 垂直排列
+  flex-direction: column;
+  width: 100%;
+  text-align: right;
   margin-top: 30rpx;
-  .input-item {
+  .input-items {
     display: flex;
-    align-items: center; // 垂直居中对齐
-    margin-bottom: 20rpx; // 每个 input 项的间距
-
+    margin-bottom: 40rpx;
+    margin-right: 20rpx;
+    align-items: center;
     text {
-      width: 230rpx; // 文本宽度
-      margin-right: 10rpx; // 文本和 input 之间的间距
-      text-align: right; // 右对齐文本
+      width: 180rpx;
+      margin-left: 60rpx;
+      white-space: nowrap;
     }
-
     input {
-      padding-left: 10rpx;
+      font-size: 16px;
+      padding-left: 3rpx;
       background-color: #ccc;
       border: #000 solid 1rpx;
-      width: 400rpx; // 输入框宽度，减去文本宽度和间距
+      width: 420rpx;
+      margin-left: 20rpx;
+      text-align: left;
     }
-    .verification {
-      width: 220rpx;
-      margin-right: 0;
-    }
-    .verification_btn {
-      font-size: xx-small;
-      width: 170rpx;
-      display: flex;
-      justify-content: center;
-      padding-left: 2rpx;
-      padding-right: 2rpx;
-      margin-right: 80rpx;
-      margin-left: 10rpx;
-      white-space: nowrap;
+    .code,
+    .btn {
+      width: 200rpx;
     }
   }
 }

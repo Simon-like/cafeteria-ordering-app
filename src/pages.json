@@ -123,13 +123,6 @@
         "navigationBarTitleText": "新增菜品页面",
         "navigationStyle": "custom"
       }
-    },
-    {
-      "path" : "components/ValidationCodeButton/ValidationCodeButton",
-      "style" : 
-      {
-        "navigationBarTitleText" : ""
-      }
     }
   ],
   "globalStyle": {

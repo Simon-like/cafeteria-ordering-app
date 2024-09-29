@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { admin_Login_pv, admin_getvalidationCode } from '@/services/admin/admin_api'
+import { admin_Login_pv } from '@/services/admin/admin_api'
 import { gotoAdminHome } from '@/composables/navigation/navigation'
 import { useDoubleTokenStore } from '@/stores'
-import ValidationCodeButton from '@/components/ValidationCodeButton/ValidationCodeButton'
+import ValidationCodeButton from '@/components/ValidationCodeButton/admin_ValidationCodeButton'
 const phoneNumber = ref('')
 const validationCode = ref('')
 
@@ -29,7 +29,7 @@ const handleLogin_pv = async () => {
       <view class="input-items">
         <text>验证码</text>
         <input v-model="validationCode" type="text" />
-        <ValidationCodeButton></ValidationCodeButton>
+        <ValidationCodeButton :phoneNumber="phoneNumber"></ValidationCodeButton>
       </view>
       <button class="login" @click="handleLogin_pv">登录</button>
     </view>
@@ -75,7 +75,7 @@ const handleLogin_pv = async () => {
   }
 
   .login {
-    margin: 50rpx 160rpx;
+    margin: 40rpx 50rpx;
     width: 470rpx;
     height: 90rpx;
     border-radius: 5px;

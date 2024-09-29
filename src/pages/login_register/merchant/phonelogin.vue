@@ -7,13 +7,10 @@ import {
 } from '@/services/merchant/merchant_api'
 import { gotoMerchantHome } from '@/composables/navigation/navigation'
 import { useDoubleTokenStore } from '@/stores'
-
+import ValidationCodeButton from '@/components/ValidationCodeButton/merchant_ValidationCodeButton'
 const phoneNumber = ref<string>('')
 const validationCode = ref<string>('')
 const tokenStore = useDoubleTokenStore()
-const countdown = ref(60) // 倒计时时间
-const isCounting = ref(false) // 是否正在倒计时
-
 const handleLogin_pv = async () => {
   const res = await merchant_Login_pv(phoneNumber.value, validationCode.value)
   if (+res.code === 1) {
@@ -22,39 +19,6 @@ const handleLogin_pv = async () => {
     tokenStore.addToken(accessToken, refreshToken)
     gotoMerchantHome()
   }
-}
-
-const getValidationCode = async () => {
-  if (!phoneNumber.value) {
-    alert('请输入手机号')
-    return
-  }
-  merchant_getvalidationCode(phoneNumber.value)
-    .then((response) => {
-      console.log(response)
-      if (response) {
-        startCountdown()
-      } else {
-        alert('获取验证码失败，请重试')
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-      alert('获取验证码失败，请重试')
-    })
-}
-
-const startCountdown = () => {
-  isCounting.value = true
-  const interval = setInterval(() => {
-    if (countdown.value > 0) {
-      countdown.value -= 1
-    } else {
-      clearInterval(interval)
-      countdown.value = 60
-      isCounting.value = false
-    }
-  }, 1000)
 }
 </script>
 <template>
@@ -68,7 +32,7 @@ const startCountdown = () => {
       <view class="input-items">
         <text>验证码</text>
         <input v-model="validationCode" type="text" />
-        <button @click="getValidationCode">获取验证码(60s)</button>
+        <ValidationCodeButton :phoneNumber="phoneNumber"></ValidationCodeButton>
       </view>
       <button class="login" @click="handleLogin_pv">登录</button>
     </view>
@@ -111,24 +75,10 @@ const startCountdown = () => {
       border-radius: 8px;
       width: 170rpx;
     }
-    button {
-      margin-left: 20rpx;
-      margin-top: 2rpx;
-      padding: 0;
-      font-size: 12px;
-      width: 200rpx;
-      height: 50rpx;
-      border: #000 solid 1rpx;
-      background-color: transparent;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
 
   .login {
-    margin: 50rpx 160rpx;
+    margin: 40rpx 50rpx;
     width: 470rpx;
     height: 90rpx;
     border-radius: 5px;
