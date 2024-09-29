@@ -104,6 +104,20 @@ const add = () => {
     animationDuration: 200,
   })
 }
+
+//新增分组
+const popup = ref()
+
+const onAddCategory = (e: boolean) => {
+  popup.value.open('center')
+}
+const close = () => {
+  popup.value.close()
+} //对话框取消按钮
+
+const confirm = () => {
+  popup.value.close()
+} //对话框确认按钮
 </script>
 
 <template>
@@ -122,7 +136,12 @@ const add = () => {
     </view>
 
     <view class="dish-body">
-      <AsideBar :itemList="category_list" @switch="onSwitch" />
+      <AsideBar
+        :itemList="category_list"
+        :addItem="'调整分组'"
+        @switch="onSwitch"
+        @add="onAddCategory"
+      />
       <view class="dish-content">
         <view class="box">
           <view class="addDish-box" @click="add">+ 新增菜品</view>
@@ -170,6 +189,8 @@ const add = () => {
           </view>
         </scroll-view>
       </view>
+      <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0" @change="HandleGetInfo()">
+      </uni-popup>
     </view>
   </view>
 </template>

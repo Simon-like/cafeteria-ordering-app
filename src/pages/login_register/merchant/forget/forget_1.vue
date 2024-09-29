@@ -12,8 +12,8 @@ import { gotoLogin } from '@/composables/navigation/navigation'
  */
 
 const merchantStore = useMerchantStore()
-const password_1 = ref<string>()
-const password_2 = ref<string>()
+const password_1 = ref<string>('')
+const password_2 = ref<string>('')
 const handleForget = async () => {
   if (password_1.value === password_2.value) {
     merchantStore.password = password_1.value

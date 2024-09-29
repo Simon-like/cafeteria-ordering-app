@@ -6,12 +6,12 @@ export const useAdminStore = defineStore(
   'admin_information',
   () => {
     // 管理员信息
-    const phoneNumber = ref<string>()
-    const password = ref<string>()
-    const inviteCode = ref<string>()
-    const realName = ref<string>()
-    const validationCode = ref<string>()
-    const college = ref<string>()
+    const phoneNumber = ref<string>('')
+    const password = ref<string>('')
+    const inviteCode = ref<string>('')
+    const realName = ref<string>('')
+    const validationCode = ref<string>('')
+    const college = ref<string>('')
     // 记得 return
     return {
       phoneNumber,

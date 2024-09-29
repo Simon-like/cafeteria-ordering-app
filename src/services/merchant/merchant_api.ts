@@ -52,11 +52,11 @@ export const merchant_register = (
   })
 }
 
-export const merchant_forget = (phoneNumber: string, password: string, code: string) => {
+export const merchant_forget = (phoneNumber: string, newPassword: string) => {
   return http({
     method: 'POST',
     url: '/merchant/findPassword',
-    data: { phoneNumber, password, code },
+    data: { phoneNumber, newPassword },
   })
 }
 

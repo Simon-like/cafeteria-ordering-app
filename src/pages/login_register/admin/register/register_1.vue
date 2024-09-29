@@ -10,13 +10,11 @@ import { useAdminStore } from '@/stores/modules/admin_information'
  * @lastModifiedTime  2024-09-27
  */
 const adminStore = useAdminStore()
-const phoneNumber = ref<string>('')
 const password_1 = ref<string>('')
 const password_2 = ref<string>('')
-const validationCode = ref<string>('')
 const is_phone_repeat = ref<boolean>(false)
 const gotoNext = async () => {
-  if (!phoneNumber.value) {
+  if (!adminStore.phoneNumber) {
     uni.showToast({
       icon: 'none',
       title: '请输入手机号',
@@ -30,10 +28,9 @@ const gotoNext = async () => {
     })
     return
   }
-  const res = await admin_checkCode(phoneNumber.value, validationCode.value)
+  const res = await admin_checkCode(adminStore.phoneNumber, adminStore.validationCode)
   if (+res.code === 1) {
     if (password_1.value === password_2.value) {
-      adminStore.phoneNumber = phoneNumber.value
       adminStore.password = password_1.value
       uni.navigateTo({
         url: '/pages/login_register/admin/register/register_2',
@@ -56,7 +53,7 @@ const gotoNext = async () => {
 }
 
 const handleValidationCode = async () => {
-  admin_getvalidationCode(phoneNumber.value)
+  admin_getvalidationCode(adminStore.phoneNumber)
     .then((response) => {
       if (+response.code === 20000) {
         is_phone_repeat.value = false
@@ -96,7 +93,7 @@ const handleValidationCode = async () => {
     <view class="input">
       <view class="input-item">
         <text>手机号</text>
-        <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
+        <input placeholder="请输入使用人手机号" type="text" v-model="adminStore.phoneNumber" />
       </view>
       <view class="input-item">
         <text>验证码</text>
@@ -104,17 +101,13 @@ const handleValidationCode = async () => {
           class="verification"
           placeholder="请输入验证码"
           type="text"
-          v-model="validationCode"
+          v-model="adminStore.validationCode"
         />
         <button class="verification_btn" @click="handleValidationCode()">获取验证码(60s)</button>
       </view>
       <view class="input-item">
         <text>请输入使用人姓名</text>
-        <input type="text" placeholder="请输入使用人姓名" />
-      </view>
-      <view class="input-item">
-        <text>账号</text>
-        <input type="text" placeholder="请输入账号昵称" />
+        <input type="text" placeholder="请输入使用人姓名" v-model="adminStore.realName" />
       </view>
       <view class="input-item">
         <text>设置登录密码</text>

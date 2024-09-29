@@ -64,6 +64,10 @@ const getValidationCode = async () => {
         is_phone_repeat.value = false
       } else if (+response.code === 20001) {
         is_phone_repeat.value = true
+        uni.showToast({
+          icon: 'none',
+          title: '该手机号已被注册！',
+        })
       } else {
         uni.showToast({
           icon: 'none',

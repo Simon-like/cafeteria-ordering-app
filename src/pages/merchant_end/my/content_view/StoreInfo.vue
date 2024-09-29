@@ -21,6 +21,7 @@ const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
   Object.assign(Merchant, res.data)
+  fileList1.value.push({ url: res.data.logo })
   let [time_start, time_end] = res.data.businessHours.split('-')
   Merchant.time_start = time_start
   Merchant.time_end = time_end
@@ -146,7 +147,7 @@ const submit = () => {
           contactPhone: valiFormData.contactPhone,
           realName: valiFormData.realName,
           discription: valiFormData.discription,
-          logo: '',
+          logo: Merchant.logo,
           businessHours: Merchant.businessHours,
           operationStatus: Merchant.operationStatus,
           id: Merchant.id,
@@ -157,7 +158,6 @@ const submit = () => {
               title: `修改成功`,
             })
             popup.value.close()
-            // HandleGetInfo()
           })
           .catch((err) => {
             uni.showToast({
@@ -171,12 +171,11 @@ const submit = () => {
     })
 }
 const logoPickerPopup = ref()
+const fileList1 = ref<Object[]>([])
 
 const openLogoPicker = () => {
   logoPickerPopup.value.open('center')
 }
-
-const fileList1 = ref<Object[]>([])
 
 // 新增图片
 const afterRead = async (event: Object) => {
@@ -197,8 +196,12 @@ const deletePic = (event: any) => {
 const uploadImg = async () => {
   for (let i = 0; i < fileList1.value.length; i++) {
     console.log(fileList1.value[i])
-    const result = await upload(fileList1.value[i].url)
-    console.log(result)
+    const result = await upload('/merchant/uploadMerchantImage', fileList1.value[i].url)
+    HandleGetInfo()
+    uni.showToast({
+      title: `图片修改成功！`,
+    })
+    logoPickerPopup.value.close()
   }
 }
 

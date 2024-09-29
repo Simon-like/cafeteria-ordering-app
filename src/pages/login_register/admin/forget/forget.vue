@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
-import { admin_checkCode } from '@/services/admin/admin_api'
+import { admin_checkCode, admin_getvalidationCode } from '@/services/admin/admin_api'
 /**
  * @description alert函数在移动端不可用！后面请统一使用uni.Toast
  * @author 钟礼豪
@@ -26,7 +26,7 @@ const getValidationCode = async () => {
     .then((response) => {
       console.log(response)
       if (response) {
-        startCountdown()
+        console.log(response)
       } else {
         uni.showToast({
           icon: 'none',
@@ -35,7 +35,7 @@ const getValidationCode = async () => {
       }
     })
     .catch((error) => {
-      console.error(error)
+      console.log(error)
       uni.showToast({
         icon: 'none',
         title: '获取验证码失败，请重试',
@@ -57,7 +57,7 @@ const gotoNext = async () => {
     })
     return
   }
-  const res = await admin_checkCode(phoneNumber.value, validation.value)
+  const res = await admin_checkCode(phoneNumber.value, validationCode.value)
   if (+res.code === 1) {
     adminStore.phoneNumber = phoneNumber.value
     adminStore.validationCode = validationCode.value

@@ -4,7 +4,6 @@ import { useAdminStore } from '@/stores/modules/admin_information'
 import { admin_register } from '@/services/admin/admin_api'
 import { gotoLogin } from '@/composables/navigation/navigation'
 const adminStore = useAdminStore()
-const inviteCode = ref<string>()
 const handleRegister = async () => {
   admin_register(
     adminStore.phoneNumber,
@@ -34,7 +33,7 @@ const handleRegister = async () => {
     </view>
     <view class="invitation">
       <text>管理邀请码</text>
-      <input type="text" v-model="inviteCode" />
+      <input type="text" v-model="adminStore.inviteCode" />
     </view>
     <button @click="handleRegister">确认</button>
   </view>

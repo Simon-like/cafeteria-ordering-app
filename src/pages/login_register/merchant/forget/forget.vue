@@ -8,7 +8,7 @@ import { merchant_getvalidationCode, merchant_checkCode } from '@/services/merch
  * @author 钟礼豪
  * @date 2024-09-不知道什么时候
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-27
+ * @lastModifiedTime  2024-09-27 
  */
 const merchantStore = useMerchantStore()
 const phoneNumber = ref<string>()

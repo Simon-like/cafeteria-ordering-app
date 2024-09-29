@@ -37,7 +37,7 @@ const httpInterceptor = {
   },
 }
 uni.addInterceptor('request', httpInterceptor)
-uni.addInterceptor('uploadFlie', httpInterceptor)
+uni.addInterceptor('uploadFile', httpInterceptor)
 
 /**
  * 请求函数
@@ -108,12 +108,12 @@ export const http = <T>(options: UniApp.RequestOptions) => {
   })
 }
 
-export const upload = (url: string) => {
+export const upload = (url:string,imgUrl: string) => {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
-      url: baseURL + '/merchant/uploadMerchantImage',
-      filePath: url,
-      name: 'file',
+      url: baseURL + url,
+      filePath: imgUrl,
+      name: 'image',
       success: (res) => {
         resolve(res)
       },

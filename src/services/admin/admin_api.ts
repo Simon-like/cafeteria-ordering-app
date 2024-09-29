@@ -51,14 +51,13 @@ export const admin_register = (
   })
 }
 
-export const admin_forget = (newPassword: string, phoneNumber: string, code: string) => {
+export const admin_forget = (newPassword: string, phoneNumber: string) => {
   return http({
     method: 'POST',
     url: '/administer/findPassword',
     data: {
       newPassword,
       phoneNumber,
-      code,
     },
   })
 }

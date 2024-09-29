@@ -23,15 +23,13 @@ const handleForget = async () => {
     })
     return
   }
-  admin_forget(adminStore.phoneNumber, adminStore.password, adminStore.validationCode).then(
-    (response) => {
-      uni.showToast({
-        icon: 'none',
-        title: '修改成功',
-      })
-      gotoLogin()
-    },
-  )
+  admin_forget(adminStore.password, adminStore.phoneNumber).then((response) => {
+    uni.showToast({
+      icon: 'none',
+      title: '修改成功',
+    })
+    gotoLogin()
+  })
 }
 </script>
 <template>
