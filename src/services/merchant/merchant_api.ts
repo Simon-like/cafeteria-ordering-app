@@ -1,6 +1,6 @@
 import { http } from '@/utils/http'
 import type { TokenType } from '@/types/login_register'
-import type { MerchantInfo, URL } from '@/types/merchant_return'
+import type { MerchantInfo, URL, UniversityLists } from '@/types/merchant_return'
 export const merchant_Login_pp = (phoneNumber: string, password: string) => {
   return http<TokenType>({
     method: 'POST',
@@ -104,8 +104,8 @@ export const merchant_checkCode = (phoneNumber: string, validationCode: string) 
 }
 
 export const GetUniversity = () => {
-  return http({
+  return http<UniversityLists>({
     method: 'GET',
-    url: '/getUniversityList',
+    url: '/common/getUniversityList',
   })
 }

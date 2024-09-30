@@ -13,3 +13,10 @@ export type MerchantInfo = {
 export type URL = {
   url: string
 }
+
+export type UniversityLists = {
+  UniversityList: {
+    collegeId: string
+    collegeName: string
+  }
+}

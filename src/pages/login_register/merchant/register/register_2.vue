@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMerchantStore } from '@/stores'
+import { GetUniversity } from '@/services/merchant/merchant_api'
 import { onLoad } from '@dcloudio/uni-app'
 
 const realName = ref<string>('')
@@ -18,33 +19,24 @@ const gotoNext = () => {
   })
 }
 
-const universities = ref<{ UniversityName: string; UniversityId: string }[]>([])
+// 改为数组类型以存储大学列表
+const universities = ref<Array<{ collegeId: string; collegeName: string }>>([])
 
 // 获取大学列表的函数
 const fetchUniversities = async () => {
-  try {
-    // 模拟接口返回的数据
-    const mockResponse = [
-      { UniversityName: '清华大学', UniversityId: '001' },
-      { UniversityName: '北京大学', UniversityId: '002' },
-      { UniversityName: '复旦大学', UniversityId: '003' },
-      { UniversityName: '浙江大学', UniversityId: '004' },
-      { UniversityName: '上海交通大学', UniversityId: '005' },
-    ]
-    universities.value = mockResponse // 存储整个对象数组
-  } catch (error) {
-    console.error(error)
-  }
+  const res = await GetUniversity()
+  universities.value = res.data.UniversityList.map((university) => university.collegeName)
 }
 
 // 在页面加载时调用获取大学列表的函数
-onLoad(fetchUniversities)
+onLoad(() => fetchUniversities())
 
 // 当选择大学时触发的函数
 const onUniversityChange = (e) => {
   const index = e.detail.value
-  const selectedUniversity = universities.value[index]
-  college.value = selectedUniversity.UniversityName // 这里要取出大学的名称
+  if (universities.value[index]) {
+    college.value = universities.value[index].collegeName // 获取大学的名称
+  }
 }
 </script>
 
@@ -80,11 +72,7 @@ const onUniversityChange = (e) => {
       </view>
       <view class="input-item">
         <text>选择大学</text>
-        <picker
-          class="uni"
-          mode="selector"
-          :range="universities.map((u) => u.UniversityName)"
-          @change="onUniversityChange"
+        <picker class="uni" mode="selector" :range="universities" @change="onUniversityChange"
           ><view class="uni-text">{{ college || '请选择大学' }}</view>
           <!-- 显示选择的大学 --></picker
         >
