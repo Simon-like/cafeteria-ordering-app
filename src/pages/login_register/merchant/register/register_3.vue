@@ -11,7 +11,7 @@ const handleRegister = async () => {
     merchantStore.name,
     merchantStore.address,
     merchantStore.password,
-    merchantStore.college,
+    merchantStore.collegeId,
   ).then((response) => {
     gotoLogin()
   })
