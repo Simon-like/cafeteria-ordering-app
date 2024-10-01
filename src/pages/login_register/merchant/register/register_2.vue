@@ -35,7 +35,7 @@ onLoad(() => fetchUniversities())
 const onUniversityChange = (e) => {
   const index = e.detail.value
   if (universities.value[index]) {
-    college.value = universities.value[index].collegeName // 获取大学的名称
+    college.value = universities.value[index] // 获取大学的名称
   }
 }
 </script>

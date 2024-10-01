@@ -1,24 +1,30 @@
 <script lang="ts" setup>
 import type { AsideItem } from '@/types/aside'
 import { ref, reactive, nextTick } from 'vue'
+import type { categoryData, dishData } from '@/types/merchant_return'
+import {
+  getDishByGroup,
+  getAllCategory,
+  addDish,
+  addDishInCategory,
+  getAll,
+  downDish,
+  getDishById,
+  updateDishNot,
+  updateDish,
+  getAllCategoryNum,
+  deleteCategory,
+  addCategory,
+  updateCategory,
+} from '@/services/merchant/merchant_shop_dish_api'
+import { onLoad, onReady } from '@dcloudio/uni-app'
 /**
  * @description 店铺管理菜单信息管理
  * @author 应东林
  * @date 2024-09-17
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-26
+ * @lastModifiedTime  2024-09-30
  */
-
-// 分组信息
-const category_list = ref<AsideItem[]>([
-  { itemId: 0, itemName: '本店精品菜！！', active: true },
-  { itemId: 1, itemName: '特色必点', active: false },
-  { itemId: 2, itemName: '主食', active: false },
-])
-const channelId = ref<number>(0)
-const onSwitch = (e: number) => {
-  channelId.value = e
-}
 
 // 菜品类型信息
 type statusItem = {
@@ -58,6 +64,11 @@ const dish_info_list = ref([
 ])
 
 const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', '加牛肚'])
+
+// 加载数据
+onLoad(() => {
+  getAll()
+})
 
 const scrollTop = ref<number>(0)
 const old = reactive({
@@ -105,19 +116,46 @@ const add = () => {
   })
 }
 
+// 分组信息数据（后台给的）
+const categoryData = ref<
+  {
+    categoryName: string
+    categoryPriority: number
+  }[]
+>([])
+
+const categoryRange = [
+  { value: 0, text: '正常分组' },
+  { value: 1, text: '推荐分组' },
+  { value: 2, text: '火热分组' },
+  { value: 3, text: '非常火热分组' },
+]
+
+// 分组用于侧边栏的数据
+const category_list = ref<AsideItem[]>([
+  { itemId: 0, itemName: '全部分组', active: true },
+  { itemId: 1, itemName: '本店精品菜！！', active: false },
+  { itemId: 2, itemName: '特色必点', active: false },
+  { itemId: 3, itemName: '主食', active: false },
+])
+const channelId = ref<number>(0)
+const onSwitch = (e: number) => {
+  channelId.value = e
+}
+
 //新增分组
 const popup = ref()
 
 const onAddCategory = (e: boolean) => {
   popup.value.open('center')
 }
-const close = () => {
-  popup.value.close()
-} //对话框取消按钮
 
-const confirm = () => {
-  popup.value.close()
-} //对话框确认按钮
+const addCategoryLine = () => {
+  categoryData.value.push({
+    categoryName: '',
+    categoryPriority: 0,
+  })
+}
 </script>
 
 <template>
@@ -144,7 +182,10 @@ const confirm = () => {
       />
       <view class="dish-content">
         <view class="box">
-          <view class="addDish-box" @click="add">+ 新增菜品</view>
+          <view class="addDish-box" @click="add" v-if="category_list[0].active === true"
+            >+ 新增菜品</view
+          >
+          <view class="addDish-box" @click="add" v-else>+ 在此分组下新增菜品</view>
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
@@ -189,7 +230,25 @@ const confirm = () => {
           </view>
         </scroll-view>
       </view>
-      <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0" @change="HandleGetInfo()">
+
+      <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
+        <uni-card class="form-card">
+          <uni-section title="新增分组信息" type="line">
+            <scroll-view scroll-y="true" class="scroll-Y">
+              <view class="input-line" v-for="(line, index) in categoryData">
+                <view class="label">分组{{ index + 1 }}：</view>
+                <uni-easyinput v-model="line.categoryName" placeholder="请输入此分组名称" />
+                <uni-data-select
+                  v-model="line.categoryPriority"
+                  :localdata="categoryRange"
+                  placeholder="请选择此分组的重要程度"
+                ></uni-data-select>
+              </view>
+
+              <view class="add-category-line" @click="addCategoryLine">添加一个分组</view>
+            </scroll-view>
+          </uni-section>
+        </uni-card>
       </uni-popup>
     </view>
   </view>
@@ -248,6 +307,13 @@ const confirm = () => {
     flex-grow: 1;
     display: flex;
     justify-content: space-between;
+    .form-card {
+      width: 700rpx;
+      .scroll-Y {
+        height: 500rpx;
+      }
+    }
+
     .dish-content {
       width: 470rpx;
       height: 1200rpx;
@@ -257,6 +323,7 @@ const confirm = () => {
       padding: 8rpx;
       overflow: hidden;
       gap: 10rpx;
+
       .box {
         width: 100%;
         position: relative;
@@ -264,7 +331,8 @@ const confirm = () => {
         align-items: center;
         justify-content: center;
         .addDish-box {
-          width: 210rpx;
+          min-width: 210rpx;
+          padding: 0 10rpx;
           height: 50rpx;
           background-color: rgba(0, 0, 0, 0.2);
           border-radius: 16rpx;

@@ -71,7 +71,6 @@ const addItem = () => {
     height: 40rpx;
     line-height: 40rpx;
     margin: 20rpx 10rpx 10rpx 10rpx;
-    padding: 10rpx;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 16rpx;
     text-align: center;
