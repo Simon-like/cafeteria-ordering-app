@@ -11,7 +11,8 @@ export const useMerchantStore = defineStore(
     const name = ref<string>('') //店铺名称
     const address = ref<string>('')
     const password = ref<string>('')
-    const college = ref<string>('')
+    const collegeId = ref<string>('')
+    const collegeName = ref<string>('')
     const validationCode = ref<string>()
     //return新增的
     const businessHours = ref<string>('')
@@ -30,7 +31,8 @@ export const useMerchantStore = defineStore(
       name,
       address,
       password,
-      college,
+      collegeId,
+      collegeName,
       businessHours,
       contactPhone,
       discription,

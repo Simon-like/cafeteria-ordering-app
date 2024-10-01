@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useMerchantStore } from '@/stores'
 import { GetUniversity } from '@/services/merchant/merchant_api'
 import { onLoad } from '@dcloudio/uni-app'
-
+import type { University } from '@/types/merchant_return'
 const realName = ref<string>('')
 const name = ref<string>('')
 const address = ref<string>('')
@@ -20,14 +20,25 @@ const gotoNext = () => {
 }
 
 // 改为数组类型以存储大学列表
-const universities = ref<Array<{ collegeId: string; collegeName: string }>>([])
+const universities = ref<University[]>([])
 
 // 获取大学列表的函数
 const fetchUniversities = async () => {
-  const res = await GetUniversity()
-  universities.value = res.data.UniversityList.map((university) => university.collegeName)
+  try {
+    const res = await GetUniversity()
+    console.log(res.data)
+    if (res.data && res.data.UniversityList) {
+      universities.value = res.data.UniversityList
+      console.log(universities.value)
+    }
+  } catch (error) {
+    console.error('获取大学列表失败', error)
+  }
 }
-
+// 计算属性，提取大学名称
+const universityNames = computed(() => {
+  return universities.value.map((university) => university.collegeName)
+})
 // 在页面加载时调用获取大学列表的函数
 onLoad(() => fetchUniversities())
 
@@ -35,7 +46,16 @@ onLoad(() => fetchUniversities())
 const onUniversityChange = (e) => {
   const index = e.detail.value
   if (universities.value[index]) {
+<<<<<<< HEAD
     college.value = universities.value[index] // 获取大学的名称
+=======
+    const selectedUniversity = universities.value[index]
+    // 存储选中的大学 ID 和名称到 Pinia 仓库
+    merchantStore.collegeId = selectedUniversity.collegeId
+    merchantStore.collegeName = selectedUniversity.collegeName
+    college.value = selectedUniversity.collegeName // 更新显示的大学名称
+    console.log(merchantStore.collegeId, merchantStore.collegeName)
+>>>>>>> 18ecca9b937b5e2101fc32b479b4d5caefafe377
   }
 }
 </script>
@@ -72,7 +92,7 @@ const onUniversityChange = (e) => {
       </view>
       <view class="input-item">
         <text>选择大学</text>
-        <picker class="uni" mode="selector" :range="universities" @change="onUniversityChange"
+        <picker class="uni" mode="selector" :range="universityNames" @change="onUniversityChange"
           ><view class="uni-text">{{ college || '请选择大学' }}</view>
           <!-- 显示选择的大学 --></picker
         >
@@ -119,9 +139,9 @@ const onUniversityChange = (e) => {
   &::after {
     content: '';
     position: absolute;
-    right: -70px;
+    right: -80px;
     top: 50%;
-    width: 140rpx;
+    width: 150rpx;
     height: 10rpx;
     background-color: #ccc;
     transform: translateY(-50%);

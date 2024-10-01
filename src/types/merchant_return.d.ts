@@ -13,6 +13,7 @@ export type MerchantInfo = {
 export type URL = {
   url: string
 }
+<<<<<<< HEAD
 
 export type University = {
   collegeId: string
@@ -42,4 +43,9 @@ export type dishData = {
   isDeliver: number // 单点是否配送。0表示单点不配送，1单点配送
   todayInventory: number
   specifications: string[] // 规格
+=======
+export type University = {
+  collegeId: string
+  collegeName: string
+>>>>>>> 18ecca9b937b5e2101fc32b479b4d5caefafe377
 }

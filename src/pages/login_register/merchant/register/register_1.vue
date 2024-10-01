@@ -18,9 +18,6 @@ const password_2 = ref<string>('')
 const merchantStore = useMerchantStore()
 const is_phone_repeat = ref<boolean>(false)
 const gotoNext = async () => {
-  uni.navigateTo({
-    url: '/pages/login_register/merchant/register/register_2',
-  })
   if (!phoneNumber.value) {
     uni.showToast({
       icon: 'none',
@@ -37,7 +34,12 @@ const gotoNext = async () => {
   }
   const res = await merchant_checkCode(phoneNumber.value, validationCode.value)
   if (+res.code === 1) {
-    if (password_1.value === password_2.value) {
+    if (!password_1.value || !password_2.value) {
+      uni.showToast({
+        icon: 'none',
+        title: '请输入密码',
+      })
+    } else if (password_1.value === password_2.value) {
       merchantStore.phoneNumber = phoneNumber.value
       merchantStore.password = password_1.value
       uni.navigateTo({
@@ -46,14 +48,14 @@ const gotoNext = async () => {
     } else {
       uni.showToast({
         icon: 'none',
-        title: '验证码错误',
+        title: '两次输入密码不同',
       })
       return
     }
   } else {
     uni.showToast({
       icon: 'none',
-      title: '两次输入密码不同',
+      title: '请填写正确验证码',
     })
 
     return
