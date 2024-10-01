@@ -76,7 +76,7 @@ export const ChangeMerchantInfo = (changeData: MerchantInfo) => {
 }
 
 export const updateMerchantOperationStatus = (
-  id: string, //商户的唯一标识符
+  id: number, //商户的唯一标识符
   operationStatus: number, //商家的运营状态，0表示正常营业，1表示暂停营业
 ) => {
   return http({

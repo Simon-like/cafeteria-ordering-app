@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AsideItem } from '@/types/aside'
 import { ref, reactive, nextTick } from 'vue'
-import type { categoryData, dishData } from '@/types/merchant_return'
+import type { categoryType, dishData } from '@/types/merchant_return'
 import {
   getDishByGroup,
   getAllCategory,
@@ -50,25 +50,42 @@ const statusSwitch = (index: number) => {
 
 //菜品信息
 
-const dish_info_list = ref([
-  { name: 'hh', index: 0, dishDesc_show: false },
-  { name: 'hh', index: 1, dishDesc_show: false },
-  { name: 'hh', index: 2, dishDesc_show: false },
-  { name: 'hh', index: 3, dishDesc_show: false },
-  { name: 'hh', index: 4, dishDesc_show: false },
-  { name: 'hh', index: 5, dishDesc_show: false },
-  { name: 'hh', index: 6, dishDesc_show: false },
-  { name: 'hh', index: 7, dishDesc_show: false },
-  { name: 'hh', index: 8, dishDesc_show: false },
-  { name: 'hh', index: 9, dishDesc_show: false },
-])
+const dish_info_list = ref<
+  {
+    id: number
+    dishName: string
+    dishDescription: string
+    price: number
+    discount: number
+    discountedPrice: number
+    imageUrl: string
+    categoryList: categoryType[]
+    dishStatus: number // 菜品的状态，热销0、缺货1、下架2，其他3
+    isDiscounted: number // 是否打折。0表示不打折，1表示打折
+    isDeliver: number // 单点是否配送。0表示单点不配送，1单点配送
+    todayInventory: number
+    specifications: string[] // 规格S
+    dishDesc_show: boolean
+    index: number
+  }[]
+>([])
+
+// 加载并渲染菜品信息
+const dish_info_loading = async () => {
+  const res = await getAll()
+  if (+res.code === 1) {
+    dish_info_list.value = []
+    res.data.forEach((item, index) => {
+      dish_info_list.value.push({ ...item, dishDesc_show: false, index: index })
+    })
+  } else {
+    uni.showToast({
+      title: '菜品信息获取失败',
+    })
+  }
+}
 
 const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', '加牛肚'])
-
-// 加载数据
-onLoad(() => {
-  getAll()
-})
 
 const scrollTop = ref<number>(0)
 const old = reactive({
@@ -117,12 +134,7 @@ const add = () => {
 }
 
 // 分组信息数据（后台给的）
-const categoryData = ref<
-  {
-    categoryName: string
-    categoryPriority: number
-  }[]
->([])
+const categoryData = ref<categoryType[]>([])
 
 const categoryRange = [
   { value: 0, text: '正常分组' },
@@ -132,30 +144,74 @@ const categoryRange = [
 ]
 
 // 分组用于侧边栏的数据
-const category_list = ref<AsideItem[]>([
-  { itemId: 0, itemName: '全部分组', active: true },
-  { itemId: 1, itemName: '本店精品菜！！', active: false },
-  { itemId: 2, itemName: '特色必点', active: false },
-  { itemId: 3, itemName: '主食', active: false },
-])
+const category_list = ref<AsideItem[]>([{ itemId: 0, itemName: '全部分组', active: true }])
 const channelId = ref<number>(0)
 const onSwitch = (e: number) => {
   channelId.value = e
 }
 
-//新增分组
+//调整分组信息
 const popup = ref()
 
 const onAddCategory = (e: boolean) => {
   popup.value.open('center')
 }
 
-const addCategoryLine = () => {
-  categoryData.value.push({
-    categoryName: '',
-    categoryPriority: 0,
+const addCategoryLine = ref({
+  categoryName: '',
+  categoryPriority: 0,
+})
+
+// 请求并渲染分组信息
+const categoryLoading = async () => {
+  const res = await getAllCategory()
+  if (+res.code === 1) {
+    categoryData.value = res.data
+    categoryData.value.sort((a, b) => b.categoryPriority - a.categoryPriority) // 按优先级降序排序
+    category_list.value = [{ itemId: 0, itemName: '全部分组', active: true }]
+    categoryData.value.forEach((item, index) => {
+      category_list.value.push({ itemId: index + 1, itemName: item.categoryName, active: false })
+    })
+  } else {
+    uni.showToast({
+      title: '分组信息获取失败',
+    })
+  }
+}
+
+// 修改分组
+const onCategoryEdit = async (
+  categoryId: number,
+  categoryPriority: number,
+  categoryName: string,
+) => {
+  const res = await updateCategory(categoryName, categoryPriority, categoryId)
+  uni.showToast({
+    title: res.msg,
   })
 }
+
+// 新增一个分组
+const onCategoryAdd = async (name: string, priority: number) => {
+  const res = await addCategory(name, priority)
+  if (+res.code === 1) {
+    uni.showToast({
+      title: '成功增加一个分组',
+    })
+    await categoryLoading()
+  } else {
+    uni.showToast({
+      title: '新增分组失败',
+    })
+  }
+}
+
+// 加载数据
+onLoad(async () => {
+  // 获取所有分组
+  await categoryLoading()
+  await dish_info_loading()
+})
 </script>
 
 <template>
@@ -191,21 +247,23 @@ const addCategoryLine = () => {
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
           <view class="dish-wrapper" v-for="value in dish_info_list">
             <view class="explicit-info">
-              <view class="dish-img">{{ value.name }}</view>
+              <view class="dish-img">{{ value.imageUrl }}</view>
               <view class="dish-info">
-                <view class="dish-name">海参</view>
+                <view class="dish-name">{{ value.dishName }}</view>
                 <view class="dish-value-line">
-                  <view class="today-inventory">今日库存(/份) 24</view>
+                  <view class="today-inventory">今日库存(/份) {{ value.todayInventory }}</view>
                 </view>
                 <view class="dish-price-line">
-                  <view class="current price"> <i class="iconfont icon-renminbi"></i>24.0 </view>
+                  <view class="current price">
+                    <i class="iconfont icon-renminbi"></i>{{ value.discountedPrice }}</view
+                  >
                   <view class="original price">
-                    <i class="iconfont icon-renminbi"></i>40.0
+                    <i class="iconfont icon-renminbi"></i>{{ value.price }}
                     <view class="underline"></view>
-                    <view class="discount">6折</view>
+                    <view class="discount">{{ value.discount }}折</view>
                   </view>
                 </view>
-                <view class="dish-status-line">单点不送</view>
+                <view class="dish-status-line">{{ value.isDeliver ? '可配送' : '单点不送' }}</view>
                 <view class="button-box">
                   <view class="edit btn" @click="edit">修改信息</view>
                   <view class="discontinued btn">下架</view>
@@ -213,7 +271,7 @@ const addCategoryLine = () => {
               </view>
             </view>
             <view class="implicit-info" :class="{ active: value.dishDesc_show }">
-              <view class="spec-line" v-for="(item, index) in specifications" :key="item">
+              <view class="spec-line" v-for="(item, index) in value.specifications" :key="item">
                 <view class="title">规格{{ index + 1 }}:</view>
                 <view class="specItem">{{ item }}</view>
               </view>
@@ -243,9 +301,34 @@ const addCategoryLine = () => {
                   :localdata="categoryRange"
                   placeholder="请选择此分组的重要程度"
                 ></uni-data-select>
+                <view
+                  class="category-edit-button"
+                  @click="onCategoryEdit(line.categoryId, line.categoryPriority, line.categoryName)"
+                >
+                  修改此分组
+                </view>
               </view>
 
-              <view class="add-category-line" @click="addCategoryLine">添加一个分组</view>
+              <view class="input-line">
+                <view class="label">新增一个分组：</view>
+                <uni-easyinput
+                  v-model="addCategoryLine.categoryName"
+                  placeholder="请输入此分组名称"
+                />
+                <uni-data-select
+                  v-model="addCategoryLine.categoryPriority"
+                  :localdata="categoryRange"
+                  placeholder="请选择此分组的重要程度"
+                ></uni-data-select>
+                <view
+                  class="add-category-line"
+                  @click="
+                    onCategoryAdd(addCategoryLine.categoryName, addCategoryLine.categoryPriority)
+                  "
+                >
+                  添加一个分组
+                </view>
+              </view>
             </scroll-view>
           </uni-section>
         </uni-card>

@@ -13,7 +13,6 @@ export type MerchantInfo = {
 export type URL = {
   url: string
 }
-<<<<<<< HEAD
 
 export type University = {
   collegeId: string
@@ -21,7 +20,7 @@ export type University = {
 }
 
 // 菜品分组信息
-export type categoryData = {
+export type categoryType = {
   categoryId: number
   categoryName: string
   categoryPriority: number
@@ -37,15 +36,10 @@ export type dishData = {
   discount: number
   discountedPrice: number
   imageUrl: string
-  categoryList: categoryData[]
+  categoryList: categoryType[]
   dishStatus: number // 菜品的状态，热销0、缺货1、下架2，其他3
   isDiscounted: number // 是否打折。0表示不打折，1表示打折
   isDeliver: number // 单点是否配送。0表示单点不配送，1单点配送
   todayInventory: number
-  specifications: string[] // 规格
-=======
-export type University = {
-  collegeId: string
-  collegeName: string
->>>>>>> 18ecca9b937b5e2101fc32b479b4d5caefafe377
+  specifications: string[] // 规格S
 }

@@ -87,7 +87,15 @@ const gotoNext = async () => {
       <view class="input-items">
         <text>验证码</text>
         <input placeholder="请输入验证码" type="text" v-model="validationCode" class="code" />
-        <ValidationCodeButton :phoneNumber="phoneNumber" class="btn"></ValidationCodeButton>
+        <ValidationCodeButton
+          :phoneNumber="phoneNumber"
+          class="btn"
+          @repeat="
+            (e) => {
+              is_phone_repeat = e
+            }
+          "
+        ></ValidationCodeButton>
       </view>
       <view class="input-items">
         <text>设置登录密码</text>

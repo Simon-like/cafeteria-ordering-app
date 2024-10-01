@@ -8,13 +8,21 @@ import ValidationCodeButton from '@/components/ValidationCodeButton/admin_Valida
  * @author 钟礼豪
  * @date 2024-09-不知道什么时候
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-27
+ * @lastModifiedTime  2024-09-30
  */
 
 const adminStore = useAdminStore()
 const phoneNumber = ref<string>()
 const validationCode = ref<string>()
+const is_phone_repeat = ref<boolean>(false)
 const gotoNext = async () => {
+  if (!is_phone_repeat.value) {
+    uni.showToast({
+      icon: 'none',
+      title: '该手机号未注册账号',
+    })
+    return
+  }
   if (!phoneNumber.value) {
     uni.showToast({
       icon: 'none',
@@ -56,7 +64,14 @@ const gotoNext = async () => {
       <view class="password">
         <text>验证码</text>
         <input type="text" class="input_password" v-model="validationCode" />
-        <ValidationCodeButton :phoneNumber="phoneNumber"></ValidationCodeButton>
+        <ValidationCodeButton
+          :phoneNumber="phoneNumber"
+          @repeat="
+            (e) => {
+              is_phone_repeat = e
+            }
+          "
+        ></ValidationCodeButton>
       </view>
       <button class="next" @click="gotoNext()">下一步</button>
     </view>

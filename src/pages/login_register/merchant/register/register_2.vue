@@ -46,16 +46,12 @@ onLoad(() => fetchUniversities())
 const onUniversityChange = (e) => {
   const index = e.detail.value
   if (universities.value[index]) {
-<<<<<<< HEAD
-    college.value = universities.value[index] // 获取大学的名称
-=======
     const selectedUniversity = universities.value[index]
     // 存储选中的大学 ID 和名称到 Pinia 仓库
     merchantStore.collegeId = selectedUniversity.collegeId
     merchantStore.collegeName = selectedUniversity.collegeName
     college.value = selectedUniversity.collegeName // 更新显示的大学名称
     console.log(merchantStore.collegeId, merchantStore.collegeName)
->>>>>>> 18ecca9b937b5e2101fc32b479b4d5caefafe377
   }
 }
 </script>

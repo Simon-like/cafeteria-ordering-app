@@ -1,5 +1,5 @@
 import { http } from '@/utils/http'
-import type { categoryData, dishData } from '@/types/merchant_return'
+import type { categoryType, dishData } from '@/types/merchant_return'
 
 /**
  * @description 商户端店铺管理菜品管理接口
@@ -87,7 +87,7 @@ export const updateDishNot = (
   dishDescription: string,
   discount: number,
   imageUrl: string,
-  categoryList: categoryData[],
+  categoryList: categoryType[],
   dishStatus: number, // 菜品的状态，热销0、缺货1、下架2，其他3
   isDiscounted: number, // 是否打折。0表示不打折，1表示打折
   isDeliver: number, // 单点是否配送。0表示单点不配送，1单点配送
@@ -140,7 +140,7 @@ export const getAllCategoryNum = () => {
 
 // 获取分组列表信息
 export const getAllCategory = () => {
-  return http<categoryData[]>({
+  return http<categoryType[]>({
     method: 'GET',
     url: `/merchant/dish/getAllCategory`,
   })

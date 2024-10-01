@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { admin_getvalidationCode } from '@/services/admin/admin_api'
+const emit = defineEmits(['repeat'])
 
 const props = defineProps({
   phoneNumber: String,
@@ -26,8 +27,14 @@ const getValidationCode = async () => {
 
   const response = await admin_getvalidationCode(props.phoneNumber)
   console.log(response)
-  if (response) {
-    startCountdown()
+  if (+response.code === 20000) {
+    uni.showToast({
+      icon: 'none',
+      title: '已发送短信验证',
+    })
+    emit('repeat', false)
+  } else if (+response.code === 20001) {
+    emit('repeat', true)
   } else {
     uni.showToast({
       icon: 'none',
