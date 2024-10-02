@@ -138,7 +138,7 @@ export const getAllCategoryNum = () => {
   })
 }
 
-// 获取分组列表信息
+// 获取分组列表信息 BINGGO
 export const getAllCategory = () => {
   return http<categoryType[]>({
     method: 'GET',
@@ -146,15 +146,15 @@ export const getAllCategory = () => {
   })
 }
 
-// 商户端删除分组
-export const deleteCategory = (catogoryId: number) => {
+// 商户端删除分组 BINGGO
+export const deleteCategory = (categoryId: number) => {
   return http({
     method: 'DELETE',
-    url: `/merchant/dish/deleteCategory?catogoryId=${catogoryId}`,
+    url: `/merchant/dish/deleteCategory?categoryId=${categoryId}`,
   })
 }
 
-// 商户端新增菜品分组
+// 商户端新增菜品分组 BINGGO
 
 export const addCategory = (categoryName: string, categoryPriority: number) => {
   return http({
@@ -163,7 +163,7 @@ export const addCategory = (categoryName: string, categoryPriority: number) => {
   })
 }
 
-// 商户端修改分组信息
+// 商户端修改分组信息 BINGGO
 
 export const updateCategory = (
   categoryName: string,

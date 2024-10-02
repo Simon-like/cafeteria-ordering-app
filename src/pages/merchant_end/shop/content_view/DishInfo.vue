@@ -80,6 +80,7 @@ const dish_info_loading = async () => {
     })
   } else {
     uni.showToast({
+      icon: 'none',
       title: '菜品信息获取失败',
     })
   }
@@ -153,10 +154,14 @@ const onSwitch = (e: number) => {
 //调整分组信息
 const popup = ref()
 
-const onAddCategory = (e: boolean) => {
+const onOpenCategory = (e: boolean) => {
+  categoryLoading()
+  addCategoryLine.value.categoryName = ''
+  addCategoryLine.value.categoryPriority = 0
   popup.value.open('center')
 }
 
+// 新增分组信息的临时存储
 const addCategoryLine = ref({
   categoryName: '',
   categoryPriority: 0,
@@ -174,6 +179,7 @@ const categoryLoading = async () => {
     })
   } else {
     uni.showToast({
+      icon: 'none',
       title: '分组信息获取失败',
     })
   }
@@ -182,28 +188,86 @@ const categoryLoading = async () => {
 // 修改分组
 const onCategoryEdit = async (
   categoryId: number,
-  categoryPriority: number,
+  categoryPriority: number = 0,
   categoryName: string,
 ) => {
+  // 校验
+  if (!categoryName) {
+    uni.showToast({
+      icon: 'none',
+      title: '分组信息不可为空！',
+    })
+    return
+  }
   const res = await updateCategory(categoryName, categoryPriority, categoryId)
-  uni.showToast({
-    title: res.msg,
-  })
-}
-
-// 新增一个分组
-const onCategoryAdd = async (name: string, priority: number) => {
-  const res = await addCategory(name, priority)
   if (+res.code === 1) {
     uni.showToast({
-      title: '成功增加一个分组',
+      icon: 'none',
+      title: '分组信息修改成功',
     })
     await categoryLoading()
   } else {
     uni.showToast({
+      icon: 'none',
+      title: '分组信息修改失败',
+    })
+  }
+}
+
+// 新增一个分组
+const onCategoryAdd = async (name: string, priority: number = 0) => {
+  if (!name) {
+    uni.showToast({
+      icon: 'none',
+      title: '分组信息不可为空！',
+    })
+    return
+  }
+  const res = await addCategory(name, priority)
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '成功增加一个分组',
+    })
+    await categoryLoading()
+    addCategoryLine.value.categoryName = ''
+    addCategoryLine.value.categoryPriority = 0
+  } else {
+    uni.showToast({
+      icon: 'none',
       title: '新增分组失败',
     })
   }
+}
+
+// 删除一个分组
+const onCategoryDelete = async (id: number, name: string) => {
+  uni.showModal({
+    title: '删除提示',
+    content: `您确定要删除分组<${name}>吗?`,
+    confirmText: '确认删除！',
+    confirmColor: 'rgba(218, 0, 0, 0.1)',
+    cancelText: '误触了',
+    success: async function (res) {
+      if (res.confirm) {
+        const res = await deleteCategory(id)
+        if (+res.code === 1) {
+          uni.showToast({
+            icon: 'none',
+            title: '成功删除该分组',
+          })
+          await categoryLoading()
+        } else {
+          uni.showToast({
+            icon: 'none',
+            title: '删除分组失败',
+          })
+        }
+      } else if (res.cancel) {
+        console.log('用户点击取消')
+      }
+    },
+  })
 }
 
 // 加载数据
@@ -234,7 +298,7 @@ onLoad(async () => {
         :itemList="category_list"
         :addItem="'调整分组'"
         @switch="onSwitch"
-        @add="onAddCategory"
+        @add="onOpenCategory"
       />
       <view class="dish-content">
         <view class="box">
@@ -291,35 +355,52 @@ onLoad(async () => {
 
       <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
         <uni-card class="form-card">
-          <uni-section title="新增分组信息" type="line">
-            <scroll-view scroll-y="true" class="scroll-Y">
+          <scroll-view scroll-y="true" class="scroll-Y">
+            <uni-section title="调整已有分组信息" type="line">
               <view class="input-line" v-for="(line, index) in categoryData">
                 <view class="label">分组{{ index + 1 }}：</view>
-                <uni-easyinput v-model="line.categoryName" placeholder="请输入此分组名称" />
-                <uni-data-select
-                  v-model="line.categoryPriority"
-                  :localdata="categoryRange"
-                  placeholder="请选择此分组的重要程度"
-                ></uni-data-select>
-                <view
-                  class="category-edit-button"
-                  @click="onCategoryEdit(line.categoryId, line.categoryPriority, line.categoryName)"
-                >
-                  修改此分组
+                <view class="input-box">
+                  <uni-easyinput v-model="line.categoryName" placeholder="请输入此分组名称" />
+                  <uni-data-select
+                    v-model="line.categoryPriority"
+                    :localdata="categoryRange"
+                    placeholder="请选择此分组的重要程度"
+                  ></uni-data-select>
+                </view>
+                <view class="button-box">
+                  <view
+                    class="category-button edit"
+                    @click="
+                      onCategoryEdit(line.categoryId, line.categoryPriority, line.categoryName)
+                    "
+                  >
+                    修改此分组
+                  </view>
+                  <view
+                    class="category-button delete"
+                    @click="onCategoryDelete(line.categoryId, line.categoryName)"
+                  >
+                    删除此分组
+                  </view>
                 </view>
               </view>
+            </uni-section>
 
+            <uni-section title="新增分组" type="line">
               <view class="input-line">
                 <view class="label">新增一个分组：</view>
-                <uni-easyinput
-                  v-model="addCategoryLine.categoryName"
-                  placeholder="请输入此分组名称"
-                />
-                <uni-data-select
-                  v-model="addCategoryLine.categoryPriority"
-                  :localdata="categoryRange"
-                  placeholder="请选择此分组的重要程度"
-                ></uni-data-select>
+                <view class="input-box">
+                  <uni-easyinput
+                    v-model="addCategoryLine.categoryName"
+                    placeholder="请输入此分组名称"
+                  />
+                  <uni-data-select
+                    v-model="addCategoryLine.categoryPriority"
+                    :localdata="categoryRange"
+                    placeholder="请选择此分组的重要程度"
+                    :placement="'top'"
+                  ></uni-data-select>
+                </view>
                 <view
                   class="add-category-line"
                   @click="
@@ -329,8 +410,8 @@ onLoad(async () => {
                   添加一个分组
                 </view>
               </view>
-            </scroll-view>
-          </uni-section>
+            </uni-section>
+          </scroll-view>
         </uni-card>
       </uni-popup>
     </view>
@@ -393,7 +474,61 @@ onLoad(async () => {
     .form-card {
       width: 700rpx;
       .scroll-Y {
-        height: 500rpx;
+        height: 1000rpx;
+      }
+
+      .input-line {
+        display: flex;
+        flex-direction: column;
+        gap: 10rpx;
+        align-items: center;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        padding: 10rpx;
+        margin-bottom: 20rpx;
+
+        .label {
+          align-self: flex-start;
+        }
+        .button-box {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20rpx;
+          .category-button {
+            border-radius: 12rpx;
+            color: #fff;
+            text-align: center;
+            padding: 5rpx 15rpx;
+            transition: 0.2s ease;
+            &:active {
+              scale: 0.95;
+            }
+
+            &.edit {
+              background-color: rgba(0, 229, 0, 0.4);
+            }
+            &.delete {
+              background-color: rgba(218, 0, 0, 0.4);
+            }
+          }
+        }
+        .add-category-line {
+          text-align: center;
+          padding: 5rpx 15rpx;
+          border: 1px solid rgba(0, 0, 0, 0.8);
+          transition: 0.2s ease;
+          &:active {
+            scale: 0.95;
+          }
+        }
+        .input-box {
+          display: flex;
+          gap: 50rpx;
+          width: 100%;
+          justify-content: space-between;
+          align-items: center;
+        }
       }
     }
 
