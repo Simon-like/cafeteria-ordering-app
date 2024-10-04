@@ -57,6 +57,18 @@ export const addDishInCategory = (categoryId: number, dishIdList: number[]) => {
   })
 }
 
+// 在某一分组下删除菜品 --BINGGO
+export const deleteFromCategory = (categoryId: number, dishIdList: number[]) => {
+  return http({
+    method: 'DELETE',
+    url: `/merchant/dish/deleteFromCategory`,
+    data: {
+      categoryId,
+      dishIdList,
+    },
+  })
+}
+
 // 获取所有菜品信息 BINGGO
 export const getAll = () => {
   return http<dishData[]>({

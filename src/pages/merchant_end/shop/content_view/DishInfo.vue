@@ -6,17 +6,14 @@ import { useMerchantShopStore } from '@/stores'
 import {
   getDishByGroup,
   getAllCategory,
-  addDish,
   addDishInCategory,
   getAll,
   downDish,
-  getDishById,
-  updateDishNot,
-  updateDish,
   getAllCategoryNum,
   deleteCategory,
   addCategory,
   updateCategory,
+  deleteFromCategory,
 } from '@/services/merchant/merchant_shop_dish_api'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 /**
@@ -26,25 +23,6 @@ import { onLoad, onReady } from '@dcloudio/uni-app'
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-10-02
  */
-
-// 扩展 Array 原型以添加自定义的 find 方法
-Array.prototype.customFind = function (callback) {
-  // 检查回调函数是否为函数
-  if (typeof callback !== 'function') {
-    throw new TypeError(callback + ' is not a function')
-  }
-
-  // 遍历数组元素
-  for (let i = 0; i < this.length; i++) {
-    // 如果回调函数返回 true，则返回当前元素
-    if (callback(this[i], i, this)) {
-      return this[i]
-    }
-  }
-
-  // 如果没有找到符合条件的元素，返回 undefined
-  return undefined
-}
 
 const MerchantShopStore = useMerchantShopStore()
 
@@ -97,7 +75,7 @@ const statusSwitch = async (index: number) => {
     case 5:
       MerchantShopStore.dishStatus = 4
       MerchantShopStore.isDiscounted = 2
-      MerchantShopStore.isDeliver = 1
+      MerchantShopStore.isDeliver = 0
       break
   }
   await dish_byGroup_info_loading()
@@ -395,14 +373,36 @@ onLoad(async () => {
 
 // 将某菜品添加至某分组
 
-const allDishInfoPopup = ref()
+const ADDallDishInfoPopup = ref()
+const MINUSallDishInfoPopup = ref()
 const dish_choose_list = ref<
   {
     id: number
     isChoose: boolean
+    imageUrl: string
+    dishName: string
   }[]
 >([])
+
 const addByCategory = async () => {
+  await dish_all_info_loading()
+  dish_choose_list.value = []
+  all_dish_info_list.value.forEach((item) => {
+    if (
+      item.categoryList &&
+      !item.categoryList.find((category) => category.categoryId === MerchantShopStore.categoryId)
+    )
+      dish_choose_list.value.push({
+        id: item.id,
+        isChoose: false,
+        imageUrl: item.imageUrl,
+        dishName: item.dishName,
+      })
+  })
+  ADDallDishInfoPopup.value.open('center')
+}
+
+const minusByCategory = async () => {
   await dish_all_info_loading()
   dish_choose_list.value = []
   all_dish_info_list.value.forEach((item) => {
@@ -410,15 +410,82 @@ const addByCategory = async () => {
       item.categoryList &&
       item.categoryList.find((category) => category.categoryId === MerchantShopStore.categoryId)
     )
-      dish_choose_list.value.push({ id: item.id, isChoose: true })
-    else dish_choose_list.value.push({ id: item.id, isChoose: false })
+      dish_choose_list.value.push({
+        id: item.id,
+        isChoose: false,
+        imageUrl: item.imageUrl,
+        dishName: item.dishName,
+      })
   })
-
-  allDishInfoPopup.value.open('center')
+  MINUSallDishInfoPopup.value.open('center')
 }
 
-const onAddDishByCategory = (index: number) => {
+const onDishByCategory = (index: number) => {
   dish_choose_list.value[index].isChoose = !dish_choose_list.value[index].isChoose
+}
+
+const onAddDishInCategory = async () => {
+  let list: {
+    id: number
+    isChoose: boolean
+  }[] = []
+  dish_choose_list.value && (list = dish_choose_list.value.filter((item) => item.isChoose))
+
+  if (list.length === 0) {
+    uni.showToast({
+      icon: 'none',
+      title: '请至少选择一个菜品哦！',
+    })
+    return
+  }
+  const newList = list.map((item) => item.id)
+
+  const res = await addDishInCategory(MerchantShopStore.categoryId, newList)
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '新增成功！',
+    })
+    await dish_byGroup_info_loading()
+    ADDallDishInfoPopup.value.close()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '新增失败！',
+    })
+  }
+}
+
+const onMinusDishInCategory = async () => {
+  let list: {
+    id: number
+    isChoose: boolean
+  }[] = []
+  dish_choose_list.value && (list = dish_choose_list.value.filter((item) => item.isChoose))
+
+  if (list.length === 0) {
+    uni.showToast({
+      icon: 'none',
+      title: '请至少选择一个菜品哦！',
+    })
+    return
+  }
+  const newList = list.map((item) => item.id)
+
+  const res = await deleteFromCategory(MerchantShopStore.categoryId, newList)
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '删除成功！',
+    })
+    await dish_byGroup_info_loading()
+    MINUSallDishInfoPopup.value.close()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '删除失败！',
+    })
+  }
 }
 </script>
 
@@ -446,10 +513,21 @@ const onAddDishByCategory = (index: number) => {
       />
       <view class="dish-content">
         <view class="box">
-          <view class="addDish-box" @click="add" v-if="category_list[0].active === true"
+          <view class="addDish-box" @click="add" v-show="category_list[0].active === true"
+            >+ 新增菜品(需要审核)</view
+          >
+          <view
+            class="addDish-box"
+            @click="addByCategory"
+            v-show="category_list[0].active === false"
             >+ 新增菜品</view
           >
-          <view class="addDish-box" @click="addByCategory" v-else>+ 在此分组下新增菜品</view>
+          <view
+            class="addDish-box"
+            @click="minusByCategory"
+            v-show="category_list[0].active === false"
+            >- 删除菜品</view
+          >
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
@@ -461,16 +539,28 @@ const onAddDishByCategory = (index: number) => {
                 <view class="dish-value-line">
                   <view class="today-inventory">今日库存(/份) {{ value.todayInventory }}</view>
                 </view>
-                <view class="dish-price-line">
-                  <view class="current price">
-                    <i class="iconfont icon-renminbi"></i>{{ value.discountedPrice }}</view
-                  >
-                  <view class="original price">
-                    <i class="iconfont icon-renminbi"></i>{{ value.price }}
-                    <view class="underline"></view>
-                    <view class="discount">{{ value.discount }}折</view>
+
+                <view v-show="value.isDiscounted === 1">
+                  <view class="dish-price-line">
+                    <view class="current price">
+                      <i class="iconfont icon-renminbi"></i>{{ value.discountedPrice }}
+                    </view>
+                    <view class="original price">
+                      <i class="iconfont icon-renminbi"></i>{{ value.price }}
+                      <view class="underline"></view>
+                      <view class="discount">{{ value.discount }}折</view>
+                    </view>
                   </view>
                 </view>
+
+                <view v-show="value.isDiscounted === 0">
+                  <view class="dish-price-line">
+                    <view class="current price">
+                      <i class="iconfont icon-renminbi"></i>{{ value.price }}</view
+                    >
+                  </view>
+                </view>
+
                 <view class="dish-status-line">{{ value.isDeliver ? '可配送' : '单点不送' }}</view>
                 <view class="button-box">
                   <view class="edit btn" @click="edit">修改信息</view>
@@ -569,20 +659,41 @@ const onAddDishByCategory = (index: number) => {
         </uni-card>
       </uni-popup>
 
-      <uni-popup ref="allDishInfoPopup" type="dialog" border-radius="10px 10px 0 0">
+      <uni-popup ref="ADDallDishInfoPopup" type="dialog" border-radius="10px 10px 0 0">
         <uni-card class="form-card addDish-in-category">
           <scroll-view scroll-y="true" class="scroll-Y">
-            <uni-section title="全部菜品信息" type="line">
-              <view class="dish-line" v-for="(value, index) in all_dish_info_list">
+            <uni-section title="向该分组添加菜品" type="line">
+              <view class="dish-line" v-for="(value, index) in dish_choose_list">
                 <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
                 <view class="label"
                   >菜品{{ index + 1 }}:<text class="dishName">{{ value.dishName }}</text></view
                 >
                 <checkbox
                   :checked="dish_choose_list[index].isChoose"
-                  @click="onAddDishByCategory(index)"
+                  @click="onDishByCategory(index)"
                 />
               </view>
+              <view class="btn" @click="onAddDishInCategory">确认添加</view>
+            </uni-section>
+          </scroll-view>
+        </uni-card>
+      </uni-popup>
+
+      <uni-popup ref="MINUSallDishInfoPopup" type="dialog" border-radius="10px 10px 0 0">
+        <uni-card class="form-card addDish-in-category">
+          <scroll-view scroll-y="true" class="scroll-Y">
+            <uni-section title="从该分组删除菜品" type="line">
+              <view class="dish-line" v-for="(value, index) in dish_choose_list">
+                <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
+                <view class="label"
+                  >菜品{{ index + 1 }}:<text class="dishName">{{ value.dishName }}</text></view
+                >
+                <checkbox
+                  :checked="dish_choose_list[index].isChoose"
+                  @click="onDishByCategory(index)"
+                />
+              </view>
+              <view class="btn" @click="onMinusDishInCategory">确认删除</view>
             </uni-section>
           </scroll-view>
         </uni-card>
@@ -724,6 +835,17 @@ const onAddDishByCategory = (index: number) => {
           }
         }
       }
+
+      .btn {
+        margin-top: 25rpx;
+        width: 100%;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        transition: 0.2s ease;
+        &:active {
+          scale: 0.95;
+        }
+      }
     }
 
     .dish-content {
@@ -738,12 +860,11 @@ const onAddDishByCategory = (index: number) => {
 
       .box {
         width: 100%;
-        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 10rpx;
         .addDish-box {
-          min-width: 210rpx;
           padding: 0 10rpx;
           height: 50rpx;
           background-color: rgba(0, 0, 0, 0.2);
@@ -757,9 +878,6 @@ const onAddDishByCategory = (index: number) => {
           }
         }
         .toTop {
-          position: absolute;
-          right: 10rpx;
-          top: 0;
           padding: 10rpx;
           background-color: rgba(0, 0, 0, 0.2);
           border-radius: 16rpx;
