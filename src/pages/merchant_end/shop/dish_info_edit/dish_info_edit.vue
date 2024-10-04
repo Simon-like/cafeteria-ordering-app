@@ -1,78 +1,274 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { onLoad, onReady } from '@dcloudio/uni-app'
+import { useMerchantShopStore } from '@/stores'
+import { upload } from '@/utils/http'
+import type { categoryType, dishData } from '@/types/merchant_return'
+import {
+  updateDishNot,
+  getDishById,
+  updateDish,
+  getAllCategory,
+} from '@/services/merchant/merchant_shop_dish_api'
 /**
  * @description 菜品信息修改页面
  * @author 应东林
  * @date 2024-09-23
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-25
+ * @lastModifiedTime  2024-10-04
  */
 
+const MerchantShopStore = useMerchantShopStore()
+
+// 该菜品的信息
+
+const dish_info_data = ref<dishData>({
+  id: 0,
+  dishName: '',
+  dishDescription: '',
+  price: 0,
+  discount: 0,
+  discountedPrice: 0,
+  imageUrl: '',
+  categoryList: [],
+  dishStatus: 0, // 菜品的状态，热销0、缺货1、下架2，其他3
+  isDiscounted: 0, // 是否打折。0表示不打折，1表示打折
+  isDeliver: 0, // 单点是否配送。0表示单点不配送，1单点配送
+  todayInventory: 0,
+  specifications: [], // 规格S
+})
+
+onLoad(async (getData: any) => {
+  //console.log(getData.id)
+
+  const res = await getDishById(getData.id)
+  if (+res.code === 1) {
+    dish_info_data.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品信息获取失败！',
+    })
+  }
+})
+
 const back = () => {
-  uni.navigateBack({
-    delta: 1,
+  MerchantShopStore.initializeDishInfo()
+  uni.reLaunch({
+    url: '/pages/merchant_end/merchant_index',
   })
 }
 
-const inventoryValue = ref<number>(0)
 const inventoryMinus = () => {
-  if (inventoryValue.value === 0) {
+  if (dish_info_data.value.todayInventory === 0) {
     uni.showToast({
       icon: 'none',
       title: '数量已经达到最小值',
     })
   } else {
-    inventoryValue.value--
+    dish_info_data.value.todayInventory--
   }
 }
 const inventoryAdd = () => {
-  inventoryValue.value++
+  dish_info_data.value.todayInventory++
 }
 
-const priceValue = ref<number>(0)
 const priceMinus = () => {
-  if (priceValue.value === 0) {
+  if (dish_info_data.value.price === 0) {
     uni.showToast({
       icon: 'none',
       title: '定价已经达到最小值',
     })
   } else {
-    priceValue.value--
+    dish_info_data.value.price--
   }
 }
 const priceAdd = () => {
-  priceValue.value++
+  dish_info_data.value.price++
 }
 
-const discountValue = ref<number>(0.1)
 const discountMinus = () => {
-  if (discountValue.value === 0.1) {
+  if (dish_info_data.value.discount === 0.1) {
     uni.showToast({
       icon: 'none',
       title: '折扣已经达到最小值',
     })
   } else {
-    discountValue.value -= 0.05
-    discountValue.value = +discountValue.value.toFixed(2)
+    dish_info_data.value.discount -= 0.05
+    dish_info_data.value.discount = +dish_info_data.value.discount.toFixed(2)
   }
 }
 const discountAdd = () => {
-  if (discountValue.value === 1) {
+  if (dish_info_data.value.discount === 1) {
     uni.showToast({
       icon: 'none',
       title: '折扣已经达到最大值',
     })
   } else {
-    discountValue.value += 0.05
-    discountValue.value = +discountValue.value.toFixed(2)
+    dish_info_data.value.discount += 0.05
+    dish_info_data.value.discount = +dish_info_data.value.discount.toFixed(2)
   }
 }
 
+// 折扣转数字类型
 const limitDecimalPlaces = () => {
-  discountValue.value = +discountValue.value.toFixed(2)
+  dish_info_data.value.discount = +dish_info_data.value.discount.toFixed(2)
 }
 
-const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', '加牛肚'])
+// 分组信息数据（未有的分组信息）
+const categoryData = ref<categoryType[]>([])
+// 分组选择列表
+const category_choose_list = ref<
+  {
+    categoryId: number
+    isChoose: boolean
+  }[]
+>([])
+
+// 请求并渲染分组信息
+const categoryLoading = async () => {
+  category_choose_list.value = []
+  categoryData.value = []
+  const res = await getAllCategory()
+  if (+res.code === 1) {
+    categoryData.value = res.data.filter(
+      (item) =>
+        !dish_info_data.value.categoryList.find((value) => value.categoryId === item.categoryId),
+    )
+    categoryData.value.forEach((item) => {
+      category_choose_list.value.push({ categoryId: item.categoryId, isChoose: false })
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '分组信息获取失败',
+    })
+  }
+}
+
+const categoryPopup = ref()
+const onAddCategory = async () => {
+  await categoryLoading()
+  categoryPopup.value.open('center')
+}
+
+const onChoose = (index: number) => {
+  category_choose_list.value[index].isChoose = !category_choose_list.value[index].isChoose
+}
+
+const onConfirmAddCategory = () => {
+  for (let i = 0; i < category_choose_list.value.length; i++) {
+    if (category_choose_list.value[i].isChoose) {
+      dish_info_data.value.categoryList.push(categoryData.value[i])
+    }
+  }
+  categoryPopup.value.close()
+}
+const onCancel = (index: number) => {
+  dish_info_data.value.categoryList.splice(index, 1)
+}
+
+const Range = [
+  { value: 0, text: '单点不送' },
+  { value: 1, text: '可配送' },
+]
+
+// 更改封面
+const fileList = ref<Object[]>([])
+const logoPickerPopup = ref()
+
+const openLogoPicker = () => {
+  logoPickerPopup.value.open('center')
+}
+
+// 新增图片
+const afterRead = async (event: Object) => {
+  // 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
+  let lists = [].concat(event.file)
+  lists.map((item) => {
+    fileList.value.push({
+      ...item,
+    })
+  })
+}
+
+// 删除图片
+const deletePic = (event: any) => {
+  fileList.value.splice(event.index, 1)
+}
+
+const uploadImg = async () => {
+  function extractHttpLink(s: string) {
+    // 使用正则表达式匹配 HTTP 或 HTTPS 开头的链接
+    const pattern = /https?:\/\/[^\s"]+/
+    const match = s.match(pattern)
+    if (match) {
+      return match[0]
+    } else {
+      return null // 如果没有找到匹配的链接，返回 null
+    }
+  }
+  for (let i = 0; i < fileList.value.length; i++) {
+    console.log(fileList.value[i])
+    const result = await upload('/merchant/dish/uploadImage', fileList.value[i].url)
+    dish_info_data.value.imageUrl = extractHttpLink(result.data)
+    uni.showToast({
+      title: `图片修改成功！`,
+    })
+    logoPickerPopup.value.close()
+  }
+}
+
+// 新增一行规格
+const onAddSpec = () => {
+  dish_info_data.value.specifications.push('')
+}
+const onCloseSpec = (index: number) => {
+  dish_info_data.value.specifications.splice(index, 1)
+}
+
+const onSave = async () => {
+  if (
+    !dish_info_data.value.imageUrl ||
+    !dish_info_data.value.dishName ||
+    !dish_info_data.value.dishDescription
+  ) {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品名称、菜品封面、菜品描述不可为空！',
+    })
+    return
+  }
+
+  dish_info_data.value.specifications = dish_info_data.value.specifications.filter(
+    (item) => item !== '',
+  )
+  const list = dish_info_data.value.categoryList.map((item) => item.categoryId)
+  const res = await updateDishNot(
+    dish_info_data.value.id,
+    dish_info_data.value.dishName,
+    dish_info_data.value.dishDescription,
+    dish_info_data.value.discount,
+    dish_info_data.value.imageUrl,
+    list,
+    dish_info_data.value.dishStatus, // 菜品的状态，热销0、缺货1、下架2，其他3
+    dish_info_data.value.isDiscounted, // 是否打折。0表示不打折，1表示打折
+    dish_info_data.value.isDeliver, // 单点是否配送。0表示单点不配送，1单点配送
+    dish_info_data.value.todayInventory,
+    dish_info_data.value.specifications,
+  )
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '成功修改菜品信息！',
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品信息修改失败',
+    })
+  }
+}
 </script>
 
 <template>
@@ -87,27 +283,50 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
       <view class="info-wrapper">
         <view class="info-line">
           <view class="line-title">菜品名称：</view>
-          <view class="value">生蚝</view>
+          <input
+            type="text"
+            class="dishName-input"
+            v-model="dish_info_data.dishName"
+            placeholder="请填写菜品名称"
+          />
         </view>
-        <view class="info-line">
+        <view class="info-line category">
           <view class="line-title">菜品分组：</view>
-          <view class="value">本店精品菜</view>
+          <view class="wrapper">
+            <view class="value" v-for="(item, index) in dish_info_data.categoryList">
+              {{ item.categoryName }}
+              <i class="iconfont icon-x" @click="onCancel(index)"></i>
+            </view>
+            <view class="add-category" @click="onAddCategory">
+              <i class="iconfont icon-jia"></i><text>新增分组</text>
+            </view>
+          </view>
         </view>
         <view class="info-line">
           <view class="line-title">今日库存：</view>
           <view class="value number">
             <view class="minus" @click="inventoryMinus">-</view>
-            <input type="number" class="inventory-input" v-model="inventoryValue" />
+            <input type="number" class="inventory-input" v-model="dish_info_data.todayInventory" />
             <view class="add" @click="inventoryAdd">+</view>
           </view>
         </view>
         <view class="info-line">
           <view class="line-title">外送信息：</view>
-          <view class="value">生蚝</view>
+          <uni-data-select
+            class="dishName-input"
+            v-model="dish_info_data.isDeliver"
+            :localdata="Range"
+            placeholder="请选择此外送信息"
+          ></uni-data-select>
         </view>
         <view class="info-line">
           <view class="line-title">封面：</view>
-          <view class="value">生蚝</view>
+          <image
+            :src="dish_info_data.imageUrl"
+            mode="aspectFill"
+            class="dish-img"
+            @click="openLogoPicker()"
+          ></image>
         </view>
       </view>
     </view>
@@ -118,7 +337,7 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
           <view class="line-title">菜品定价：</view>
           <view class="value number">
             <view class="minus" @click="priceMinus">-</view>
-            <input type="number" class="inventory-input" v-model="priceValue" />
+            <input type="number" class="inventory-input" v-model="dish_info_data.price" />
             <view class="add" @click="priceAdd">+</view>
           </view>
         </view>
@@ -135,7 +354,7 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
             <input
               type="number"
               class="inventory-input"
-              v-model="discountValue"
+              v-model="dish_info_data.discount"
               @input="limitDecimalPlaces"
             />
             <view class="add" @click="discountAdd">+</view>
@@ -143,25 +362,97 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
         </view>
 
         <view class="info-line">
-          <view class="discountPrice">折后价:{{ (priceValue * discountValue).toFixed(2) }}</view>
+          <view class="discountPrice"
+            >折后价:{{ (dish_info_data.price * dish_info_data.discount).toFixed(2) }}</view
+          >
         </view>
       </view>
     </view>
     <view class="spec-info section">
-      <view class="section-title">规格信息</view>
+      <view class="section-title">规格信息(可不填写)</view>
       <view class="info-wrapper">
-        <view class="info-line" v-for="(item, index) in specifications" :key="item">
+        <view class="info-line" v-for="(item, index) in dish_info_data.specifications" :key="item">
           <view class="line-title">规格{{ index + 1 }}:</view>
-          <view class="value spec">{{ item }}</view>
+          <view class="dishSpec-box">
+            <input
+              type="text"
+              class="dishSpec-input"
+              v-model="dish_info_data.specifications[index]"
+              placeholder="请填写规格名称"
+            />
+            <view class="closeBtn" @click="onCloseSpec(index)"> 删除</view>
+          </view>
         </view>
         <view class="info-line">
-          <view class="spec-add"><i class="iconfont icon-jia"></i><text>新增规格</text></view>
+          <view class="spec-add" @click="onAddSpec"
+            ><i class="iconfont icon-jia"></i><text>新增规格</text></view
+          >
         </view>
       </view>
     </view>
 
+    <view class="spec-info section">
+      <view class="section-title">菜品描述</view>
+      <view class="info-wrapper">
+        <uni-easyinput
+          type="textarea"
+          v-model="dish_info_data.dishDescription"
+          autoHeight
+          placeholder="请描述该菜品的特征,用后续商品的展示"
+          :styles="{
+            color: '#000',
+            borderColor: '#7e7e5e',
+            borderRadius: '20px',
+            backgroundColor: 'rgba(255,255,255,0.4)',
+          }"
+          :placeholderStyle="'color:rgba(0, 0, 0, 0.5);font-size:14px'"
+        ></uni-easyinput>
+      </view>
+    </view>
+
+    <uni-popup ref="categoryPopup" type="dialog" border-radius="10px 10px 0 0">
+      <uni-card class="form-card">
+        <scroll-view scroll-y="true" class="scroll-Y">
+          <uni-section title="需要添加的分组信息" type="line">
+            <view class="wrapper">
+              <view
+                class="category-item"
+                v-for="(value, index) in categoryData"
+                @click="onChoose(index)"
+              >
+                {{ value.categoryName }}
+                <i
+                  class="iconfont"
+                  :class="{ 'icon-dian': category_choose_list[index].isChoose }"
+                ></i>
+              </view>
+            </view>
+            <view class="btn" @click="onConfirmAddCategory">确认添加</view>
+          </uni-section>
+        </scroll-view>
+      </uni-card>
+    </uni-popup>
+
+    <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
+      <uni-card class="form-card">
+        <uni-section title="设置菜品封面" type="line">
+          <up-upload
+            :fileList="fileList"
+            @delete="deletePic"
+            @afterRead="afterRead"
+            multiple
+            name="1"
+            :maxCount="1"
+            :previewFullImage="true"
+            class="img-picker"
+          ></up-upload>
+          <view class="uploadBtn" @click="uploadImg">确认上传</view>
+        </uni-section>
+      </uni-card>
+    </uni-popup>
+
     <view class="button-box">
-      <view class="save btn">保存</view>
+      <view class="save btn" @click="onSave">保存</view>
       <view class="discontinued btn">下架</view>
     </view>
   </view>
@@ -176,6 +467,45 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
   align-items: center;
   padding: 45rpx 20rpx 0rpx 20rpx;
   gap: 60rpx;
+  .form-card {
+    width: 500rpx;
+    .wrapper {
+      width: 100%;
+      margin-bottom: 20rpx;
+      display: flex;
+      gap: 15rpx;
+      .category-item {
+        border: 1px solid rgb(0, 0, 0);
+        border-radius: 16rpx;
+        padding: 5rpx;
+        text-align: center;
+        position: relative;
+        transition: 0.2s ease;
+        &:active {
+          scale: 0.95;
+        }
+        i {
+          position: absolute;
+          color: rgb(0, 223, 0);
+          font-size: 50rpx;
+          top: -30rpx;
+          right: -30rpx;
+        }
+      }
+    }
+    .btn {
+      width: 100%;
+      border: 1px solid rgba(0, 0, 0, 0.8);
+      text-align: center;
+      padding: 10rpx 0;
+      font-weight: 550;
+      transition: 0.2s ease;
+      &:active {
+        scale: 0.9;
+      }
+    }
+  }
+
   .section-header {
     position: relative;
     width: 100%;
@@ -219,6 +549,15 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
         justify-content: space-between;
         align-items: center;
 
+        .dishName-input {
+          border: 1px solid rgba(0, 0, 0, 0.6);
+          width: 300rpx;
+          padding: 5rpx;
+          font-size: 30rpx;
+          outline: none;
+          background: transparent;
+        }
+
         .discountPrice {
           margin-left: auto;
           color: rgba(0, 0, 0, 0.2);
@@ -243,6 +582,38 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
             color: rgba(0, 0, 0, 0.3);
             margin-right: 5rpx;
           }
+        }
+
+        .dishSpec-box {
+          display: flex;
+          align-items: center;
+          height: 100%;
+          .dishSpec-input {
+            border: 1px solid rgba(0, 0, 0, 0.6);
+            border-right: none;
+            width: 300rpx;
+            padding: 5rpx;
+            font-size: 30rpx;
+            outline: none;
+            height: 100%;
+            background: transparent;
+          }
+          .closeBtn {
+            border: 1px solid rgba(0, 0, 0, 0.6);
+            padding: 5rpx;
+            transition: 0.2s ease;
+            font-size: 30rpx;
+            height: 100%;
+
+            &:active {
+              scale: 0.9;
+            }
+          }
+        }
+        .dish-img {
+          width: 150rpx;
+          height: 150rpx;
+          background-color: rgba(0, 0, 0, 0.2);
         }
 
         .number {
@@ -272,6 +643,53 @@ const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', 
             background: transparent;
             border-bottom: 1px solid #fff;
             text-align: center;
+          }
+        }
+      }
+
+      .category {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10rpx;
+        .wrapper {
+          border: 1px solid rgba(0, 0, 0, 0.8);
+          width: 100%;
+          padding: 20rpx;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20rpx;
+          .value {
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 16rpx;
+            padding: 5rpx;
+            text-align: center;
+            position: relative;
+            i {
+              position: absolute;
+              color: rgb(223, 0, 0);
+              font-size: 30rpx;
+              top: -10rpx;
+              right: -10rpx;
+              transition: 0.2s ease;
+              &:active {
+                scale: 0.95;
+              }
+            }
+          }
+          .add-category {
+            padding: 5rpx;
+            text-align: center;
+            border-radius: 16rpx;
+            background-color: #fff;
+            transition: 0.2s ease;
+            &:active {
+              scale: 0.95;
+            }
+            i {
+              color: rgba(0, 0, 0, 0.3);
+              margin-right: 5rpx;
+            }
           }
         }
       }

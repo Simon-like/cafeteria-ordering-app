@@ -9,7 +9,7 @@ import type { categoryType, dishData } from '@/types/merchant_return'
  * @lastModifiedTime  2024-10-04
  */
 
-// 商户端分类型、分组别查看菜品信息 BINGGO
+// 商户端分类型、分组别查看菜品信息 --BINGGO
 export const getDishByGroup = (
   dishStatus: number = 4, // 菜品的状态，热销0、缺货1、下架2，其他3，不考虑这个因素4
   categoryId: number = -1, // 分类ID，不考虑就填Null
@@ -69,7 +69,7 @@ export const deleteFromCategory = (categoryId: number, dishIdList: number[]) => 
   })
 }
 
-// 获取所有菜品信息 BINGGO
+// 获取所有菜品信息 --BINGGO
 export const getAll = () => {
   return http<dishData[]>({
     method: 'GET',
@@ -77,7 +77,7 @@ export const getAll = () => {
   })
 }
 
-// 下架菜品
+// 下架菜品 --BINGGO
 export const downDish = (dishId: number) => {
   return http({
     method: 'PUT',
@@ -85,7 +85,7 @@ export const downDish = (dishId: number) => {
   })
 }
 
-// 按ID查询菜品
+// 按ID查询菜品 --BINGGO
 export const getDishById = (dishId: number) => {
   return http<dishData>({
     method: 'GET',
@@ -99,7 +99,7 @@ export const updateDishNot = (
   dishDescription: string,
   discount: number,
   imageUrl: string,
-  categoryList: categoryType[],
+  categoryIdList: number[],
   dishStatus: number, // 菜品的状态，热销0、缺货1、下架2，其他3
   isDiscounted: number, // 是否打折。0表示不打折，1表示打折
   isDeliver: number, // 单点是否配送。0表示单点不配送，1单点配送
@@ -115,7 +115,7 @@ export const updateDishNot = (
       dishDescription,
       discount,
       imageUrl,
-      categoryList,
+      categoryIdList,
       dishStatus, // 菜品的状态，热销0、缺货1、下架2，其他3
       isDiscounted, // 是否打折。0表示不打折，1表示打折
       isDeliver, // 单点是否配送。0表示单点不配送，1单点配送
@@ -135,7 +135,7 @@ export const updateDish = (dishId: number, price: number) => {
     },
   })
 }
-// 商户端获取各类型下的菜品数量 BINGGO
+// 商户端获取各类型下的菜品数量 --BINGGO
 export const getAllCategoryNum = () => {
   return http<{
     all: number
@@ -150,7 +150,7 @@ export const getAllCategoryNum = () => {
   })
 }
 
-// 获取分组列表信息 BINGGO
+// 获取分组列表信息 --BINGGO
 export const getAllCategory = () => {
   return http<categoryType[]>({
     method: 'GET',
@@ -166,7 +166,7 @@ export const deleteCategory = (categoryId: number) => {
   })
 }
 
-// 商户端新增菜品分组 BINGGO
+// 商户端新增菜品分组 --BINGGO
 
 export const addCategory = (categoryName: string, categoryPriority: number) => {
   return http({
@@ -175,7 +175,7 @@ export const addCategory = (categoryName: string, categoryPriority: number) => {
   })
 }
 
-// 商户端修改分组信息 BINGGO
+// 商户端修改分组信息 --BINGGO
 
 export const updateCategory = (
   categoryName: string,

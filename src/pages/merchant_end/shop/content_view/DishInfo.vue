@@ -185,9 +185,9 @@ const dishDesc_switch = (dishIndex: number) => {
 }
 
 //修改菜品信息
-const edit = () => {
+const edit = (id: number) => {
   uni.navigateTo({
-    url: '/pages/merchant_end/shop/dish_info_edit/dish_info_edit',
+    url: `/pages/merchant_end/shop/dish_info_edit/dish_info_edit?id=${id}`,
     animationType: 'fade-in',
     animationDuration: 200,
   })
@@ -563,7 +563,7 @@ const onMinusDishInCategory = async () => {
 
                 <view class="dish-status-line">{{ value.isDeliver ? '可配送' : '单点不送' }}</view>
                 <view class="button-box">
-                  <view class="edit btn" @click="edit">修改信息</view>
+                  <view class="edit btn" @click="edit(value.id)">修改信息</view>
                   <view
                     class="discontinued btn"
                     @click="onDownDish(value.id)"
