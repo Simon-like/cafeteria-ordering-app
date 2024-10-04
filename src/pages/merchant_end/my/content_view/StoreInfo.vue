@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { useMerchantStore } from '@/stores'
 import {
   GetMerchantInfo,
   ChangeMerchantInfo,
@@ -120,10 +120,6 @@ const rules = {
     ],
   },
 }
-// onReady(() => {
-//   // 需要在onReady中设置规则
-//   valiForm.setRules(rules)
-// })
 
 // 校验表单数据
 const valiFormData = reactive({

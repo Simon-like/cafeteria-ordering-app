@@ -108,13 +108,14 @@ export const http = <T>(options: UniApp.RequestOptions) => {
   })
 }
 
-export const upload = (url:string,imgUrl: string) => {
+export const upload = (url: string, imgUrl: string) => {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
       url: baseURL + url,
       filePath: imgUrl,
       name: 'image',
       success: (res) => {
+        console.log('图片上传第一层请求信息：', res)
         resolve(res)
       },
     })

@@ -6,13 +6,13 @@ import type { categoryType, dishData } from '@/types/merchant_return'
  * @author 应东林
  * @date 2024-09-30
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-30
+ * @lastModifiedTime  2024-10-04
  */
 
-// 商户端分类型、分组别查看菜品信息
+// 商户端分类型、分组别查看菜品信息 BINGGO
 export const getDishByGroup = (
   dishStatus: number = 4, // 菜品的状态，热销0、缺货1、下架2，其他3，不考虑这个因素4
-  categoryId: number | null = null, // 分类ID，不考虑就填Null
+  categoryId: number = -1, // 分类ID，不考虑就填Null
   isDiscounted: number = 2, // 是否打折。0表示不打折，1表示打折，2不考虑这个
   isDeliver: number = 2, // 单点是否配送。0表示单点不配送，1单点配送,2不考虑这个
 ) => {
@@ -22,14 +22,14 @@ export const getDishByGroup = (
   })
 }
 
-// 新增菜品
+// 新增菜品 --BINGGO
 export const addDish = (
   description: string,
   dishDescription: string,
   dishName: string,
-  imageUrl: string,
   price: number,
   specifications: string[],
+  imageUrl: string,
 ) => {
   return http({
     method: 'POST',
@@ -45,7 +45,7 @@ export const addDish = (
   })
 }
 
-// 在某一分组下新增菜品
+// 在某一分组下新增菜品 --BINGGO
 export const addDishInCategory = (categoryId: number, dishIdList: number[]) => {
   return http({
     method: 'POST',
@@ -57,7 +57,7 @@ export const addDishInCategory = (categoryId: number, dishIdList: number[]) => {
   })
 }
 
-// 获取所有菜品信息
+// 获取所有菜品信息 BINGGO
 export const getAll = () => {
   return http<dishData[]>({
     method: 'GET',
@@ -66,10 +66,10 @@ export const getAll = () => {
 }
 
 // 下架菜品
-export const downDish = () => {
+export const downDish = (dishId: number) => {
   return http({
     method: 'PUT',
-    url: `/merchant/dish/downDish`,
+    url: `/merchant/dish/downDish?dishId=${dishId}`,
   })
 }
 
@@ -123,7 +123,7 @@ export const updateDish = (dishId: number, price: number) => {
     },
   })
 }
-// 商户端获取各类型下的菜品数量
+// 商户端获取各类型下的菜品数量 BINGGO
 export const getAllCategoryNum = () => {
   return http<{
     all: number

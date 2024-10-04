@@ -2,6 +2,7 @@
 import type { AsideItem } from '@/types/aside'
 import { ref, reactive, nextTick } from 'vue'
 import type { categoryType, dishData } from '@/types/merchant_return'
+import { useMerchantShopStore } from '@/stores'
 import {
   getDishByGroup,
   getAllCategory,
@@ -23,8 +24,29 @@ import { onLoad, onReady } from '@dcloudio/uni-app'
  * @author 应东林
  * @date 2024-09-17
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-30
+ * @lastModifiedTime  2024-10-02
  */
+
+// 扩展 Array 原型以添加自定义的 find 方法
+Array.prototype.customFind = function (callback) {
+  // 检查回调函数是否为函数
+  if (typeof callback !== 'function') {
+    throw new TypeError(callback + ' is not a function')
+  }
+
+  // 遍历数组元素
+  for (let i = 0; i < this.length; i++) {
+    // 如果回调函数返回 true，则返回当前元素
+    if (callback(this[i], i, this)) {
+      return this[i]
+    }
+  }
+
+  // 如果没有找到符合条件的元素，返回 undefined
+  return undefined
+}
+
+const MerchantShopStore = useMerchantShopStore()
 
 // 菜品类型信息
 type statusItem = {
@@ -41,13 +63,45 @@ const status_list = ref<statusItem[]>([
   { index: 4, title: '折扣', number: 0, active: false },
   { index: 5, title: '单点不送', number: 0, active: false },
 ])
-const statusSwitch = (index: number) => {
+const statusSwitch = async (index: number) => {
   status_list.value.forEach((item) => {
     if (index !== item.index) item.active = false
     else item.active = true
   })
+  switch (index) {
+    case 0:
+      MerchantShopStore.dishStatus = 4
+      MerchantShopStore.isDiscounted = 2
+      MerchantShopStore.isDeliver = 2
+      break
+    case 1:
+      MerchantShopStore.dishStatus = 0
+      MerchantShopStore.isDiscounted = 2
+      MerchantShopStore.isDeliver = 2
+      break
+    case 2:
+      MerchantShopStore.dishStatus = 2
+      MerchantShopStore.isDiscounted = 2
+      MerchantShopStore.isDeliver = 2
+      break
+    case 3:
+      MerchantShopStore.dishStatus = 1
+      MerchantShopStore.isDiscounted = 2
+      MerchantShopStore.isDeliver = 2
+      break
+    case 4:
+      MerchantShopStore.dishStatus = 4
+      MerchantShopStore.isDiscounted = 1
+      MerchantShopStore.isDeliver = 2
+      break
+    case 5:
+      MerchantShopStore.dishStatus = 4
+      MerchantShopStore.isDiscounted = 2
+      MerchantShopStore.isDeliver = 1
+      break
+  }
+  await dish_byGroup_info_loading()
 }
-
 //菜品信息
 
 const dish_info_list = ref<
@@ -70,9 +124,28 @@ const dish_info_list = ref<
   }[]
 >([])
 
-// 加载并渲染菜品信息
-const dish_info_loading = async () => {
+const all_dish_info_list = ref<dishData[]>([])
+
+// 加载并渲染全部菜品信息
+const dish_all_info_loading = async () => {
   const res = await getAll()
+  if (+res.code === 1) {
+    all_dish_info_list.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品信息获取失败',
+    })
+  }
+}
+// 按类型和分组加载并渲染菜品信息
+const dish_byGroup_info_loading = async () => {
+  const res = await getDishByGroup(
+    MerchantShopStore.dishStatus,
+    MerchantShopStore.categoryId,
+    MerchantShopStore.isDiscounted,
+    MerchantShopStore.isDeliver,
+  )
   if (+res.code === 1) {
     dish_info_list.value = []
     res.data.forEach((item, index) => {
@@ -84,9 +157,26 @@ const dish_info_loading = async () => {
       title: '菜品信息获取失败',
     })
   }
+  await all_categoryNum_loading()
 }
 
-const specifications = ref<string[]>(['大分不辣', '小份辣', '加鸡腿', '加牛肚'])
+// 加载并渲染各类型下的菜品数量
+const all_categoryNum_loading = async () => {
+  const resNum = await getAllCategoryNum()
+  if (+resNum.code === 1) {
+    status_list.value[0].number = resNum.data.all
+    status_list.value[1].number = resNum.data.selling
+    status_list.value[2].number = resNum.data.discontinued
+    status_list.value[3].number = resNum.data.soldOut
+    status_list.value[4].number = resNum.data.discount
+    status_list.value[5].number = resNum.data.dineIn
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '各类型菜品数量获取失败',
+    })
+  }
+}
 
 const scrollTop = ref<number>(0)
 const old = reactive({
@@ -125,13 +215,31 @@ const edit = () => {
   })
 }
 
-//新增菜品信息
+//新增菜品
 const add = () => {
   uni.navigateTo({
     url: '/pages/merchant_end/shop/dish_info_add/dish_info_add',
     animationType: 'fade-in',
     animationDuration: 200,
   })
+}
+
+// 下架菜品
+
+const onDownDish = async (id: number) => {
+  const res = await downDish(id)
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品下架成功',
+    })
+    await dish_byGroup_info_loading()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品下架失败',
+    })
+  }
 }
 
 // 分组信息数据（后台给的）
@@ -146,19 +254,26 @@ const categoryRange = [
 
 // 分组用于侧边栏的数据
 const category_list = ref<AsideItem[]>([{ itemId: 0, itemName: '全部分组', active: true }])
-const channelId = ref<number>(0)
-const onSwitch = (e: number) => {
-  channelId.value = e
+
+const onSwitch = async (e: number) => {
+  const index = e - 1
+  if (index === -1) {
+    MerchantShopStore.categoryId = -1
+  } else {
+    MerchantShopStore.categoryId = categoryData.value[index].categoryId
+  }
+
+  await dish_byGroup_info_loading()
 }
 
 //调整分组信息
-const popup = ref()
+const categoryPopup = ref()
 
 const onOpenCategory = (e: boolean) => {
   categoryLoading()
   addCategoryLine.value.categoryName = ''
   addCategoryLine.value.categoryPriority = 0
-  popup.value.open('center')
+  categoryPopup.value.open('center')
 }
 
 // 新增分组信息的临时存储
@@ -272,10 +387,39 @@ const onCategoryDelete = async (id: number, name: string) => {
 
 // 加载数据
 onLoad(async () => {
+  MerchantShopStore.initializeCategory()
   // 获取所有分组
   await categoryLoading()
-  await dish_info_loading()
+  await dish_byGroup_info_loading()
 })
+
+// 将某菜品添加至某分组
+
+const allDishInfoPopup = ref()
+const dish_choose_list = ref<
+  {
+    id: number
+    isChoose: boolean
+  }[]
+>([])
+const addByCategory = async () => {
+  await dish_all_info_loading()
+  dish_choose_list.value = []
+  all_dish_info_list.value.forEach((item) => {
+    if (
+      item.categoryList &&
+      item.categoryList.find((category) => category.categoryId === MerchantShopStore.categoryId)
+    )
+      dish_choose_list.value.push({ id: item.id, isChoose: true })
+    else dish_choose_list.value.push({ id: item.id, isChoose: false })
+  })
+
+  allDishInfoPopup.value.open('center')
+}
+
+const onAddDishByCategory = (index: number) => {
+  dish_choose_list.value[index].isChoose = !dish_choose_list.value[index].isChoose
+}
 </script>
 
 <template>
@@ -305,13 +449,13 @@ onLoad(async () => {
           <view class="addDish-box" @click="add" v-if="category_list[0].active === true"
             >+ 新增菜品</view
           >
-          <view class="addDish-box" @click="add" v-else>+ 在此分组下新增菜品</view>
+          <view class="addDish-box" @click="addByCategory" v-else>+ 在此分组下新增菜品</view>
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
           <view class="dish-wrapper" v-for="value in dish_info_list">
             <view class="explicit-info">
-              <view class="dish-img">{{ value.imageUrl }}</view>
+              <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
               <view class="dish-info">
                 <view class="dish-name">{{ value.dishName }}</view>
                 <view class="dish-value-line">
@@ -330,7 +474,13 @@ onLoad(async () => {
                 <view class="dish-status-line">{{ value.isDeliver ? '可配送' : '单点不送' }}</view>
                 <view class="button-box">
                   <view class="edit btn" @click="edit">修改信息</view>
-                  <view class="discontinued btn">下架</view>
+                  <view
+                    class="discontinued btn"
+                    @click="onDownDish(value.id)"
+                    v-show="value.dishStatus !== 2"
+                    >下架</view
+                  >
+                  <view class="discontinued btn" v-show="value.dishStatus === 2">已被下架</view>
                 </view>
               </view>
             </view>
@@ -338,6 +488,10 @@ onLoad(async () => {
               <view class="spec-line" v-for="(item, index) in value.specifications" :key="item">
                 <view class="title">规格{{ index + 1 }}:</view>
                 <view class="specItem">{{ item }}</view>
+              </view>
+              <view class="dish-description">
+                <view class="label">菜品描述：</view>
+                <view class="content">{{ value.dishDescription }}</view>
               </view>
             </view>
             <view class="Btn" @click="dishDesc_switch(value.index)">
@@ -353,7 +507,7 @@ onLoad(async () => {
         </scroll-view>
       </view>
 
-      <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
+      <uni-popup ref="categoryPopup" type="dialog" border-radius="10px 10px 0 0">
         <uni-card class="form-card">
           <scroll-view scroll-y="true" class="scroll-Y">
             <uni-section title="调整已有分组信息" type="line">
@@ -409,6 +563,25 @@ onLoad(async () => {
                 >
                   添加一个分组
                 </view>
+              </view>
+            </uni-section>
+          </scroll-view>
+        </uni-card>
+      </uni-popup>
+
+      <uni-popup ref="allDishInfoPopup" type="dialog" border-radius="10px 10px 0 0">
+        <uni-card class="form-card addDish-in-category">
+          <scroll-view scroll-y="true" class="scroll-Y">
+            <uni-section title="全部菜品信息" type="line">
+              <view class="dish-line" v-for="(value, index) in all_dish_info_list">
+                <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
+                <view class="label"
+                  >菜品{{ index + 1 }}:<text class="dishName">{{ value.dishName }}</text></view
+                >
+                <checkbox
+                  :checked="dish_choose_list[index].isChoose"
+                  @click="onAddDishByCategory(index)"
+                />
               </view>
             </uni-section>
           </scroll-view>
@@ -528,6 +701,27 @@ onLoad(async () => {
           width: 100%;
           justify-content: space-between;
           align-items: center;
+        }
+      }
+    }
+
+    .addDish-in-category {
+      .dish-line {
+        display: flex;
+        gap: 10rpx;
+        align-items: center;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        padding: 10rpx;
+        margin-bottom: 20rpx;
+        .dish-img {
+          width: 100rpx;
+          height: 100rpx;
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+        .label {
+          text {
+            font-weight: 550;
+          }
         }
       }
     }
