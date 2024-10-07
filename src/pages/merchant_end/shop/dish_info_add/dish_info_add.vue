@@ -71,7 +71,7 @@ const uploadImg = async () => {
   for (let i = 0; i < fileList.value.length; i++) {
     console.log(fileList.value[i])
     const result = await upload('/merchant/dish/uploadImage', fileList.value[i].url)
-    MerchantShopStore.imageUrl = extractHttpLink(result.data)
+    MerchantShopStore.imageUrl = extractHttpLink(result.data) as string
     console.log(MerchantShopStore.imageUrl)
     uni.showToast({
       title: `图片修改成功！`,

@@ -157,22 +157,16 @@ const all_categoryNum_loading = async () => {
 }
 
 const scrollTop = ref<number>(0)
-const old = reactive({
-  scrollTop: 0,
-})
 
-const scroll = (e: any) => {
-  old.scrollTop = e.detail.scrollTop
-}
 const goTop = (e: any) => {
+  scrollTop.value = 1
   // 解决view层不同步的问题
-  scrollTop.value = old.scrollTop
   nextTick(function () {
     scrollTop.value = 0
-  })
-  uni.showToast({
-    icon: 'none',
-    title: '已返回顶部',
+    uni.showToast({
+      icon: 'none',
+      title: '已返回顶部',
+    })
   })
 }
 
@@ -530,7 +524,7 @@ const onMinusDishInCategory = async () => {
           >
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
-        <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
+        <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y">
           <view class="dish-wrapper" v-for="value in dish_info_list">
             <view class="explicit-info">
               <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>

@@ -9,13 +9,14 @@ import {
   getDishById,
   updateDish,
   getAllCategory,
+  downDish,
 } from '@/services/merchant/merchant_shop_dish_api'
 /**
  * @description 菜品信息修改页面
  * @author 应东林
  * @date 2024-09-23
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-04
+ * @lastModifiedTime  2024-10-05
  */
 
 const MerchantShopStore = useMerchantShopStore()
@@ -36,20 +37,6 @@ const dish_info_data = ref<dishData>({
   isDeliver: 0, // 单点是否配送。0表示单点不配送，1单点配送
   todayInventory: 0,
   specifications: [], // 规格S
-})
-
-onLoad(async (getData: any) => {
-  //console.log(getData.id)
-
-  const res = await getDishById(getData.id)
-  if (+res.code === 1) {
-    dish_info_data.value = res.data
-  } else {
-    uni.showToast({
-      icon: 'none',
-      title: '菜品信息获取失败！',
-    })
-  }
 })
 
 const back = () => {
@@ -211,7 +198,7 @@ const uploadImg = async () => {
   for (let i = 0; i < fileList.value.length; i++) {
     console.log(fileList.value[i])
     const result = await upload('/merchant/dish/uploadImage', fileList.value[i].url)
-    dish_info_data.value.imageUrl = extractHttpLink(result.data)
+    dish_info_data.value.imageUrl = extractHttpLink(result.data) as string
     uni.showToast({
       title: `图片修改成功！`,
     })
@@ -219,12 +206,16 @@ const uploadImg = async () => {
   }
 }
 
+// 很奇怪，要单独列一个变量
+const specifications = ref<string[]>([])
 // 新增一行规格
 const onAddSpec = () => {
   dish_info_data.value.specifications.push('')
+  specifications.value.push('')
 }
 const onCloseSpec = (index: number) => {
   dish_info_data.value.specifications.splice(index, 1)
+  specifications.value.splice(index, 1)
 }
 
 const onSave = async () => {
@@ -240,9 +231,7 @@ const onSave = async () => {
     return
   }
 
-  dish_info_data.value.specifications = dish_info_data.value.specifications.filter(
-    (item) => item !== '',
-  )
+  dish_info_data.value.specifications = specifications.value.filter((item) => item !== '')
   const list = dish_info_data.value.categoryList.map((item) => item.categoryId)
   const res = await updateDishNot(
     dish_info_data.value.id,
@@ -269,6 +258,62 @@ const onSave = async () => {
     })
   }
 }
+
+const onAdjustPricing = async () => {
+  const res = await updateDish(dish_info_data.value.id, dish_info_data.value.price)
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '请求发送成功，请等待审核！',
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '请求发送失败',
+    })
+  }
+}
+
+// 下架菜品
+
+const onDownDish = async () => {
+  const res = await downDish(dish_info_data.value.id)
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品下架成功',
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品下架失败',
+    })
+  }
+}
+
+const oldPrice = ref<number>(0)
+onLoad(async (getData: any) => {
+  const res = await getDishById(getData.id)
+  if (+res.code === 1) {
+    dish_info_data.value = res.data
+    specifications.value = []
+    oldPrice.value = dish_info_data.value.price
+    //需要解耦出来哦！！！
+    dish_info_data.value.specifications.forEach((item) => {
+      specifications.value.push(item)
+    })
+    if (dish_info_data.value.imageUrl === null) {
+      fileList.value = []
+    } else {
+      fileList.value.push({ url: dish_info_data.value.imageUrl })
+    }
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品信息获取失败！',
+    })
+  }
+})
 </script>
 
 <template>
@@ -343,8 +388,9 @@ const onSave = async () => {
         </view>
 
         <view class="info-line status-line">
-          <view class="status">状态：审核通过</view>
-          <view class="btn">确认提交</view>
+          <view class="status OK" v-if="oldPrice === dish_info_data.price">状态：审核通过</view>
+          <view class="status" v-else>状态：审核未通过</view>
+          <view class="btn" @click="onAdjustPricing">确认提交</view>
         </view>
 
         <view class="info-line">
@@ -377,7 +423,7 @@ const onSave = async () => {
             <input
               type="text"
               class="dishSpec-input"
-              v-model="dish_info_data.specifications[index]"
+              v-model="specifications[index]"
               placeholder="请填写规格名称"
             />
             <view class="closeBtn" @click="onCloseSpec(index)"> 删除</view>
@@ -453,7 +499,8 @@ const onSave = async () => {
 
     <view class="button-box">
       <view class="save btn" @click="onSave">保存</view>
-      <view class="discontinued btn">下架</view>
+      <view class="discontinued btn" v-if="dish_info_data.dishStatus === 2">该菜品已被下架</view>
+      <view class="discontinued btn" @click="onDownDish" v-else>下架</view>
     </view>
   </view>
 </template>
@@ -698,13 +745,16 @@ const onSave = async () => {
         margin-top: -30rpx;
       }
       .status {
-        width: 200rpx;
+        min-width: 200rpx;
         background-color: #fff;
         border-radius: 16rpx;
         font-size: 25rpx;
         white-space: nowrap;
         text-align: center;
         padding: 5rpx;
+        &.OK {
+          background-color: #14f00b;
+        }
       }
       .btn {
         width: 200rpx;
