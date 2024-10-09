@@ -2,6 +2,7 @@
 import { componentList } from './index'
 import { ref } from 'vue'
 import { useAdminPagesStore } from '@/stores'
+import adminHeaderBar from '@/components/HeaderBar/adminHeaderBar.vue'
 /**
  * @description 管理端入口页面
  * @author 应东林
@@ -20,6 +21,7 @@ const onSwitch = (e: number) => {
 <template>
   <view class="index">
     <custom-nav-bar></custom-nav-bar>
+    <adminHeaderBar></adminHeaderBar>
     <component :is="componentList[AdminPages.tabbarIndex]"></component>
     <AdminTabbar @switch="onSwitch"></AdminTabbar>
   </view>
