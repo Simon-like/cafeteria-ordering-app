@@ -13,8 +13,15 @@ import ValidationCodeButton from '@/components/ValidationCodeButton/merchant_Val
 const merchantStore = useMerchantStore()
 const phoneNumber = ref<string>()
 const validationCode = ref<string>()
-
+const is_phone_repeat = ref<boolean>(false)
 const getValidationCode = async () => {
+  if (!is_phone_repeat.value) {
+    uni.showToast({
+      icon: 'none',
+      title: '该手机号未注册账号',
+    })
+    return
+  }
   if (!phoneNumber.value) {
     uni.showToast({
       icon: 'none',
@@ -57,7 +64,14 @@ const gotoNext = async () => {
       <view class="password">
         <text>验证码</text>
         <input type="text" class="input_password" v-model="validationCode" />
-        <ValidationCodeButton :phoneNumber="phoneNumber"></ValidationCodeButton>
+        <ValidationCodeButton
+          :phoneNumber="phoneNumber"
+          @repeat="
+            (e) => {
+              is_phone_repeat = e
+            }
+          "
+        ></ValidationCodeButton>
       </view>
       <button class="next" @click="gotoNext()">下一步</button>
     </view>

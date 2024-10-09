@@ -8,6 +8,8 @@
 import { ref } from 'vue'
 import { merchant_getvalidationCode } from '@/services/merchant/merchant_api'
 
+const emit = defineEmits(['repeat'])
+
 const props = defineProps({
   phoneNumber: String,
 })
@@ -25,8 +27,15 @@ const getValidationCode = async () => {
   }
   const response = await merchant_getvalidationCode(props.phoneNumber)
   console.log(response)
-  if (response) {
-    startCountdown()
+  startCountdown()
+  if (+response.code === 20000) {
+    uni.showToast({
+      icon: 'none',
+      title: '已发送短信验证',
+    })
+    emit('repeat', false)
+  } else if (+response.code === 20001) {
+    emit('repeat', true)
   } else {
     uni.showToast({
       icon: 'none',

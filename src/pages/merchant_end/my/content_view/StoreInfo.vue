@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { useMerchantStore } from '@/stores'
 import {
   GetMerchantInfo,
   ChangeMerchantInfo,
@@ -21,11 +21,12 @@ const Merchant = useMerchantStore()
 const HandleGetInfo = async () => {
   const res = await GetMerchantInfo()
   Object.assign(Merchant, res.data)
-  Merchant.operationStatus = res.data.operationStatus || 1 // 默认值为 1
+  Merchant.operationStatus = res.data.operationStatus
   if (res.data.logo === null) {
-    Object.assign(fileList1, {})
+    fileList1.value = []
+  } else {
+    fileList1.value.push({ url: res.data.logo })
   }
-  fileList1.value.push({ url: res.data.logo })
   let [time_start, time_end] = res.data.businessHours.split('-')
   Merchant.time_start = time_start
   Merchant.time_end = time_end
@@ -119,10 +120,6 @@ const rules = {
     ],
   },
 }
-// onReady(() => {
-//   // 需要在onReady中设置规则
-//   valiForm.setRules(rules)
-// })
 
 // 校验表单数据
 const valiFormData = reactive({
