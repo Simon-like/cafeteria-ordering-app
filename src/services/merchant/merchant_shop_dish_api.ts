@@ -92,7 +92,7 @@ export const getDishById = (dishId: number) => {
     url: `/merchant/dish/getDishById?dishId=${dishId}`,
   })
 }
-// 修改菜品、不需要审核
+// 修改菜品、不需要审核 -- BINGGO
 export const updateDishNot = (
   id: number,
   dishName: string,
@@ -124,7 +124,7 @@ export const updateDishNot = (
     },
   })
 }
-// 修改菜品信息、需要审核
+// 修改菜品信息、需要审核 --BINGGO
 export const updateDish = (dishId: number, price: number) => {
   return http({
     method: 'POST',
