@@ -13,15 +13,18 @@ export const useAdminPagesStore = defineStore(
   () => {
     const tabbarIndex = ref<number>(0)
     const shopIndex = ref<number>(0)
+    const myIndex = ref<number>(0)
 
     const initialize = () => {
       tabbarIndex.value = 0
       shopIndex.value = 0
+      myIndex.value = 0
     }
 
     return {
       tabbarIndex,
       shopIndex,
+      myIndex,
       initialize,
     }
   },

@@ -43,7 +43,8 @@ const reject = () => {
 
 <style lang="scss" scoped>
 .box {
-  width: 100%;
+  width: 610rpx;
+  height: 100%;
   display: flex;
   background-color: #ccc;
   .content {

@@ -48,6 +48,8 @@ const goBack = () => {
 
 <style lang="scss" scoped>
 .container {
+  width: 100%;
+  height: 100%;
   font-size: 30rpx;
   .header {
     height: 40rpx;

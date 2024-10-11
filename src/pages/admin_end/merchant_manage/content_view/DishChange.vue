@@ -68,7 +68,8 @@ const goBack = () => {
 
 <style lang="scss" scoped>
 .menu-manage {
-  width: 100%;
+  width: 610rpx;
+  height: 100%;
   .box {
     margin: 20rpx;
     height: auto; /* 根据内容自适应高度 */

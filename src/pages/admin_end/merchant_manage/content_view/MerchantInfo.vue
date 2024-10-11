@@ -56,7 +56,8 @@ const goToDetail = (index) => {
 
 <style lang="scss" scoped>
 .content {
-  width: 100%;
+  width: 610rpx;
+  height: 100%;
   .name {
     font-size: 36rpx;
     width: 100%;
