@@ -89,6 +89,20 @@ const rules = {
     ],
   },
 }
+
+const submit = () => {
+  valiForm.value
+    ?.validate()
+    .then((res: string) => {
+      uni.showToast({
+        icon: 'none',
+        text: '发布成功！',
+      })
+    })
+    .catch((err: string) => {
+      console.log('err', err)
+    })
+}
 </script>
 
 <template>
@@ -232,7 +246,7 @@ const rules = {
       }
 
       .icon {
-        margin: 0 auto;
+        width: 100%;
         text-align: center;
         transition: 0.3s ease-out;
       }

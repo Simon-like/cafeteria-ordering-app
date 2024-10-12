@@ -569,13 +569,15 @@ const onMinusDishInCategory = async () => {
               </view>
             </view>
             <view class="implicit-info" :class="{ active: value.dishDesc_show }">
-              <view class="spec-line" v-for="(item, index) in value.specifications" :key="item">
-                <view class="title">规格{{ index + 1 }}:</view>
-                <view class="specItem">{{ item }}</view>
-              </view>
-              <view class="dish-description">
-                <view class="label">菜品描述：</view>
-                <view class="content">{{ value.dishDescription }}</view>
+              <view class="inner">
+                <view class="spec-line" v-for="(item, index) in value.specifications" :key="item">
+                  <view class="title">规格{{ index + 1 }}:</view>
+                  <view class="specItem">{{ item }}</view>
+                </view>
+                <view class="dish-description">
+                  <view class="label">菜品描述：</view>
+                  <view class="content">{{ value.dishDescription }}</view>
+                </view>
               </view>
             </view>
             <view class="Btn" @click="dishDesc_switch(value.index)">
@@ -976,21 +978,23 @@ const onMinusDishInCategory = async () => {
           }
         }
         .implicit-info {
+          padding: 18rpx 15rpx;
           width: 100%;
-          display: flex;
-          flex-direction: column;
-          gap: 40rpx;
-          max-height: 0;
-          overflow: hidden;
-          opacity: 0;
-          visibility: hidden;
+          display: grid;
+          grid-template-rows: 0fr;
+          transition: all 0.3s ease-out;
+          border-top: 1px solid transparent;
+          .inner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 40rpx;
+            overflow: hidden;
+          }
+
           &.active {
-            padding: 18rpx 15rpx;
-            transition: all 0.5 ease;
-            opacity: 1;
-            max-height: 100vh;
-            visibility: visible;
             border-top: 1px solid #000;
+            grid-template-rows: 1fr;
           }
           .spec-line {
             display: flex;

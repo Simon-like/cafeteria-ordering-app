@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
-const account_info = ref('simon火锅店')
+import { useMerchantStore } from '@/stores'
+
+const Merchant = useMerchantStore()
 </script>
 
 <template>
   <view class="account-mana">
     <view class="platform-logo"> 平台logo </view>
-    <view class="account-info"> 当前账号：{{ account_info }} </view>
+    <view class="account-info"> 当前账号：{{ Merchant.name }} </view>
     <view class="outlogin" @click="gotoLoginAndRegister">退出登录</view>
   </view>
 </template>
