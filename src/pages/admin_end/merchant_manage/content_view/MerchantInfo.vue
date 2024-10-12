@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+/**
+ * @description 管理端区域商家信息展示模块
+ * @author 钟礼豪
+ * @date 2024-10-11
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-10-12
+ */
+
 const testInfo = ref({
   name: '食堂a',
   dishList: [
@@ -36,7 +44,8 @@ const goToDetail = (index) => {
     <view class="name">
       {{ testInfo.name }}
     </view>
-    <view class="box">
+
+    <scroll-view class="box" scroll-y="true">
       <view v-for="(dish, index) in testInfo.dishList" :key="index" class="dishList">
         <view class="logo">
           <image :src="dish.logo" class="logo"></image>
@@ -50,7 +59,7 @@ const goToDetail = (index) => {
           </view>
         </view>
       </view>
-    </view>
+    </scroll-view>
   </view>
 </template>
 
@@ -70,7 +79,8 @@ const goToDetail = (index) => {
   }
   .box {
     width: 100%;
-
+    max-height: 1400rpx; /* 设置最大高度，根据需要调整 */
+    overflow-y: auto; /* 当内容超出最大高度时显示滚动条 */
     display: flex;
     flex-direction: column; /* 垂直排列子元素 */
     .dishList {

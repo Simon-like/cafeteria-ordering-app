@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import iconComponent from '@/components/icons/icons.vue'
+import addComponent from './DishChangeViews/add.vue'
+import changeComponent from './DishChangeViews/change.vue'
+/**
+ * @description 管理端商家菜单管理模块
+ * @author 钟礼豪
+ * @date 2024-10-11
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-10-12
+ */
 
 // 状态管理，用于跟踪当前显示的视图
 const currentView = ref('main') // 初始视图为主页面
@@ -22,13 +31,15 @@ const goBack = () => {
   <view class="menu-manage">
     <view class="box">
       <!-- 主页面内容 -->
-      <view v-if="currentView === 'main'">
+      <view v-if="currentView === 'main'" class="card">
         <view class="info">
           <view class="logo"></view>
           <view class="merchant">
             <view class="name">
               xxx
-              <navigator url="./detail" class="nav"> (点击跳转到商家信息页面) </navigator>
+              <navigator url="pages/admin_end/merchant_manage/content_view/detail" class="nav">
+                (点击跳转到商家信息页面)
+              </navigator>
             </view>
             <view class="content">
               <text>申请修改信息</text>
@@ -51,15 +62,13 @@ const goBack = () => {
 
       <!-- 新增菜品页面 -->
       <view v-else-if="currentView === 'addDish'">
-        <button @click="goBack">返回</button>
-        <text>这里是新增菜品的页面内容</text>
+        <addComponent></addComponent>
         <!-- 可以进一步添加表单等内容 -->
       </view>
 
       <!-- 更改菜品信息页面 -->
       <view v-else-if="currentView === 'editDish'">
-        <button @click="goBack">返回</button>
-        <text>这里是更改菜品信息的页面内容</text>
+        <changeComponent></changeComponent>
         <!-- 也可以添加表单或其他组件 -->
       </view>
     </view>
@@ -73,40 +82,42 @@ const goBack = () => {
   .box {
     margin: 20rpx;
     height: auto; /* 根据内容自适应高度 */
-    background-color: #ccc;
-    .info {
-      display: flex;
-      position: relative;
-      .logo {
-        margin: 20rpx;
-        height: 130rpx;
-        width: 130rpx;
-        border-radius: 50%;
-        background-color: #000;
-      }
-      .merchant {
-        margin-left: 15rpx;
-        margin-top: 20rpx;
+    .card {
+      background-color: #ccc;
+      .info {
         display: flex;
-        flex-direction: column;
-        .name {
-          display: flex;
-          font-size: 35rpx;
-          .nav {
-            font-size: 25rpx;
-            color: #f5f5f5;
-            text-decoration: underline;
-          }
+        position: relative;
+        .logo {
+          margin: 20rpx;
+          height: 130rpx;
+          width: 130rpx;
+          border-radius: 50%;
+          background-color: #fff;
         }
-        .content {
+        .merchant {
+          margin-left: 15rpx;
+          margin-top: 20rpx;
           display: flex;
-          margin-top: 30rpx;
-          text {
-            font-size: 32rpx;
-            white-space: nowrap;
+          flex-direction: column;
+          .name {
+            display: flex;
+            font-size: 35rpx;
+            .nav {
+              font-size: 25rpx;
+              color: #f5f5f5;
+              text-decoration: underline;
+            }
           }
-          .time {
-            margin-left: 120rpx;
+          .content {
+            display: flex;
+            margin-top: 30rpx;
+            text {
+              font-size: 32rpx;
+              white-space: nowrap;
+            }
+            .time {
+              margin-left: 120rpx;
+            }
           }
         }
       }

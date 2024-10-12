@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+
+/**
+ * @description 管理端商家菜单详细信息模块
+ * @author 钟礼豪
+ * @date 2024-10-11
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-10-12
+ */
+
 interface DetailInfo {
   logo: string
   name: string
