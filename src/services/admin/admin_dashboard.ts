@@ -16,7 +16,7 @@ export const getTopSellingDish = () => {
     }[]
   >({
     method: 'GET',
-    url: '/search/statistics/TopSellingDish',
+    url: '/search/administer/TopSellingDish',
   })
 }
 
@@ -29,6 +29,21 @@ export const getSalesTrends = () => {
     }[]
   >({
     method: 'GET',
-    url: '/search/statistics/salesTrends',
+    url: '/search/administer/salesTrends',
+  })
+}
+
+// 看板信息统计
+export const getStatistics = () => {
+  return http<{
+    digiSignageInfoList: {
+      title: string
+      value: number
+      changeValue: number
+    }[]
+    platformFees: number
+  }>({
+    method: 'GET',
+    url: '/merchant/statistics/administer/Statistics',
   })
 }

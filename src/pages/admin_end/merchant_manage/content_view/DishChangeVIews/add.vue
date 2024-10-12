@@ -12,7 +12,7 @@ interface Dish {
 const dishes = ref<Dish[]>([
   {
     id: 1,
-    name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
+    name: '斤斤计较急急急急急急急急急急急急急急急斤斤计较斤斤计较',
     price: 'xxxx',
     description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXX000000000',
     more: 'xxx',

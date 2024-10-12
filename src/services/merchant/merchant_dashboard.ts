@@ -15,7 +15,30 @@ export const getTopSellingDish = () => {
       dishSales: number
     }[]
   >({
-    method: 'POST',
-    url: '',
+    method: 'GET',
+    url: '/search/merchant/TopSellingDish',
+  })
+}
+
+// 最近一周每天的日销售单数统计
+export const getSalesTrends = () => {
+  return http<{ dateList: string[]; orderCountList: number[] }>({
+    method: 'GET',
+    url: '/merchant/statistics/salesTrends',
+  })
+}
+
+// 看板信息统计
+export const getStatistics = () => {
+  return http<{
+    digiSignageInfoList: {
+      title: string
+      value: number
+      changeValue: number
+    }[]
+    platformFees: number
+  }>({
+    method: 'GET',
+    url: '/merchant/statistics',
   })
 }

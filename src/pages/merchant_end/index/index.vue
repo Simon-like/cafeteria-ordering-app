@@ -3,21 +3,85 @@ import StatisticsItem from '@/components/chart/StatisticsItem.vue'
 import LineChart from '@/components/chart/LineChart.vue'
 import PieChart from '@/components/chart/PieChart.vue'
 import { ref } from 'vue'
+import {
+  getTopSellingDish,
+  getSalesTrends,
+  getStatistics,
+} from '@/services/merchant/merchant_dashboard'
 
 /**
  * @description 商家端首页数据大屏
  * @author 应东林
  * @date 2024-09-17
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-17
+ * @lastModifiedTime  2024-10-12
  */
 
-const statistics_list = ref([
-  { name: '今日总成交单数', data: 1.0, changeAmount: 0 },
-  { name: '食堂单数', data: 0, changeAmount: 0 },
-  { name: '外送单数', data: 0, changeAmount: 0 },
-  { name: '预计今日收入', data: 0, changeAmount: 0 },
-])
+// 看板数据
+const statistics_list = ref<
+  {
+    title: string
+    value: number
+    changeValue: number
+  }[]
+>([])
+
+// 销量数据
+const SalesTrends_categories = ref<string[]>([])
+const SalesTrends_series = ref<
+  {
+    name: string
+    data: number[]
+  }[]
+>([])
+
+// 上一周最佳菜品统计数据
+const SellingDishData = ref<
+  {
+    name: string
+    value: number
+  }[]
+>([])
+
+onLoad(async () => {
+  const resStatistics = await getStatistics() //数据看板
+  if (resStatistics.code === 1) {
+    statistics_list.value = resStatistics.data.digiSignageInfoList
+  } else {
+    uni.showToast({
+      icon: 'none',
+      text: '看板数据获取失败！',
+    })
+  }
+
+  const resTrends = await getSalesTrends() // 销量趋势
+  if (resTrends.code === 1) {
+    nextTick(() => {
+      SalesTrends_series.value = [{ name: '销量趋势统计', data: resTrends.data.orderCountList }]
+      SalesTrends_categories.value = resTrends.data.dateList
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      text: '销量趋势统计获取失败！',
+    })
+  }
+
+  const resSellingDish = await getTopSellingDish() // 上一周最佳菜品统计
+  if (resSellingDish.code === 1) {
+    SellingDishData.value = []
+    nextTick(() => {
+      resSellingDish.data.forEach((item) => {
+        SellingDishData.value.push({ name: item.dishName, value: item.dishSales })
+      })
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      text: '上一周最佳菜品统计获取失败！',
+    })
+  }
+})
 </script>
 
 <template>
@@ -25,28 +89,22 @@ const statistics_list = ref([
     <view class="total-amount">
       <StatisticsItem
         v-for="item in statistics_list"
-        :key="item.name"
-        :name="item.name"
-        :data="item.data"
-        :changeAmount="item.changeAmount"
-      ></StatisticsItem>
-      <StatisticsItem
-        :name="'本月总收入'"
-        :data="0"
-        :changeAmount="0"
-        :compareType="1"
+        :key="item.title"
+        :name="item.title"
+        :data="item.value"
+        :changeAmount="item.changeValue"
       ></StatisticsItem>
     </view>
     <view class="sales-trend chart-wrapper">
       <view class="title"> 销量趋势 </view>
       <view class="chart">
-        <LineChart></LineChart>
+        <LineChart :categories="SalesTrends_categories" :series="SalesTrends_series"></LineChart>
       </view>
     </view>
     <view class="top-dishes chart-wrapper">
       <view class="title"> 本周销量最佳菜品 </view>
       <view class="chart">
-        <PieChart></PieChart>
+        <PieChart :data="SellingDishData"></PieChart>
       </view>
     </view>
   </view>
