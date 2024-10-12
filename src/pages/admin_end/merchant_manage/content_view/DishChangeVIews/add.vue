@@ -12,9 +12,9 @@ interface Dish {
 const dishes = ref<Dish[]>([
   {
     id: 1,
-    name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
+    name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
     price: 'xxxx',
-    description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
+    description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXX000000000',
     more: 'xxx',
     agreed: false,
   },
@@ -56,10 +56,22 @@ const disagree = (id: number) => {
         <image src="" mode="aspectFill">logo</image>
       </view>
       <view class="dish-info">
-        <view class="info-item"><text>菜品名称:</text>{{ dish.name }}</view>
-        <view class="info-item"><text>菜品定价:</text>{{ dish.price }}</view>
-        <view class="info-item"><text>菜品描述:</text>{{ dish.description }}</view>
-        <view class="info-item"><text>附言:</text>{{ dish.more }}</view>
+        <view class="info-item">
+          <view class="title">菜品名称:</view>
+          <view class="value">{{ dish.name }}</view>
+        </view>
+        <view class="info-item">
+          <view class="title">菜品定价:</view>
+          <view class="value">{{ dish.price }}</view>
+        </view>
+        <view class="info-item">
+          <view class="title">菜品描述:</view>
+          <view class="value">{{ dish.description }}</view>
+        </view>
+        <view class="info-item">
+          <view class="title">附言:</view>
+          <view class="value">{{ dish.more }}</view>
+        </view>
       </view>
       <view class="footer">
         <view class="agreement">
@@ -93,6 +105,7 @@ const disagree = (id: number) => {
   }
 
   .dish-card {
+    width: 100%;
     font-size: 25rpx;
     display: flex;
     flex-direction: column;
@@ -119,14 +132,20 @@ const disagree = (id: number) => {
       }
     }
     .dish-info {
+      width: 100%;
       display: flex;
       flex-direction: column;
-      white-space: normal; // 允许正常换行
       gap: 10rpx; // 根据需要调整信息项之间的间距
       margin-bottom: 10rpx; // 根据需要调整信息与按钮之间的间距
       .info-item {
-        text {
-          white-space: nowrap;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        .title {
+          //white-space: nowrap;
+        }
+        .value {
+          white-space: normal;
         }
       }
     }
