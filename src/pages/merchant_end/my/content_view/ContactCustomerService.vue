@@ -1,11 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 const value = ref<string>('')
-const range = [
-  { value: 0, text: '篮球' },
-  { value: 1, text: '足球' },
-  { value: 2, text: '游泳' },
-]
 </script>
 
 <template>

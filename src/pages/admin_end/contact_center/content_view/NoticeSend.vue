@@ -6,7 +6,7 @@ import { ref, reactive, nextTick } from 'vue'
  * @author 应东林
  * @date 2024-10-11
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-11
+ * @lastModifiedTime  2024-10-12
  */
 
 const scrollTop = ref<number>(0)
@@ -33,23 +33,68 @@ const notice_list = ref<
     index: number
   }[]
 >([
-  { targetGroup: 0, noticeContent: 'HHHHHH', releaseTime: '2024-10-24', is_show: false, index: 0 },
-  { targetGroup: 0, noticeContent: 'HHHHHH', releaseTime: '2024-10-24', is_show: false, index: 1 },
+  {
+    targetGroup: 0,
+    noticeContent: 'HHH\nHHH',
+    releaseTime: '2024-10-24',
+    is_show: false,
+    index: 0,
+  },
+  { targetGroup: 0, noticeContent: '', releaseTime: '2024-10-24', is_show: false, index: 1 },
   { targetGroup: 0, noticeContent: 'HHHHHH', releaseTime: '2024-10-24', is_show: false, index: 2 },
 ])
 
+// 展开/关闭一个公告
 const onDescShow = (index: number) => {
   notice_list.value.forEach((item) => {
     if (item.index === index) item.is_show = !item.is_show
     else item.is_show = false
   })
 }
+
+// 将公告内容分割成段
+const splitContent = (str: string): string[] => {
+  const linesArray = str.split('\n').filter((line) => line.trim() !== '')
+  return linesArray || []
+}
+
+// 编辑公告
+
+const popup = ref()
+const valiForm = ref<UniHelper.FormInstance>()
+const onEdit = () => {
+  popup.value.open('center')
+}
+
+// 校验表单数据
+const valiFormData = reactive({
+  targetGroup: 0,
+  noticeContent: '',
+})
+const rules = {
+  targetGroup: {
+    rules: [
+      {
+        required: true,
+        errorMessage: '必须选择面向群体',
+      },
+    ],
+  },
+  noticeContent: {
+    rules: [
+      {
+        required: true,
+        errorMessage: '公告内容不能为空',
+      },
+    ],
+  },
+}
 </script>
 
 <template>
   <view class="notice-send">
     <view class="button-box">
-      <view class="add-notice-btn btn">+ 新增公告</view>
+      <view class="add-notice-btn btn" @click="onEdit">+ 新增公告</view>
       <view class="toTop btn" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
     </view>
     <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y">
@@ -68,9 +113,7 @@ const onDescShow = (index: number) => {
         <view class="notice-content-wrapper" :class="{ show: item.is_show }">
           <view class="content">
             <view class="inner">
-              <p>HHHHHHHHHHHHHHHHHHHH</p>
-              <p>HHHHHHHHHHHHHHHHHHHH</p>
-              <p>HHHHHHHHHHHHHHHHHHHH</p>
+              <p v-for="line in splitContent(item.noticeContent)">{{ line }}</p>
             </view>
           </view>
           <view @click="onDescShow(item.index)" class="icon">
@@ -80,6 +123,45 @@ const onDescShow = (index: number) => {
         <view class="delete btn">删除</view>
       </view>
     </scroll-view>
+
+    <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
+      <uni-card class="form-card">
+        <uni-section title="编辑公告内容" type="line">
+          <scroll-view scroll-y="true" class="scroll-Y">
+            <view class="form-wrapper">
+              <!-- 基础表单 -->
+              <uni-forms
+                ref="valiForm"
+                :modelValue="valiFormData"
+                label-position="top"
+                :rules="rules"
+              >
+                <uni-forms-item required name="targetGroup">
+                  <template #label><text>公告面向的群体：</text></template>
+                  <uni-data-select
+                    v-model="valiFormData.targetGroup"
+                    :localdata="[
+                      { value: 0, text: '外卖员' },
+                      { value: 1, text: '商家' },
+                    ]"
+                    placeholder="请选择发布群体"
+                  ></uni-data-select>
+                </uni-forms-item>
+                <uni-forms-item name="noticeContent" required>
+                  <template #label><text>公告内容：</text></template>
+                  <uni-easyinput
+                    type="textarea"
+                    v-model="valiFormData.noticeContent"
+                    placeholder="请输入公告内容"
+                  />
+                </uni-forms-item>
+              </uni-forms>
+              <view class="submit-button" @click="submit"> 提交 </view>
+            </view>
+          </scroll-view>
+        </uni-section>
+      </uni-card>
+    </uni-popup>
   </view>
 </template>
 
@@ -171,6 +253,36 @@ const onDescShow = (index: number) => {
       align-self: flex-end;
       margin-right: 20rpx;
       background: transparent;
+    }
+  }
+
+  .form-card {
+    width: 700rpx;
+    .scroll-Y {
+      height: 550rpx;
+    }
+    .form-wrapper {
+      :deep() {
+        text {
+          font-size: 30rpx;
+          margin-right: 30rpx;
+        }
+
+        .submit-button {
+          margin: 0 auto;
+          margin-top: 46rpx;
+          width: 300rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          background-color: rgba(126, 126, 94, 0.7);
+          text-align: center;
+          transition: all 0.2s ease;
+          &:active {
+            opacity: 0.8;
+            transform: scale(0.95);
+          }
+        }
+      }
     }
   }
 }
