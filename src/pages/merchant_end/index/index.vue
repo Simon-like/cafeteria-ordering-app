@@ -57,6 +57,8 @@ onLoad(async () => {
   const resTrends = await getSalesTrends() // 销量趋势
   if (resTrends.code === 1) {
     nextTick(() => {
+      if (typeof resTrends.data.dateList !== 'object') resTrends.data.dateList = []
+      if (typeof resTrends.data.orderCountList !== 'object') resTrends.data.orderCountList = []
       SalesTrends_series.value = [{ name: '销量趋势统计', data: resTrends.data.orderCountList }]
       SalesTrends_categories.value = resTrends.data.dateList
     })
@@ -71,9 +73,14 @@ onLoad(async () => {
   if (resSellingDish.code === 1) {
     SellingDishData.value = []
     nextTick(() => {
-      resSellingDish.data.forEach((item) => {
-        SellingDishData.value.push({ name: item.dishName, value: item.dishSales })
-      })
+      if (typeof resSellingDish.data !== 'object') resSellingDish.data = []
+      if (resSellingDish.data.length === 0) {
+        SellingDishData.value.push({ name: '暂无数据', value: 1 })
+      } else {
+        resSellingDish.data.forEach((item) => {
+          SellingDishData.value.push({ name: item.dishName, value: item.dishSales })
+        })
+      }
     })
   } else {
     uni.showToast({

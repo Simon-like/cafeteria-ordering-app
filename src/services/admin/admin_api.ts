@@ -101,3 +101,11 @@ export const addNotice = (content: string, targetGroup: number) => {
     },
   })
 }
+
+// 管理端通过ID删除公告
+export const deleteNoticeById = (noticeId: number) => {
+  return http({
+    method: 'DELETE',
+    url: `/administer/notice/deleteNoticeById?noticeId=${noticeId}`,
+  })
+}

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, nextTick } from 'vue'
-import { getNotice, addNotice } from '@/services/admin/admin_api'
+import { getNotice, addNotice, deleteNoticeById } from '@/services/admin/admin_api'
 import { onLoad } from '@dcloudio/uni-app'
 /**
  * @description 管理端个人中心页面系统公告发布模块
@@ -27,6 +27,7 @@ const goTop = (e: any) => {
 // 公告列表
 const notice_list = ref<
   {
+    id: number
     targetGroup: number
     noticeContent: string
     releaseTime: string
@@ -112,8 +113,10 @@ const getAllNotice = async () => {
   if (res.code === 1) {
     let flag = 0
     notice_list.value = []
+    res.data.reverse() //数组倒序，从前往后排序
     res.data.forEach((item) => {
       notice_list.value.push({
+        id: item.id,
         targetGroup: item.targetGroup,
         noticeContent: item.content,
         releaseTime: item.releaseTime.split('T')[0],
@@ -124,9 +127,39 @@ const getAllNotice = async () => {
   } else {
     uni.showToast({
       icon: 'none',
-      text: '公告获取失败！',
+      title: '公告获取失败！',
     })
   }
+}
+
+const DELETEPopup = ref()
+const noticeId = ref<number>(-1)
+// 删除公告
+const onDELETE = (id: number) => {
+  noticeId.value = id
+  DELETEPopup.value.open('center')
+}
+
+const onDELETE_confirm = async () => {
+  const res = await deleteNoticeById(noticeId.value)
+  if (res.code === 1) {
+    await getAllNotice()
+    DELETEPopup.value.close()
+    uni.showToast({
+      icon: 'none',
+      title: '公告删除成功！',
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '公告删除失败！',
+    })
+  }
+}
+
+const onDELETE_close = () => {
+  noticeId.value = -1
+  DELETEPopup.value.close()
 }
 
 onLoad(async () => {
@@ -175,7 +208,7 @@ onLoad(async () => {
                 <i class="iconfont icon-jiantouarrow483"></i>
               </view>
             </view>
-            <view class="delete btn">删除</view>
+            <view class="delete btn" @click="onDELETE(item.id)">删除</view>
           </view>
         </scroll-view>
 
@@ -214,6 +247,20 @@ onLoad(async () => {
                   <view class="submit-button" @click="submit"> 提交 </view>
                 </view>
               </scroll-view>
+            </uni-section>
+          </uni-card>
+        </uni-popup>
+
+        <uni-popup ref="DELETEPopup" type="bottom" border-radius="10px 10px 0 0">
+          <uni-card class="form-card">
+            <uni-section title="删除提示框" type="line">
+              <view class="wrapper">
+                <view class="content">您确认要删除该公告吗？</view>
+                <view class="button-box">
+                  <view class="close btn" @click="onDELETE_close">误触</view>
+                  <view class="confirm btn" @click="onDELETE_confirm">确认删除</view>
+                </view>
+              </view>
             </uni-section>
           </uni-card>
         </uni-popup>
@@ -323,6 +370,27 @@ onLoad(async () => {
 
   .form-card {
     width: 700rpx;
+
+    .wrapper {
+      padding: 20rpx;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 20rpx;
+      .button-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .confirm,
+        .close {
+          border: 1px solid rgba(0, 0, 0, 1);
+          width: 200rpx;
+          padding: 10rpx 0rpx;
+        }
+      }
+    }
+
     .scroll-Y {
       height: 550rpx;
     }

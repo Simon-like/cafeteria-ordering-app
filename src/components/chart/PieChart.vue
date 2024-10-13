@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, defineProps, ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 /**
  * @description 饼图组件
  * @author 应东林
