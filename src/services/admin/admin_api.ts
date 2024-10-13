@@ -74,3 +74,30 @@ export const admin_checkCode = (phoneNumber: string, validationCode: string) => 
     }, //以后请注意请求头信息
   })
 }
+
+// 获取所有公告
+export const getNotice = () => {
+  return http({
+    method: 'GET',
+    url: '/administer/notice/getNotice',
+  })
+}
+
+// 管理端发布公告
+export const addNotice = (content: string, targetGroup: number) => {
+  return http<
+    {
+      id: number
+      targetGroup: number
+      content: string
+      releaseTime: string
+    }[]
+  >({
+    method: 'POST',
+    url: '/administer/notice/addNotice',
+    data: {
+      content,
+      targetGroup, // 0外卖员，1商家
+    },
+  })
+}
