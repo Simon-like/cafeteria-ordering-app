@@ -20,6 +20,7 @@ const my_aside_list = ref<AsideItem[]>([
   { itemId: 1, itemName: '信息反馈', active: false },
   { itemId: 2, itemName: '管理员同事', active: false },
   { itemId: 3, itemName: '账号设置', active: false },
+  { itemId: 4, itemName: '系统设置', active: false },
 ])
 
 const onSwitch = (e: number) => {

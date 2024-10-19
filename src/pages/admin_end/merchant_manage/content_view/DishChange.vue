@@ -62,12 +62,14 @@ const goBack = () => {
 
       <!-- 新增菜品页面 -->
       <view v-else-if="currentView === 'addDish'">
+        <view class="back-btn" @click="goBack()"><i class="iconfont icon-zuojiantou"></i></view>
         <addComponent></addComponent>
         <!-- 可以进一步添加表单等内容 -->
       </view>
 
       <!-- 更改菜品信息页面 -->
       <view v-else-if="currentView === 'editDish'">
+        <view class="back-btn" @click="goBack()"><i class="iconfont icon-zuojiantou"></i></view>
         <changeComponent></changeComponent>
         <!-- 也可以添加表单或其他组件 -->
       </view>
@@ -153,6 +155,19 @@ const goBack = () => {
     .dynamic-content {
       margin-top: 20rpx; /* 动态内容与上方内容的间距 */
     }
+  }
+}
+.back-btn {
+  position: absolute;
+  left: 160rpx;
+  top: 180rpx;
+  padding: 10rpx;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 16rpx;
+  font-weight: 550;
+  transition: 0.2s ease;
+  &:active {
+    scale: 0.9;
   }
 }
 </style>
