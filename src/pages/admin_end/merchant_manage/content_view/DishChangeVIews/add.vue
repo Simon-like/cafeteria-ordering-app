@@ -6,16 +6,17 @@ interface Dish {
   name: string
   price: string
   description: string
+  more?: string // 添加 optional 属性 more
   agreed: boolean
 }
 
 const dishes = ref<Dish[]>([
   {
     id: 1,
-    name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
-    price: 'xxxx',
     description:
       '描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述',
+    name: '斤斤计较急急急急急急急急急急急急急急急斤斤计较斤斤计较',
+    price: 'xxxx',
     more: 'xxx',
     agreed: false,
   },
@@ -24,7 +25,7 @@ const dishes = ref<Dish[]>([
     name: 'XXXXXXXXX',
     price: 'xxxx',
     description: 'XXXXXXXXXXXXXXXXXXXXX',
-    more: 'xxx',
+    more: 'xxx', // 确保每个 dish 都有 more 属性
     agreed: false,
   },
 ])
@@ -43,6 +44,7 @@ const disagree = (id: number) => {
   }
 }
 </script>
+
 <template>
   <view class="dishes-container">
     <view class="header">
@@ -83,6 +85,7 @@ const disagree = (id: number) => {
     </view>
   </view>
 </template>
+
 <style lang="scss" scoped>
 .dishes-container {
   display: flex;

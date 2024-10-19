@@ -12,6 +12,10 @@ import { ref } from 'vue'
  */
 
 const MerchantPages = useMerchantPagesStore()
+
+const onSwitch = (e: number) => {
+  MerchantPages.tabbarIndex = e
+}
 </script>
 
 <template>
@@ -19,7 +23,7 @@ const MerchantPages = useMerchantPagesStore()
     <custom-nav-bar></custom-nav-bar>
     <HeaderBar></HeaderBar>
     <component :is="componentList[MerchantPages.tabbarIndex]"></component>
-    <MerchantTabbar></MerchantTabbar>
+    <MerchantTabbar @switch="onSwitch"></MerchantTabbar>
   </view>
 </template>
 

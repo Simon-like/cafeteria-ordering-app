@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts" setup>
+import { reactive, ref, watch } from 'vue'
 /**
  * @description 饼图组件
  * @author 应东林
@@ -12,7 +13,23 @@
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-09-17
  */
-const opts = {
+
+const props = defineProps<{
+  data: {
+    name: string
+    value: number
+  }[]
+}>()
+
+let chartData = ref({
+  series: [
+    {
+      data: props.data,
+    },
+  ],
+})
+
+const opts = ref({
   color: [
     '#1890FF',
     '#91CB74',
@@ -45,22 +62,17 @@ const opts = {
       linearType: 'custom',
     },
   },
-}
+})
 
-let res = {
-  series: [
-    {
-      data: [
-        { name: '一班', value: 50 },
-        { name: '二班', value: 30 },
-        { name: '三班', value: 20 },
-        { name: '四班', value: 18 },
-        { name: '五班', value: 8 },
-      ],
-    },
-  ],
-}
-const chartData = JSON.parse(JSON.stringify(res))
+watch(props, (newValue, oldValue) => {
+  chartData.value = {
+    series: [
+      {
+        data: props.data,
+      },
+    ],
+  }
+})
 </script>
 
 <style scoped lang="scss">
