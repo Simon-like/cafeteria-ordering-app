@@ -56,8 +56,8 @@ onLoad(async () => {
 
   const resTrends = await getSalesTrends() // 销量趋势
   if (resTrends.code === 1) {
+    if (typeof resTrends.data.dateList !== 'object') resTrends.data.dateList = []
     nextTick(() => {
-      if (typeof resTrends.data.dateList !== 'object') resTrends.data.dateList = []
       if (typeof resTrends.data.orderCountList !== 'object') resTrends.data.orderCountList = []
       SalesTrends_series.value = [{ name: '销量趋势统计', data: resTrends.data.orderCountList }]
       SalesTrends_categories.value = resTrends.data.dateList
@@ -72,10 +72,10 @@ onLoad(async () => {
   const resSellingDish = await getTopSellingDish() // 上一周最佳菜品统计
   if (resSellingDish.code === 1) {
     SellingDishData.value = []
+    if (typeof resSellingDish.data !== 'object') resSellingDish.data = []
     nextTick(() => {
-      if (typeof resSellingDish.data !== 'object') resSellingDish.data = []
       if (resSellingDish.data.length === 0) {
-        SellingDishData.value.push({ name: '暂无数据', value: 1 })
+        SellingDishData.value.push({ name: '暂无数据', value: 56 })
       } else {
         resSellingDish.data.forEach((item) => {
           SellingDishData.value.push({ name: item.dishName, value: item.dishSales })

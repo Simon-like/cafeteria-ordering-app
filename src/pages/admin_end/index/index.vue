@@ -69,8 +69,8 @@ onLoad(async () => {
   const resSellingDish = await getTopSellingDish() // 上一周最佳菜品统计
   if (resSellingDish.code === 1) {
     SellingDishData.value = []
+    if (typeof resSellingDish.data !== 'object') resSellingDish.data = []
     nextTick(() => {
-      if (typeof resSellingDish.data !== 'object') resSellingDish.data = []
       if (resSellingDish.data.length === 0) {
         SellingDishData.value.push({ name: '暂无数据', value: 1 })
       } else {
