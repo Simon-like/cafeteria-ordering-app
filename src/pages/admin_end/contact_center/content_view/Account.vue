@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useAdminStore } from '@/stores/modules/admin_information'
 import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
 
 /**
@@ -11,11 +12,14 @@ import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
  */
 
 const account_info = ref('simon火锅店')
+const adminStore = useAdminStore()
 </script>
 
 <template>
   <view class="account-mana">
-    <view class="platform-logo"> 平台logo </view>
+    <view class="platform-logo"><text>个人头像:</text> 平台logo </view>
+    <view>学校:{{ adminStore.college }}</view>
+    <view>联系电话:{{ adminStore.phoneNumber }}</view>
     <view class="outlogin">修改资料</view>
     <view class="outlogin">生成个人邀请码</view>
     <view class="outlogin" @click="gotoLoginAndRegister">退出登录</view>

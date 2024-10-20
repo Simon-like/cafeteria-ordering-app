@@ -6,15 +6,17 @@ interface Dish {
   name: string
   price: string
   description: string
+  more?: string // 添加 optional 属性 more
   agreed: boolean
 }
 
 const dishes = ref<Dish[]>([
   {
     id: 1,
+    description:
+      '描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述',
     name: '斤斤计较急急急急急急急急急急急急急急急斤斤计较斤斤计较',
     price: 'xxxx',
-    description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXX000000000',
     more: 'xxx',
     agreed: false,
   },
@@ -23,7 +25,7 @@ const dishes = ref<Dish[]>([
     name: 'XXXXXXXXX',
     price: 'xxxx',
     description: 'XXXXXXXXXXXXXXXXXXXXX',
-    more: 'xxx',
+    more: 'xxx', // 确保每个 dish 都有 more 属性
     agreed: false,
   },
 ])
@@ -42,6 +44,7 @@ const disagree = (id: number) => {
   }
 }
 </script>
+
 <template>
   <view class="dishes-container">
     <view class="header">
@@ -82,6 +85,7 @@ const disagree = (id: number) => {
     </view>
   </view>
 </template>
+
 <style lang="scss" scoped>
 .dishes-container {
   display: flex;
@@ -131,6 +135,7 @@ const disagree = (id: number) => {
         border-radius: 4rpx; // 根据需要调整图片圆角
       }
     }
+
     .dish-info {
       width: 100%;
       display: flex;
@@ -141,12 +146,6 @@ const disagree = (id: number) => {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
-        .title {
-          //white-space: nowrap;
-        }
-        .value {
-          white-space: normal;
-        }
       }
     }
 

@@ -10,10 +10,10 @@ import { ref } from 'vue'
  */
 
 const testInfo = ref({
-  name: '食堂a',
-  dishList: [
+  place: '食堂a',
+  merchantInfoList: [
     {
-      restaurant: '兰州拉面',
+      name: '兰州拉面',
       logo: 'http://lzlm',
       address: '哈V',
       contactPhone: '12345678901',
@@ -22,7 +22,7 @@ const testInfo = ref({
       description: '我不吃牛肉',
     },
     {
-      restaurant: '新疆大盘鸡',
+      name: '新疆大盘鸡',
       logo: 'http://xjdpj',
       address: '哈V',
       contactPhone: '12345678901',
@@ -41,17 +41,17 @@ const goToDetail = (index) => {
 </script>
 <template>
   <view class="content">
-    <view class="name">
-      {{ testInfo.name }}
+    <view class="place">
+      {{ testInfo.place }}
     </view>
 
     <scroll-view class="box" scroll-y="true">
-      <view v-for="(dish, index) in testInfo.dishList" :key="index" class="dishList">
+      <view v-for="(dish, index) in testInfo.merchantInfoList" :key="index" class="dishList">
         <view class="logo">
           <image :src="dish.logo" class="logo"></image>
         </view>
         <view class="details">
-          <view class="restaurant">{{ dish.restaurant }}</view>
+          <view class="name">{{ dish.name }}</view>
           <view class="businessHours">营业时间:{{ dish.businessHours }}</view>
           <view class="contactPhone">联系电话:{{ dish.contactPhone }}</view>
           <view class="btns">
@@ -67,7 +67,7 @@ const goToDetail = (index) => {
 .content {
   width: 610rpx;
   height: 100%;
-  .name {
+  .place {
     font-size: 36rpx;
     width: 100%;
     height: 60rpx;
@@ -104,14 +104,14 @@ const goToDetail = (index) => {
         display: flex;
         flex-direction: column; /* 垂直排列子元素 */
         flex-grow: 1; /* 允许元素增长填充剩余空间 */
-        .restaurant,
+        .name,
         .businessHours,
         .contactPhone {
           margin-bottom: 5rpx; /* 增加底部边距 */
           padding: 5rpx; /* 增加内边距 */
           font-size: 25rpx;
         }
-        .restaurant {
+        .name {
           font-size: 32rpx;
         }
       }

@@ -5,7 +5,7 @@ interface Dish {
   id: number
   name: string
   price: string
-  description: string
+  newprice: string
   agreed: boolean
 }
 
@@ -13,17 +13,15 @@ const dishes = ref<Dish[]>([
   {
     id: 1,
     name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
-    price: 'xxxx',
-    description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
-    more: 'xxx',
+    price: '20',
+    newprice: '12',
     agreed: false,
   },
   {
     id: 2,
-    name: 'XXXXXXXXX',
-    price: 'xxxx',
-    description: 'XXXXXXXXXXXXXXXXXXXXX',
-    more: 'xxx',
+    name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
+    price: '20',
+    newprice: '12',
     agreed: false,
   },
 ])
@@ -45,21 +43,14 @@ const disagree = (id: number) => {
 <template>
   <view class="dishes-container">
     <view class="header">
-      <view class="title">新增</view>
+      <view class="title">更改</view>
       <navigator class="nav" url="">联系商家</navigator>
     </view>
 
     <view v-for="dish in dishes" :key="dish.id" class="dish-card">
       <view class="id">{{ dish.id }}</view>
-      <view class="cover">
-        <text>封面:</text>
-        <image src="" mode="aspectFill">logo</image>
-      </view>
       <view class="dish-info">
-        <view class="info-item"><text>菜品名称:</text>{{ dish.name }}</view>
-        <view class="info-item"><text>菜品定价:</text>{{ dish.price }}</view>
-        <view class="info-item"><text>菜品描述:</text>{{ dish.description }}</view>
-        <view class="info-item"><text>附言:</text>{{ dish.more }}</view>
+        <view class="info-item">{{ dish.name }} 定价:{{ dish.price }} -> {{ dish.newprice }}</view>
       </view>
       <view class="footer">
         <view class="agreement">
@@ -102,21 +93,6 @@ const disagree = (id: number) => {
     .id {
       margin-bottom: 10rpx; // 根据需要调整ID与内容之间的间距
       white-space: nowrap;
-    }
-    .cover {
-      display: flex;
-      align-items: center;
-      gap: 10rpx; // 根据需要调整文本与图片之间的间距
-      margin-bottom: 10rpx; // 根据需要调整封面与信息之间的间距
-      text {
-        white-space: nowrap;
-      }
-      .image {
-        width: 50rpx; // 根据需要调整图片宽度
-        height: 50rpx; // 根据需要调整图片高度
-        object-fit: cover; // 确保图片填充容器而不变形
-        border-radius: 4rpx; // 根据需要调整图片圆角
-      }
     }
     .dish-info {
       display: flex;

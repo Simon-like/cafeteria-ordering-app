@@ -537,13 +537,12 @@ const onMinusDishInCategory = async () => {
                 <view v-show="value.isDiscounted === 1">
                   <view class="dish-price-line">
                     <view class="current price">
-                      <i class="iconfont icon-renminbi"></i
-                      >{{ (+value.discountedPrice).toFixed(2) }}
+                      <i class="iconfont icon-renminbi"></i>{{ value.discountedPrice }}
                     </view>
                     <view class="original price">
-                      <i class="iconfont icon-renminbi"></i>{{ (+value.price).toFixed(2) }}
+                      <i class="iconfont icon-renminbi"></i>{{ value.price }}
                       <view class="underline"></view>
-                      <view class="discount">{{ value.discount * 10 }}折</view>
+                      <view class="discount">{{ value.discount }}折</view>
                     </view>
                   </view>
                 </view>
