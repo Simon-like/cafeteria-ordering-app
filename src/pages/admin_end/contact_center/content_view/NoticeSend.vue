@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, nextTick } from 'vue'
+import { getNotice, addNotice, deleteNoticeById } from '@/services/admin/admin_api'
 
 /**
  * @description 管理端个人中心页面系统公告发布模块
