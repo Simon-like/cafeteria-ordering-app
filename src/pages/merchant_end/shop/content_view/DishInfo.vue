@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AsideItem } from '@/types/aside'
 import { ref, reactive, nextTick } from 'vue'
-import type { categoryType, dishData } from '@/types/merchant_return'
+import type { categoryType, dishData, specItem, specOptionsItem } from '@/types/merchant_return'
 import { useMerchantShopStore } from '@/stores'
 import {
   getDishByGroup,
@@ -481,6 +481,45 @@ const onMinusDishInCategory = async () => {
     })
   }
 }
+
+// 修改后的规格信息
+
+const specList = ref<specItem[]>([
+  {
+    specTitle: '口味',
+    isEssential: true,
+    specId: 12,
+    specOptions: [
+      {
+        OptionsName: '不辣',
+        specPrice: 0,
+      },
+      {
+        OptionsName: '微辣',
+        specPrice: 5,
+      },
+      {
+        OptionsName: '魔鬼辣',
+        specPrice: 8,
+      },
+    ],
+  },
+  {
+    specTitle: '份量',
+    isEssential: false,
+    specId: 11,
+    specOptions: [
+      {
+        OptionsName: '大份',
+        specPrice: 0,
+      },
+      {
+        OptionsName: '正常',
+        specPrice: 5,
+      },
+    ],
+  },
+])
 </script>
 
 <template>
@@ -571,9 +610,29 @@ const onMinusDishInCategory = async () => {
             </view>
             <view class="implicit-info" :class="{ active: value.dishDesc_show }">
               <view class="inner">
-                <view class="spec-line" v-for="(item, index) in value.specifications" :key="item">
-                  <view class="title">规格{{ index + 1 }}:</view>
-                  <view class="specItem">{{ item }}</view>
+                <view class="spec-line" v-for="(item, index) in specList" :key="item">
+                  <view class="title" style="display: flex; align-items: center">
+                    <view>规格{{ index + 1 }}:</view>
+                    <h4>{{ item.specTitle }}</h4>
+                    <view style="margin-left: 20rpx" v-if="item.isEssential">
+                      <i class="iconfont icon-dian"></i>必选
+                    </view>
+                  </view>
+                  <view class="specItem-box">
+                    <view
+                      class="specItem"
+                      v-for="option in item.specOptions"
+                      :key="option.OptionsName"
+                    >
+                      <text>
+                        {{ option.OptionsName }}
+                      </text>
+                      <view class="Options-price" v-if="!!option.specPrice">
+                        <i class="iconfont icon-renminbi"></i>
+                        {{ option.specPrice }}</view
+                      >
+                    </view>
+                  </view>
                 </view>
                 <view class="dish-description">
                   <view class="label">菜品描述：</view>
@@ -1011,14 +1070,33 @@ const onMinusDishInCategory = async () => {
           }
           .spec-line {
             display: flex;
+            border-bottom: 1px solid #000;
+            padding-bottom: 20rpx;
+            gap: 20rpx;
             width: 100%;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            .specItem {
-              border: 1px solid rgb(0, 0, 0);
-              border-radius: 16rpx;
-              padding: 5rpx;
-              text-align: center;
+            .specItem-box {
+              display: flex;
+              align-items: center;
+              gap: 12rpx;
+              flex-wrap: wrap;
+              .specItem {
+                border: 1px solid rgb(0, 0, 0);
+                border-radius: 16rpx;
+                padding: 5rpx;
+                align-items: center;
+                display: flex;
+                font-size: 30rpx;
+                gap: 10rpx;
+                .Options-price {
+                  text-align: center;
+                  font-size: 25rpx;
+                  .iconfont {
+                    font-size: 20rpx;
+                  }
+                }
+              }
             }
           }
         }

@@ -43,3 +43,17 @@ export type dishData = {
   todayInventory: number
   specifications: string[] // 规格S
 }
+
+// 规格选项信息
+export type specOptionsItem = {
+  OptionsName: string
+  specPrice: number
+}
+
+// 规格信息
+export type specItem = {
+  specTitle: string
+  isEssential: boolean
+  specId: number
+  specOptions: specOptionsItem[]
+}

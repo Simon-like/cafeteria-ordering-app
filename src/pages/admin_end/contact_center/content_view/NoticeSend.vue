@@ -2,6 +2,7 @@
 import { ref, reactive, nextTick } from 'vue'
 import { getNotice, addNotice, deleteNoticeById } from '@/services/admin/admin_api'
 import { onLoad } from '@dcloudio/uni-app'
+import { debounce } from '@/composables/tools'
 /**
  * @description 管理端个人中心页面系统公告发布模块
  * @author 应东林
@@ -105,6 +106,9 @@ const submit = () => {
       console.log('err', err)
     })
 }
+
+// 防抖处理
+const debounceSubmit = debounce(submit, 500, true)
 
 // 获取所有公告
 
@@ -234,7 +238,7 @@ onLoad(async () => {
                       />
                     </uni-forms-item>
                   </uni-forms>
-                  <view class="submit-button" @click="submit"> 提交 </view>
+                  <view class="submit-button" @click="debounceSubmit"> 提交 </view>
                 </view>
               </scroll-view>
             </uni-section>
