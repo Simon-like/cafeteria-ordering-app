@@ -2,7 +2,7 @@
 import { ref, reactive, nextTick } from 'vue'
 import { getNotice, addNotice, deleteNoticeById } from '@/services/admin/admin_api'
 import { onLoad } from '@dcloudio/uni-app'
-import { debounce } from '@/composables/tools'
+import { debounce, splitContent } from '@/composables/tools'
 /**
  * @description 管理端个人中心页面系统公告发布模块
  * @author 应东林
@@ -43,12 +43,6 @@ const onDescShow = (index: number) => {
     if (item.index === index) item.is_show = !item.is_show
     else item.is_show = false
   })
-}
-
-// 将公告内容分割成段
-const splitContent = (str: string): string[] => {
-  const linesArray = str.split('\n').filter((line) => line.trim() !== '')
-  return linesArray || []
 }
 
 // 编辑公告

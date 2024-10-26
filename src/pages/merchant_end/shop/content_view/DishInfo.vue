@@ -96,7 +96,7 @@ const dish_info_list = ref<
     isDiscounted: number // 是否打折。0表示不打折，1表示打折
     isDeliver: number // 单点是否配送。0表示单点不配送，1单点配送
     todayInventory: number
-    specifications: string[] // 规格S
+    specList: specItem[] // 规格S
     dishDesc_show: boolean
     index: number
   }[]
@@ -481,45 +481,6 @@ const onMinusDishInCategory = async () => {
     })
   }
 }
-
-// 修改后的规格信息
-
-const specList = ref<specItem[]>([
-  {
-    specTitle: '口味',
-    isEssential: true,
-    specId: 12,
-    specOptions: [
-      {
-        OptionsName: '不辣',
-        specPrice: 0,
-      },
-      {
-        OptionsName: '微辣',
-        specPrice: 5,
-      },
-      {
-        OptionsName: '魔鬼辣',
-        specPrice: 8,
-      },
-    ],
-  },
-  {
-    specTitle: '份量',
-    isEssential: false,
-    specId: 11,
-    specOptions: [
-      {
-        OptionsName: '大份',
-        specPrice: 0,
-      },
-      {
-        OptionsName: '正常',
-        specPrice: 5,
-      },
-    ],
-  },
-])
 </script>
 
 <template>
@@ -610,7 +571,7 @@ const specList = ref<specItem[]>([
             </view>
             <view class="implicit-info" :class="{ active: value.dishDesc_show }">
               <view class="inner">
-                <view class="spec-line" v-for="(item, index) in specList" :key="item">
+                <view class="spec-line" v-for="(item, index) in value.specList" :key="item">
                   <view class="title" style="display: flex; align-items: center">
                     <view>规格{{ index + 1 }}:</view>
                     <h4>{{ item.specTitle }}</h4>
@@ -622,14 +583,14 @@ const specList = ref<specItem[]>([
                     <view
                       class="specItem"
                       v-for="option in item.specOptions"
-                      :key="option.OptionsName"
+                      :key="option.optionsName"
                     >
                       <text>
-                        {{ option.OptionsName }}
+                        {{ option.optionsName }}
                       </text>
-                      <view class="Options-price" v-if="!!option.specPrice">
+                      <view class="Options-price" v-if="!!option.price">
                         <i class="iconfont icon-renminbi"></i>
-                        {{ option.specPrice }}</view
+                        {{ option.price }}</view
                       >
                     </view>
                   </view>

@@ -1,12 +1,12 @@
 import { http } from '@/utils/http'
-import type { categoryType, dishData } from '@/types/merchant_return'
+import type { categoryType, dishData, specItem } from '@/types/merchant_return'
 
 /**
  * @description 商户端店铺管理菜品管理接口
  * @author 应东林
  * @date 2024-09-30
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-04
+ * @lastModifiedTime  2024-10-26
  */
 
 // 商户端分类型、分组别查看菜品信息 --BINGGO
@@ -28,7 +28,7 @@ export const addDish = (
   dishDescription: string,
   dishName: string,
   price: number,
-  specifications: string[],
+  specList: specItem[],
   imageUrl: string,
 ) => {
   return http({
@@ -40,7 +40,7 @@ export const addDish = (
       dishName,
       imageUrl,
       price,
-      specifications,
+      specList,
     },
   })
 }
@@ -104,7 +104,7 @@ export const updateDishNot = (
   isDiscounted: number, // 是否打折。0表示不打折，1表示打折
   isDeliver: number, // 单点是否配送。0表示单点不配送，1单点配送
   todayInventory: number,
-  specifications: string[],
+  specList: specItem[],
 ) => {
   return http({
     method: 'PUT',
@@ -120,7 +120,7 @@ export const updateDishNot = (
       isDiscounted, // 是否打折。0表示不打折，1表示打折
       isDeliver, // 单点是否配送。0表示单点不配送，1单点配送
       todayInventory,
-      specifications,
+      specList,
     },
   })
 }
@@ -190,5 +190,13 @@ export const updateCategory = (
       categoryPriority,
       categoryId,
     },
+  })
+}
+
+//商户端上架菜品 --BINGGO
+export const upDish = (dishId: number) => {
+  return http({
+    method: 'PUT',
+    url: `/merchant/dish/upDish?dishId=${dishId}`,
   })
 }

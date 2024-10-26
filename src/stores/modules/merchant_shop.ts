@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, reactive } from 'vue'
+import type { categoryType, dishData, specItem, specOptionsItem } from '@/types/merchant_return'
+
 /**
  * @description 商户端店铺管理的仓库
  * @author 应东林
@@ -30,7 +32,7 @@ export const useMerchantShopStore = defineStore(
     const dishDescription = ref<string>('')
     const dishName = ref<string>('')
     const price = ref<number>(0)
-    const specifications = ref<string[]>([])
+    const specifications = ref<specItem[]>([])
     const imageUrl = ref<string>('')
 
     const initializeDishInfo = () => {

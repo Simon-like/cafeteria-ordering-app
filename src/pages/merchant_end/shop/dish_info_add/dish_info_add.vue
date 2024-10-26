@@ -83,56 +83,6 @@ const uploadImg = async () => {
   }
 }
 
-// 很奇怪，要单独列一个变量
-const specifications = ref<string[]>([])
-// // 新增一行规格
-// const onAddSpec = () => {
-//   MerchantShopStore.specifications.push('')
-//   specifications.value.push('')
-// }
-// const onCloseSpec = (index: number) => {
-//   MerchantShopStore.specifications.splice(index, 1)
-//   specifications.value.splice(index, 1)
-// }
-
-// 提交新增菜品信息
-const onAddDish = async () => {
-  if (
-    !MerchantShopStore.imageUrl ||
-    !MerchantShopStore.price ||
-    !MerchantShopStore.dishName ||
-    !MerchantShopStore.dishDescription ||
-    !MerchantShopStore.description
-  ) {
-    uni.showToast({
-      icon: 'none',
-      title: '请检查所填信息是否均已填写完毕！',
-    })
-    return
-  }
-
-  MerchantShopStore.specifications = specifications.value.filter((item) => item !== '')
-  const res = await addDish(
-    MerchantShopStore.description,
-    MerchantShopStore.dishDescription,
-    MerchantShopStore.dishName,
-    MerchantShopStore.price,
-    MerchantShopStore.specifications,
-    MerchantShopStore.imageUrl,
-  )
-  if (+res.code === 1) {
-    uni.showToast({
-      icon: 'none',
-      title: '成功发送菜品信息，请等待管理员审核',
-    })
-  } else {
-    uni.showToast({
-      icon: 'none',
-      title: '菜品信息发送失败',
-    })
-  }
-}
-
 // 修改后的规格信息
 
 const specList = ref<specItem[]>([])
@@ -152,7 +102,7 @@ const onAddSpec = () => {
   specList.value.push({
     specTitle: '',
     isEssential: false,
-    specId: -1,
+    id: -1,
     specOptions: [],
   })
 }
@@ -166,16 +116,16 @@ const onSpecOpen = (index: number) => {
   specPopup.value.open('bottom')
   Object.assign(specValue.value, deepCopy(specList.value[index]))
   OptionsList.value = []
-  specValue.value.specOptions.forEach((item) => OptionsList.value.push(item.OptionsName))
+  specValue.value.specOptions.forEach((item) => OptionsList.value.push(item.optionsName))
   specIndex.value = index
 }
 
 // 保存规格
 const onSpecOptionSave = () => {
   OptionsList.value.forEach((item, index) => {
-    specValue.value.specOptions[index].OptionsName = item
+    specValue.value.specOptions[index].optionsName = item
   })
-  if (specValue.value.specOptions.find((item) => !item.OptionsName)) {
+  if (specValue.value.specOptions.find((item) => !item.optionsName)) {
     uni.showToast({
       icon: 'none',
       title: '不允许出现空的规格选项！\n请仔细检查',
@@ -199,8 +149,8 @@ const onCloseSpec = (index: number) => {
 // 新增规格选项
 const onAddSpecOptions = () => {
   specValue.value.specOptions.push({
-    OptionsName: '',
-    specPrice: 0,
+    optionsName: '',
+    price: 0,
   })
   OptionsList.value.push('')
 }
@@ -223,19 +173,57 @@ const onReturn = () => {
 
 // 确认删除规格
 const onConfirm = () => {
-  if (specList.value[specIndex.value].specId != -1)
-    deleteSpecIDList.value.push(specList.value[specIndex.value].specId)
+  if (specList.value[specIndex.value].id != -1)
+    deleteSpecIDList.value.push(specList.value[specIndex.value].id)
   specList.value.splice(specIndex.value, 1)
   specDeletePopup.value.close()
   specPopup.value.close()
 }
 
 const onCheck = (index: number) => {
-  if (specValue.value.specOptions[index].specPrice < 0) {
-    specValue.value.specOptions[index].specPrice = 0
+  if (specValue.value.specOptions[index].price < 0) {
+    specValue.value.specOptions[index].price = 0
     uni.showToast({
       icon: 'none',
       title: '附加价值不允许为负值',
+    })
+  }
+}
+
+// 提交新增菜品信息
+const onAddDish = async () => {
+  if (
+    !MerchantShopStore.imageUrl ||
+    !MerchantShopStore.price ||
+    !MerchantShopStore.dishName ||
+    !MerchantShopStore.dishDescription ||
+    !MerchantShopStore.description
+  ) {
+    uni.showToast({
+      icon: 'none',
+      title: '请检查所填信息是否均已填写完毕！',
+    })
+    return
+  }
+
+  MerchantShopStore.specifications = specList.value
+  const res = await addDish(
+    MerchantShopStore.description,
+    MerchantShopStore.dishDescription,
+    MerchantShopStore.dishName,
+    MerchantShopStore.price,
+    MerchantShopStore.specifications,
+    MerchantShopStore.imageUrl,
+  )
+  if (+res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '成功发送菜品信息，请等待管理员审核',
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品信息发送失败',
     })
   }
 }
@@ -354,7 +342,7 @@ const onCheck = (index: number) => {
             <view
               class="line"
               v-for="(item, index) in specValue.specOptions"
-              :key="item.OptionsName"
+              :key="item.optionsName"
             >
               <view style="display: flex; align-items: center; gap: 10rpx">
                 <h5>选项{{ index + 1 }}:</h5>
@@ -370,7 +358,7 @@ const onCheck = (index: number) => {
                 <input
                   type="number"
                   class="specNumber-input"
-                  v-model="item.specPrice"
+                  v-model="item.price"
                   @input="onCheck(index)"
                 />
               </view>

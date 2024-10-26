@@ -32,6 +32,13 @@ export const debounce = (fn: Function, ms: number, Immediate: boolean = false) =
   }
 }
 
+// 深拷贝
 export const deepCopy = (obj: object) => {
   return JSON.parse(JSON.stringify(obj))
+}
+
+// 将公告内容分割成段
+export const splitContent = (str: string): string[] => {
+  const linesArray = str.split('\n').filter((line) => line.trim() !== '')
+  return linesArray || []
 }

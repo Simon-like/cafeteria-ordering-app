@@ -77,14 +77,6 @@ export const admin_checkCode = (phoneNumber: string, validationCode: string) => 
 
 // 获取所有公告
 export const getNotice = () => {
-  return http({
-    method: 'GET',
-    url: '/administer/notice/getNotice',
-  })
-}
-
-// 管理端发布公告
-export const addNotice = (content: string, targetGroup: number) => {
   return http<
     {
       id: number
@@ -93,6 +85,14 @@ export const addNotice = (content: string, targetGroup: number) => {
       releaseTime: string
     }[]
   >({
+    method: 'GET',
+    url: '/administer/notice/getNotice',
+  })
+}
+
+// 管理端发布公告
+export const addNotice = (content: string, targetGroup: number) => {
+  return http({
     method: 'POST',
     url: '/administer/notice/addNotice',
     data: {

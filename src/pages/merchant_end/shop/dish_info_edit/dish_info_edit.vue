@@ -10,6 +10,7 @@ import {
   updateDish,
   getAllCategory,
   downDish,
+  upDish,
 } from '@/services/merchant/merchant_shop_dish_api'
 import { debounce, deepCopy } from '@/composables/tools'
 /**
@@ -37,7 +38,7 @@ const dish_info_data = ref<dishData>({
   isDiscounted: 0, // 是否打折。0表示不打折，1表示打折
   isDeliver: 0, // 单点是否配送。0表示单点不配送，1单点配送
   todayInventory: 0,
-  specifications: [], // 规格S
+  specList: [], // 规格S
 })
 
 const back = () => {
@@ -75,6 +76,16 @@ const priceAdd = () => {
   dish_info_data.value.price++
 }
 
+const onPriceCheck = () => {
+  if (dish_info_data.value.price <= 0) {
+    uni.showToast({
+      icon: 'none',
+      title: '定价已经达到最小值',
+    })
+    dish_info_data.value.price = 0
+  }
+}
+
 const discountMinus = () => {
   if (dish_info_data.value.discount === 0.1) {
     uni.showToast({
@@ -100,7 +111,21 @@ const discountAdd = () => {
 
 // 折扣转数字类型
 const limitDecimalPlaces = () => {
-  dish_info_data.value.discount = +dish_info_data.value.discount.toFixed(2)
+  if (dish_info_data.value.discount >= 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '折扣已经达到最大值',
+    })
+    dish_info_data.value.discount = 1
+  } else if (dish_info_data.value.discount <= 0.1) {
+    uni.showToast({
+      icon: 'none',
+      title: '折扣已经达到最小值',
+    })
+    dish_info_data.value.discount = 0.1
+  } else {
+    dish_info_data.value.discount = +dish_info_data.value.discount.toFixed(2)
+  }
 }
 
 // 分组信息数据（未有的分组信息）
@@ -207,18 +232,6 @@ const uploadImg = async () => {
   }
 }
 
-// // 很奇怪，要单独列一个变量
-const specifications = ref<string[]>([])
-// // 新增一行规格
-// const onAddSpec = () => {
-//   dish_info_data.value.specifications.push('')
-//   specifications.value.push('')
-// }
-// const onCloseSpec = (index: number) => {
-//   dish_info_data.value.specifications.splice(index, 1)
-//   specifications.value.splice(index, 1)
-// }
-
 const onSave = async () => {
   if (
     !dish_info_data.value.imageUrl ||
@@ -232,7 +245,7 @@ const onSave = async () => {
     return
   }
 
-  dish_info_data.value.specifications = specifications.value.filter((item) => item !== '')
+  dish_info_data.value.specList = specList.value
   const list = dish_info_data.value.categoryList.map((item) => item.categoryId)
   const res = await updateDishNot(
     dish_info_data.value.id,
@@ -245,7 +258,7 @@ const onSave = async () => {
     dish_info_data.value.isDiscounted, // 是否打折。0表示不打折，1表示打折
     dish_info_data.value.isDeliver, // 单点是否配送。0表示单点不配送，1单点配送
     dish_info_data.value.todayInventory,
-    dish_info_data.value.specifications,
+    dish_info_data.value.specList,
   )
   if (+res.code === 1) {
     uni.showToast({
@@ -280,6 +293,7 @@ const onAdjustPricing = async () => {
 const onDownDish = async () => {
   const res = await downDish(dish_info_data.value.id)
   if (+res.code === 1) {
+    await getDishById_loading(dish_info_data.value.id)
     uni.showToast({
       icon: 'none',
       title: '菜品下架成功',
@@ -293,82 +307,16 @@ const onDownDish = async () => {
 }
 
 const oldPrice = ref<number>(0)
-onLoad(async (getData: any) => {
-  const res = await getDishById(getData.id)
-  if (+res.code === 1) {
-    dish_info_data.value = res.data
-    specifications.value = []
-    oldPrice.value = dish_info_data.value.price
-    //需要解耦出来哦！！！
-    dish_info_data.value.specifications.forEach((item) => {
-      specifications.value.push(item)
-    })
-    if (dish_info_data.value.imageUrl === null) {
-      fileList.value = []
-    } else {
-      fileList.value.push({ url: dish_info_data.value.imageUrl })
-    }
-  } else {
-    uni.showToast({
-      icon: 'none',
-      title: '菜品信息获取失败！',
-    })
-  }
-})
 
 // 修改后的规格信息
 
-const specList = ref<specItem[]>([
-  {
-    specTitle: '口味',
-    isEssential: true,
-    specId: 12,
-    specOptions: [
-      {
-        OptionsName: '不辣',
-        specPrice: 0,
-      },
-      {
-        OptionsName: '微辣',
-        specPrice: 5,
-      },
-      {
-        OptionsName: '魔鬼辣',
-        specPrice: 8,
-      },
-    ],
-  },
-  {
-    specTitle: '份量',
-    isEssential: true,
-    specId: 11,
-    specOptions: [
-      {
-        OptionsName: '大份',
-        specPrice: 0,
-      },
-      {
-        OptionsName: '正常',
-        specPrice: 5,
-      },
-    ],
-  },
-])
+const specList = ref<specItem[]>([])
 
 let specValue = ref<specItem>({
-  specTitle: '份量',
-  isEssential: true,
-  specId: 11,
-  specOptions: [
-    {
-      OptionsName: '大份',
-      specPrice: 0,
-    },
-    {
-      OptionsName: '正常',
-      specPrice: 5,
-    },
-  ],
+  specTitle: '',
+  isEssential: false,
+  id: -1,
+  specOptions: [],
 })
 
 // // 很奇怪，要单独列一个变量
@@ -379,7 +327,7 @@ const onAddSpec = () => {
   specList.value.push({
     specTitle: '',
     isEssential: false,
-    specId: -1,
+    id: -1,
     specOptions: [],
   })
 }
@@ -393,18 +341,17 @@ const onSpecOpen = (index: number) => {
   specPopup.value.open('bottom')
   Object.assign(specValue.value, deepCopy(specList.value[index]))
   OptionsList.value = []
-  specValue.value.specOptions.forEach((item) => OptionsList.value.push(item.OptionsName))
+  specValue.value.specOptions.forEach((item) => OptionsList.value.push(item.optionsName))
   specIndex.value = index
-  console.log(OptionsList.value)
 }
 
 // 保存规格
 const onSpecOptionSave = () => {
   OptionsList.value.forEach((item, index) => {
-    specValue.value.specOptions[index].OptionsName = item
+    specValue.value.specOptions[index].optionsName = item
   })
   console.log(specValue.value)
-  if (specValue.value.specOptions.find((item) => !item.OptionsName)) {
+  if (specValue.value.specOptions.find((item) => !item.optionsName)) {
     uni.showToast({
       icon: 'none',
       title: '不允许出现空的规格选项！\n请仔细检查',
@@ -428,8 +375,8 @@ const onCloseSpec = (index: number) => {
 // 新增规格选项
 const onAddSpecOptions = () => {
   specValue.value.specOptions.push({
-    OptionsName: '',
-    specPrice: 0,
+    optionsName: '',
+    price: 0,
   })
   OptionsList.value.push('')
 }
@@ -452,8 +399,8 @@ const onReturn = () => {
 
 // 确认删除规格
 const onConfirm = () => {
-  if (specList.value[specIndex.value].specId != -1)
-    deleteSpecIDList.value.push(specList.value[specIndex.value].specId)
+  if (specList.value[specIndex.value].id != -1)
+    deleteSpecIDList.value.push(specList.value[specIndex.value].id)
   specList.value.splice(specIndex.value, 1)
   specDeletePopup.value.close()
   specPopup.value.close()
@@ -464,11 +411,64 @@ const onConfirm = () => {
 }
 
 const onCheck = (index: number) => {
-  if (specValue.value.specOptions[index].specPrice < 0) {
-    specValue.value.specOptions[index].specPrice = 0
+  if (specValue.value.specOptions[index].price < 0) {
+    specValue.value.specOptions[index].price = 0
     uni.showToast({
       icon: 'none',
       title: '附加价值不允许为负值',
+    })
+  }
+}
+
+const getDishById_loading = async (id: number) => {
+  const res = await getDishById(id)
+  if (+res.code === 1) {
+    dish_info_data.value = res.data
+    specList.value = []
+    oldPrice.value = dish_info_data.value.price
+    //需要解耦出来哦！！！
+    dish_info_data.value.specList.forEach((item) => {
+      specList.value.push(item)
+    })
+
+    if (dish_info_data.value.imageUrl === null) {
+      fileList.value = []
+    } else {
+      fileList.value.push({ url: dish_info_data.value.imageUrl })
+    }
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '菜品信息获取失败！',
+    })
+  }
+}
+
+onLoad(async (getData: any) => {
+  await getDishById_loading(getData.id)
+})
+
+const onDiscountedSwitch = () => {
+  //未打折切换打折，价格顶一个基本值
+  if (!dish_info_data.value.isDiscounted) {
+    dish_info_data.value.discount = 1
+  } else {
+    dish_info_data.value.discount = 0
+  }
+  dish_info_data.value.isDiscounted = dish_info_data.value.isDiscounted ? 0 : 1
+}
+const onUpDish = async () => {
+  const res = await upDish(dish_info_data.value.id)
+  if (res.code === 1) {
+    await getDishById_loading(dish_info_data.value.id)
+    uni.showToast({
+      icon: 'none',
+      title: '菜品已经重新上架！',
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '上架失败！',
     })
   }
 }
@@ -544,7 +544,12 @@ const onCheck = (index: number) => {
           <view class="line-title">菜品定价：</view>
           <view class="value number">
             <view class="minus" @click="priceMinus">-</view>
-            <input type="number" class="inventory-input" v-model="dish_info_data.price" />
+            <input
+              type="number"
+              class="inventory-input"
+              v-model="dish_info_data.price"
+              @input="onPriceCheck()"
+            />
             <view class="add" @click="priceAdd">+</view>
           </view>
         </view>
@@ -557,7 +562,10 @@ const onCheck = (index: number) => {
 
         <view class="info-line">
           <view class="line-title">折扣设置：</view>
-          <view class="value number">
+          <view class="btn" @click="onDiscountedSwitch">
+            {{ dish_info_data.isDiscounted ? '取消折扣' : '设置折扣' }}
+          </view>
+          <view class="value number" v-show="dish_info_data.isDiscounted">
             <view class="minus" @click="discountMinus">-</view>
             <input
               type="number"
@@ -569,7 +577,7 @@ const onCheck = (index: number) => {
           </view>
         </view>
 
-        <view class="info-line">
+        <view class="info-line" v-show="dish_info_data.isDiscounted">
           <view class="discountPrice"
             >折后价:{{ (dish_info_data.price * dish_info_data.discount).toFixed(2) }}</view
           >
@@ -659,7 +667,7 @@ const onCheck = (index: number) => {
             <view
               class="line"
               v-for="(item, index) in specValue.specOptions"
-              :key="item.OptionsName"
+              :key="item.optionsName"
             >
               <view style="display: flex; align-items: center; gap: 10rpx">
                 <h5>选项{{ index + 1 }}:</h5>
@@ -675,7 +683,7 @@ const onCheck = (index: number) => {
                 <input
                   type="number"
                   class="specNumber-input"
-                  v-model="item.specPrice"
+                  v-model="item.price"
                   @input="onCheck(index)"
                 />
               </view>
@@ -745,7 +753,9 @@ const onCheck = (index: number) => {
 
     <view class="button-box">
       <view class="save btn" @click="onSave">保存</view>
-      <view class="discontinued btn" v-if="dish_info_data.dishStatus === 2">该菜品已被下架</view>
+      <view class="discontinued btn" v-if="dish_info_data.dishStatus === 2" @click="onUpDish"
+        >重新上架</view
+      >
       <view class="discontinued btn" @click="onDownDish" v-else>下架</view>
     </view>
   </view>
