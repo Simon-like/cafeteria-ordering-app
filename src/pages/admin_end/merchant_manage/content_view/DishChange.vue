@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import iconComponent from '@/components/icons/icons.vue'
 import addComponent from './DishChangeViews/add.vue'
 import changeComponent from './DishChangeViews/change.vue'
+import deleteComponent from './DishChangeVIews/delete.vue'
 /**
  * @description 管理端商家菜单管理模块
  * @author 钟礼豪
@@ -21,7 +22,9 @@ const showAddDish = () => {
 const showEditDish = () => {
   currentView.value = 'editDish' // 点击更改菜品时设置状态
 }
-
+const showDeleteDish = () => {
+  currentView.value = 'deleteDish' // 点击更改菜品时设置状态
+}
 const goBack = () => {
   currentView.value = 'main' // 返回主页面
 }
@@ -57,6 +60,7 @@ const goBack = () => {
           <view class="msg-item" @click="showEditDish">
             更改已有菜品信息 <iconComponent :data="3" :radius="15"></iconComponent>
           </view>
+          <view class="msg-item" @click="showDeleteDish"> 下架已有菜品 </view>
         </view>
       </view>
 
@@ -71,6 +75,13 @@ const goBack = () => {
       <view v-else-if="currentView === 'editDish'">
         <view class="back-btn" @click="goBack()"><i class="iconfont icon-zuojiantou"></i></view>
         <changeComponent></changeComponent>
+        <!-- 也可以添加表单或其他组件 -->
+      </view>
+
+      <!-- 下架菜品页面 -->
+      <view v-else-if="currentView === 'deleteDish'">
+        <view class="back-btn" @click="goBack()"><i class="iconfont icon-zuojiantou"></i></view>
+        <deleteComponent></deleteComponent>
         <!-- 也可以添加表单或其他组件 -->
       </view>
     </view>
@@ -137,8 +148,8 @@ const goBack = () => {
       margin: 20rpx;
       .msg-item {
         display: flex;
-        margin-bottom: 15rpx;
         cursor: pointer; /* 鼠标悬停时显示为可点击 */
+        padding-bottom: 25rpx;
       }
     }
 

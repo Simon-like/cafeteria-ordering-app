@@ -525,7 +525,7 @@ const onMinusDishInCategory = async () => {
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y">
-          <view class="dish-wrapper" v-for="value in dish_info_list">
+          <view class="dish-wrapper" v-for="value in dish_info_list" :key="value.id">
             <view class="explicit-info">
               <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
               <view class="dish-info">
@@ -537,12 +537,13 @@ const onMinusDishInCategory = async () => {
                 <view v-show="value.isDiscounted === 1">
                   <view class="dish-price-line">
                     <view class="current price">
-                      <i class="iconfont icon-renminbi"></i>{{ value.discountedPrice }}
+                      <i class="iconfont icon-renminbi"></i
+                      >{{ (+value.discountedPrice).toFixed(2) }}
                     </view>
                     <view class="original price">
-                      <i class="iconfont icon-renminbi"></i>{{ value.price }}
+                      <i class="iconfont icon-renminbi"></i>{{ (+value.price).toFixed(2) }}
                       <view class="underline"></view>
-                      <view class="discount">{{ value.discount }}折</view>
+                      <view class="discount">{{ value.discount * 10 }}折</view>
                     </view>
                   </view>
                 </view>
@@ -597,7 +598,7 @@ const onMinusDishInCategory = async () => {
         <uni-card class="form-card">
           <scroll-view scroll-y="true" class="scroll-Y">
             <uni-section title="调整已有分组信息" type="line">
-              <view class="input-line" v-for="(line, index) in categoryData">
+              <view class="input-line" v-for="(line, index) in categoryData" :key="line">
                 <view class="label">分组{{ index + 1 }}：</view>
                 <view class="input-box">
                   <uni-easyinput v-model="line.categoryName" placeholder="请输入此分组名称" />
@@ -659,7 +660,7 @@ const onMinusDishInCategory = async () => {
         <uni-card class="form-card addDish-in-category">
           <scroll-view scroll-y="true" class="scroll-Y">
             <uni-section title="向该分组添加菜品" type="line">
-              <view class="dish-line" v-for="(value, index) in dish_choose_list">
+              <view class="dish-line" v-for="(value, index) in dish_choose_list" :key="value">
                 <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
                 <view class="label"
                   >菜品{{ index + 1 }}:<text class="dishName">{{ value.dishName }}</text></view
@@ -679,7 +680,7 @@ const onMinusDishInCategory = async () => {
         <uni-card class="form-card addDish-in-category">
           <scroll-view scroll-y="true" class="scroll-Y">
             <uni-section title="从该分组删除菜品" type="line">
-              <view class="dish-line" v-for="(value, index) in dish_choose_list">
+              <view class="dish-line" v-for="(value, index) in dish_choose_list" :key="value">
                 <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
                 <view class="label"
                   >菜品{{ index + 1 }}:<text class="dishName">{{ value.dishName }}</text></view
