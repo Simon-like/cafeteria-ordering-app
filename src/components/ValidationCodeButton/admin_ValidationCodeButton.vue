@@ -27,6 +27,7 @@ const getValidationCode = async () => {
 
   const response = await admin_getvalidationCode(props.phoneNumber)
   console.log(response)
+  startCountdown()
   if (+response.code === 20000) {
     uni.showToast({
       icon: 'none',

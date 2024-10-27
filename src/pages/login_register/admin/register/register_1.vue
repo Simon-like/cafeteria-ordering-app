@@ -14,12 +14,14 @@ import type { University } from '@/types/merchant_return'
  * @lastModifiedTime  2024-09-30
  */
 const adminStore = useAdminStore()
+const phoneNumber = ref<string>('')
 const password_1 = ref<string>('')
 const password_2 = ref<string>('')
+const validationCode = ref<string>('')
 const is_phone_repeat = ref<boolean>(false)
 const college = ref<string>('')
 const gotoNext = async () => {
-  if (!adminStore.phoneNumber) {
+  if (!phoneNumber.value) {
     uni.showToast({
       icon: 'none',
       title: '请输入手机号',
@@ -40,9 +42,11 @@ const gotoNext = async () => {
     })
     return
   }
-  const res = await admin_checkCode(adminStore.phoneNumber, adminStore.validationCode)
+  const res = await admin_checkCode(phoneNumber.value, validationCode.value)
   if (+res.code === 1) {
     adminStore.password = password_1.value
+    adminStore.phoneNumber = phoneNumber.value
+    adminStore.validationCode = validationCode.value
     uni.navigateTo({
       url: '/pages/login_register/admin/register/register_2',
     })
@@ -107,18 +111,14 @@ const onUniversityChange = (e) => {
     <view class="input">
       <view class="input-items">
         <text>手机号</text>
-        <input placeholder="请输入使用人手机号" type="text" v-model="adminStore.phoneNumber" />
+        <input placeholder="请输入使用人手机号" type="text" v-model="phoneNumber" />
       </view>
       <view class="input-items">
         <text>验证码</text>
-        <input
-          placeholder="请输入验证码"
-          type="text"
-          v-model="adminStore.validationCode"
-          class="code"
-        />
+        <input placeholder="请输入验证码" type="text" v-model="validationCode" class="code" />
         <ValidationCodeButton
-          :phoneNumber="adminStore.phoneNumber"
+          :phoneNumber="phoneNumber"
+          class="btn"
           @repeat="
             (e) => {
               is_phone_repeat = e
@@ -147,9 +147,8 @@ const onUniversityChange = (e) => {
       </view>
     </view>
     <view class="checkbox__container">
-      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label
-      ><button class="next" @click="gotoNext()">下一步</button>
-    </view>
+      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label> </view
+    ><button class="next" @click="gotoNext()">下一步</button>
   </view>
 </template>
 
@@ -204,11 +203,16 @@ const onUniversityChange = (e) => {
     margin-bottom: 40rpx;
     margin-right: 20rpx;
     align-items: center;
+    .code,
+    .btn {
+      width: 200rpx;
+    }
     .uni {
       display: flex;
       justify-content: center;
       align-items: center;
       justify-content: space-between;
+      margin-left: 20rpx;
       .uni-text {
         width: 400rpx;
         border: 1px solid #ccc;
@@ -231,9 +235,6 @@ const onUniversityChange = (e) => {
       margin-left: 20rpx;
       text-align: left;
     }
-    .code {
-      width: 200rpx;
-    }
   }
 }
 .checkbox__container {
@@ -242,14 +243,9 @@ const onUniversityChange = (e) => {
   justify-content: center;
   flex-direction: column;
   margin-left: 200rpx;
-
-  .next {
-    font-size: 16px;
-    margin-top: 50rpx;
-    display: flex;
-    width: 45%;
-    height: 80rpx;
-    border: #000 solid 1rpx;
-  }
+}
+button {
+  width: 45%;
+  border: #000 solid 1rpx;
 }
 </style>
