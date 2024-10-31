@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-
+/**
+ * @description 管理端商户管理模块
+ * @author 钟礼豪
+ * @date 2024-10-27
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-10-31
+ */
 interface Info {
   time: string
   type: string

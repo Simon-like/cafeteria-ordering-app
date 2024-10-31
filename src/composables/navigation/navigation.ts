@@ -1,6 +1,6 @@
-import { useDoubleTokenStore } from '@/stores'
 import { useAdminPagesStore } from '@/stores'
 import { useMerchantPagesStore } from '@/stores'
+import { useDoubleTokenStore } from '@/stores'
 
 /**
  * @description 页面跳转函数大全
@@ -31,12 +31,12 @@ export const gotoLogin = () => {
 }
 // 退出登录回首页
 export const gotoLoginAndRegister = () => {
+  uni.redirectTo({
+    url: '/pages/login_register/login_register',
+  })
   const DoubleTokenStore = useDoubleTokenStore()
   const AdminPagesStore = useAdminPagesStore()
   const MerchantPagesStore = useMerchantPagesStore()
-  uni.reLaunch({
-    url: '/pages/login_register/login_register',
-  })
   DoubleTokenStore.removeToken(2)
   MerchantPagesStore.initialize()
   AdminPagesStore.initialize()

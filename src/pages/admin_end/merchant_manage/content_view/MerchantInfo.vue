@@ -9,56 +9,83 @@ import { ref } from 'vue'
  * @lastModifiedTime  2024-10-12
  */
 
-const testInfo = ref({
-  place: '食堂a',
-  merchantInfoList: [
-    {
-      name: '兰州拉面',
-      logo: 'http://lzlm',
-      address: '哈V',
-      contactPhone: '12345678901',
-      businessHours: '8:00-22:00',
-      realName: '店主',
-      description: '我不吃牛肉',
-    },
-    {
-      name: '新疆大盘鸡',
-      logo: 'http://xjdpj',
-      address: '哈V',
-      contactPhone: '12345678901',
-      businessHours: '8:00-22:00',
-      realName: '店主',
-      description: '我不吃鸡肉',
-    },
-  ],
-})
-const goToDetail = (index) => {
-  console.log(index)
+const testInfo = ref([
+  {
+    place: '食堂a',
+    merchantInfoList: [
+      {
+        name: '兰州拉面',
+        logo: 'http://lzlm',
+        address: '哈V',
+        contactPhone: '12345678901',
+        businessHours: '8:00-22:00',
+        realName: '店主',
+        description: '我不吃牛肉',
+      },
+      {
+        name: '新疆大盘鸡',
+        logo: 'http://xjdpj',
+        address: '哈V',
+        contactPhone: '12345678901',
+        businessHours: '8:00-22:00',
+        realName: '店主',
+        description: '我不吃鸡肉',
+      },
+    ],
+  },
+  {
+    place: '食堂b',
+    merchantInfoList: [
+      {
+        name: '兰州拉面',
+        logo: 'http://lzlm',
+        address: '哈V',
+        contactPhone: '12345678901',
+        businessHours: '8:00-22:00',
+        realName: '店主',
+        description: '我不吃牛肉',
+      },
+      {
+        name: '新疆大盘鸡',
+        logo: 'http://xjdpj',
+        address: '哈V',
+        contactPhone: '12345678901',
+        businessHours: '8:00-22:00',
+        realName: '店主',
+        description: '我不吃鸡肉',
+      },
+    ],
+  },
+])
+const goToDetail = (placeIndex, merchantIndex) => {
+  console.log(placeIndex, merchantIndex)
   uni.navigateTo({
-    url: `/pages/admin_end/merchant_manage/content_view/detail?index=${index}`,
+    url: `/pages/admin_end/merchant_manage/content_view/detail?placeIndex=${placeIndex}&merchantIndex=${merchantIndex}`,
   })
 }
 </script>
+
 <template>
   <view class="content">
-    <view class="place">
-      {{ testInfo.place }}
-    </view>
-
-    <scroll-view class="box" scroll-y="true">
-      <view v-for="(dish, index) in testInfo.merchantInfoList" :key="index" class="dishList">
-        <view class="logo">
-          <image :src="dish.logo" class="logo"></image>
+    <scroll-view class="box" scroll-y="true"
+      ><view v-for="(area, placeIndex) in testInfo" :key="placeIndex" class="area">
+        <view class="place">
+          {{ area.place }}
         </view>
-        <view class="details">
-          <view class="name">{{ dish.name }}</view>
-          <view class="businessHours">营业时间:{{ dish.businessHours }}</view>
-          <view class="contactPhone">联系电话:{{ dish.contactPhone }}</view>
-          <view class="btns">
-            <button @click="goToDetail(index)">查看详细信息</button>
+        <view v-for="(dish, index) in area.merchantInfoList" :key="index" class="dishList">
+          <view class="logo">
+            <image :src="dish.logo" class="logo"></image>
           </view>
-        </view>
-      </view>
+          <view class="details">
+            <view class="name">{{ dish.name }}</view>
+            <view class="businessHours">营业时间:{{ dish.businessHours }}</view>
+            <view class="contactPhone">联系电话:{{ dish.contactPhone }}</view>
+            <view class="btns">
+              <button @click="goToDetail(placeIndex, index)">查看详细信息</button>
+            </view>
+          </view>
+        </view></view
+      >
     </scroll-view>
   </view>
 </template>
@@ -67,6 +94,7 @@ const goToDetail = (index) => {
 .content {
   width: 610rpx;
   height: 100%;
+  margin: 15rpx 15rpx 15rpx 15rpx;
   .place {
     font-size: 36rpx;
     width: 100%;

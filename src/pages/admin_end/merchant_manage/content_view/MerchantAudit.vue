@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ref, defineComponent } from 'vue'
-
+/**
+ * @description 管理端商户管理模块
+ * @author 钟礼豪
+ * @date 2024-10-27
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-10-31
+ */
 interface NoticeItem {
   index: number
   is_show: boolean
@@ -88,12 +94,11 @@ const changeShow = (index: number) => {
 
 <style lang="scss" scoped>
 .info-box {
-  width: 100%;
+  font-size: 25rpx;
   padding: 20rpx;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  margin-bottom: 20rpx;
+  margin: 15rpx 15rpx 15rpx 15rpx;
   background-color: rgba(0, 0, 0, 0.2);
 
   .info {

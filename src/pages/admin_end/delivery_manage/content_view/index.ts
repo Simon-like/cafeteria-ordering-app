@@ -9,4 +9,4 @@ import deliveryInfo from './deliveryInfo.vue'
  * @lastModifiedTime  2024-10-5
  */
 
-export const componentList = [deliveryAudit, deliveryFeedBack, deliveryInfo]
+export const componentList = [deliveryFeedBack, deliveryAudit, deliveryInfo]

@@ -27,6 +27,20 @@ export type categoryType = {
   dishNumber: number
 }
 
+// 规格选项信息
+export type specOptionsItem = {
+  optionsName: string
+  price: number
+}
+
+// 规格信息
+export type specItem = {
+  specTitle: string
+  isEssential: boolean
+  id: number
+  specOptions: specOptionsItem[]
+}
+
 // 菜品信息
 export type dishData = {
   id: number
@@ -41,5 +55,35 @@ export type dishData = {
   isDiscounted: number // 是否打折。0表示不打折，1表示打折
   isDeliver: number // 单点是否配送。0表示单点不配送，1单点配送
   todayInventory: number
-  specifications: string[] // 规格S
+  specList: specItem[] // 规格S
+}
+
+//菜单信息
+export type MenuItem = {
+  dishId: number
+  dishName: string
+  dishNumber: number
+  dishSpecList: string[]
+  dishPrice: number
+}
+
+// 订单信息
+export type OderItem = {
+  orderID: number //订单ID，用于后续请求操作
+  orderCode: string // 订单编号，有规定格式的一个编码
+  oderNumber: number //订单序号，每个订单有先后顺序，每一天第一个订单为1号，往后递增
+  customer: string // 客户昵称
+  orderNotes: string // 订单备注
+  orderTime: string // 下单时间，精确月-日-时-分
+  phoneNumber: string // 顾客电话
+  payMethod: number //支付方式，微信支付0，支付宝支付1
+  menu: MenuItem[]
+  totalPrice: number //总价
+  coupon: number
+  actualPrice: number // 实际支付金额，总价减去优惠券
+  orderType: number
+  orderStatus: number // 订单状态，待处理订单0，已确认订单1（点击接单还未完成），已完成的订单2（已确认的订单点击完成），已取消订单3（点击复原退回到状态1），已退款订单4
+  addressID: number // 配送地址ID，当oderType=0时有此字段内容,否则为-1
+  address: string // 配送地址，当oderType=0时有此字段内容,否则为空字符''
+  addressNumber: string //配送地址编号，当oderType=0时有此字段内容,否则为空字符''
 }
