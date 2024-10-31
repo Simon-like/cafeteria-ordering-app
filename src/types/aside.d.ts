@@ -8,4 +8,6 @@ export type AsideItem = {
   itemName: string
   /** 选项激活状态 */
   active: boolean
+  /** 新增消息数 */
+  addNumber?: number
 }

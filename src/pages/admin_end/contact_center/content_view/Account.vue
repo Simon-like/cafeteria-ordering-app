@@ -4,7 +4,7 @@ import { useAdminStore } from '@/stores/modules/admin_information'
 import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
 
 /**
- * @description 管理端个人中心页面账号管理模块
+ * @description 管理端联络中心页面账号管理模块
  * @author 应东林
  * @date 2024-10-12
  * @lastModifiedBy 应东林

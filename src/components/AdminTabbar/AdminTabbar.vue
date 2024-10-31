@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useAdminPagesStore } from '@/stores'
 /**
  * @description 管理端tabbar
  * @author 应东林
@@ -6,7 +7,7 @@
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-09-21
  */
-
+const AdminPages = useAdminPagesStore()
 // 商家端和管理端的tabbar动态切换
 
 interface TabbarItem {
@@ -49,14 +50,12 @@ const emit = defineEmits(['switch'])
 const change = (index: number) => {
   emit('switch', index)
 }
-
-const pageIndex = ref<number>(0)
 </script>
 
 <template>
   <up-tabbar
-    :value="pageIndex"
-    @change="(name) => (pageIndex = name)"
+    :value="AdminPages.tabbarIndex"
+    @change="(id) => (AdminPages.tabbarIndex = id)"
     :fixed="false"
     :placeholder="false"
     activeColor="#d81e06"

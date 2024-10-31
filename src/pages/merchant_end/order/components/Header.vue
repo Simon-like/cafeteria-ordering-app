@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import { getLastDays } from '@/composables/tools'
 /**
  * @description 订单管理模块-头部栏
  * @author 应东林
@@ -9,28 +10,10 @@ import { onLoad } from '@dcloudio/uni-app'
  * @lastModifiedTime  2024-10-24
  */
 
-// 获取往前七天的日期信息
-function getLastSevenDays() {
-  const today = new Date()
-  const lastSevenDays = []
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today)
-    date.setDate(today.getDate() - i) // 获取今天往前第i天的日期
-
-    const year = String(date.getFullYear()).slice(-2) // 取得年份后两位
-    const day = String(date.getDate()).padStart(2, '0') // 获取日期并补零到两位
-
-    lastSevenDays.push(`${year}-${day}`) // 按照YY-DD格式推入数组
-  }
-
-  return lastSevenDays
-}
-
 //下拉时间选择逻辑实现
 const date_PickerRef = ref()
 const date_show = ref<boolean>(false)
-let date_list: string[] = getLastSevenDays().map((item, index) => (index === 0 ? '今日' : item))
+let date_list: string[] = getLastDays(7).map((item, index) => (index === 0 ? '今日' : item))
 const date_columns = reactive([date_list])
 const date_value = ref<string>(date_columns[0][0]) //当前选中时间
 

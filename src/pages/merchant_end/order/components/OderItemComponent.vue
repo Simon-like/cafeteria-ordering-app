@@ -2,6 +2,8 @@
 import { ref, reactive } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { debounce, splitContent } from '@/composables/tools'
+import type { OrderItem, MenuItem, specItem, dishData } from '@/types/merchant_return'
+
 /**
  * @description 订单管理模块-订单组件
  * @author 应东林
@@ -10,8 +12,12 @@ import { debounce, splitContent } from '@/composables/tools'
  * @lastModifiedTime  2024-10-25
  */
 
-// 假数据
-const dishSpecList = ref<string[]>(['大份', '清蒸', '加醋', '加醋', '加醋', '加醋'])
+// 传递的数据
+const props = defineProps<{
+  orderItem: OrderItem
+}>()
+
+const orderData = props.orderItem
 
 const show = ref<boolean>(false)
 const onDescShow = () => {
@@ -23,67 +29,83 @@ const onDescShow = () => {
   <view class="oder-item">
     <view class="line oder-header">
       <view class="x-wrapper">
-        <view class="oder-number">#1</view>
-        <view class="oder-type">外卖</view>
+        <view class="oder-number">#{{ orderData.orderNumber }}</view>
+        <view class="oder-type">{{ orderData.orderType ? '堂食' : '外卖' }}</view>
       </view>
       <view class="x-wrapper">
-        <view class="btn">接单</view>
-        <view class="btn" v-if="false">完成</view>
-        <view class="btn" v-if="false">取消</view>
-        <view class="btn" v-if="false">恢复</view>
-        <view class="btn" v-if="false">确认退款</view>
-        <view v-if="false">已完成</view>
-        <view v-if="false">已退款</view>
+        <view class="btn" v-if="orderData.orderStatus === 0">接单</view>
+        <view class="btn" v-if="orderData.orderStatus === 1">完成</view>
+        <view class="btn" v-if="orderData.orderStatus === 1">取消</view>
+        <view class="btn" v-if="orderData.orderStatus === 3">恢复</view>
+        <view class="btn" v-if="orderData.orderStatus === 3">确认退款</view>
+        <view v-if="orderData.orderStatus === 2">已完成</view>
+        <view v-if="orderData.orderStatus === 4">已退款</view>
       </view>
     </view>
     <view class="line oder-customer">
       <view class="x-wrapper">
-        <view class="customer">王先生</view>
-        <view class="address" v-if="true">家属四公寓-1202</view>
+        <view class="customer">{{ orderData.customer }}</view>
+        <template v-if="orderData.orderType === 0">
+          <view class="address">{{ orderData.address }}</view>
+          <view class="address-number">{{ orderData.addressNumber }}</view>
+        </template>
       </view>
     </view>
     <view class="line order-notes">
-      <view class="Notes">微辣啊啊啊啊啊啊啊\n哈哈哈</view>
+      <view class="Notes" style="">备注：{{ orderData.orderNotes }}</view>
     </view>
     <view class="menu-box">
-      <view class="menu-line" v-for="line in 3">
+      <view class="menu-line" v-for="line in orderData.menu.slice(0, 3)" :key="line.dishId">
         <view class="y-wrapper">
-          <view class="disha-name" style="align-self: start">好大的乳山生蚝</view>
+          <view class="disha-name" style="align-self: start">{{ line.dishName }}</view>
           <view class="dishSpecList" style="align-self: start">
-            <view class="dishSpecItem" v-for="item in dishSpecList">{{ item }}</view>
+            <view class="dishSpecItem" v-for="item in line.dishSpecList" :key="item">{{
+              item
+            }}</view>
           </view>
         </view>
-        <view class="dish-number">x12</view>
-        <view class="dish-price">60元</view>
+        <view class="x-wrapper">
+          <view class="dish-number">x{{ line.dishNumber }}</view>
+          <view class="dish-price">{{ line.dishPrice }}元</view>
+        </view>
       </view>
     </view>
     <view class="HIDDEN-box" :class="{ 'content-show': show }">
       <view class="inner">
-        <view class="remaining menu-box">
-          <view class="menu-line" v-for="line in 2">
+        <view class="remaining menu-box" v-if="!!orderData.menu.slice(3)">
+          <view class="menu-line" v-for="line in orderData.menu.slice(3)" :key="line.dishId">
             <view class="y-wrapper">
-              <view class="disha-name" style="align-self: start">好大的乳山生蚝</view>
+              <view class="disha-name" style="align-self: start">{{ line.dishName }}</view>
               <view class="dishSpecList" style="align-self: start">
-                <view class="dishSpecItem" v-for="item in dishSpecList">{{ item }}</view>
+                <view class="dishSpecItem" v-for="item in line.dishSpecList" :key="item">{{
+                  item
+                }}</view>
               </view>
             </view>
-            <view class="dish-number">x12</view>
-            <view class="dish-price">60元</view>
+            <view class="x-wrapper">
+              <view class="dish-number">x{{ line.dishNumber }}</view>
+              <view class="dish-price">{{ line.dishPrice }}元</view>
+            </view>
           </view>
         </view>
         <view class="oder-info-box">
           <view class="dish-info">
-            <view class="totalPrice">菜品总价：60元</view>
-            <view class="coupon">-优惠券：6元</view>
+            <view class="totalPrice">菜品总价：{{ orderData.totalPrice }}元</view>
+            <view class="coupon">-优惠券：{{ orderData.coupon }}元</view>
             <view class="actualPrice"
-              >共计支付：<text style="font-weight: 550; font-size: 40rpx">53.21</text>元</view
+              >共计支付：<text style="font-weight: 550; font-size: 40rpx">{{
+                orderData.actualPrice
+              }}</text
+              >元</view
             >
           </view>
           <view class="remaining-info">
-            <view class="phoneNumber">顾客电话：16623819144</view>
-            <view class="orderTime">下单时间：</view>
-            <view class="payMethod">支付方式：微信支付</view>
-            <view class="orderCode">订单编号：#SDF546546854</view>
+            <view class="phoneNumber">顾客电话：{{ orderData.phoneNumber }}</view>
+            <view class="orderTime">下单时间：{{ orderData.orderTime }}</view>
+            <view class="payMethod"
+              >支付方式：{{ orderData.payMethod ? '支付宝支付' : '微信支付' }}</view
+            >
+            <view class="orderCode">订单编号：{{ orderData.orderCode }}</view>
           </view>
         </view>
       </view>
@@ -107,12 +129,13 @@ const onDescShow = () => {
   padding: 20rpx;
   margin-bottom: 25rpx;
   .btn {
+    white-space: nowrap;
     text-align: center;
     transition: 0.2s ease;
     font-size: 30rpx;
     border: 1px solid #000;
     padding: 10rpx;
-    width: 115rpx;
+    min-width: 115rpx;
     &:active {
       scale: 0.95;
     }
@@ -150,13 +173,13 @@ const onDescShow = () => {
       width: 100%;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 20rpx;
       white-space: nowrap;
       border: 1px solid #000;
       padding: 15rpx;
     }
     .dishSpecList {
-      width: 75%;
       display: flex;
       align-items: center;
       gap: 10rpx;

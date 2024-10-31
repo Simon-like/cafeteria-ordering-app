@@ -451,9 +451,9 @@ onLoad(async (getData: any) => {
 const onDiscountedSwitch = () => {
   //未打折切换打折，价格顶一个基本值
   if (!dish_info_data.value.isDiscounted) {
-    dish_info_data.value.discount = 1
+    dish_info_data.value.discount = 0.9
   } else {
-    dish_info_data.value.discount = 0
+    dish_info_data.value.discount = 1
   }
   dish_info_data.value.isDiscounted = dish_info_data.value.isDiscounted ? 0 : 1
 }

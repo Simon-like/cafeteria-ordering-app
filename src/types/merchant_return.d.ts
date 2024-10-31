@@ -68,10 +68,10 @@ export type MenuItem = {
 }
 
 // 订单信息
-export type OderItem = {
+export type OrderItem = {
   orderID: number //订单ID，用于后续请求操作
   orderCode: string // 订单编号，有规定格式的一个编码
-  oderNumber: number //订单序号，每个订单有先后顺序，每一天第一个订单为1号，往后递增
+  orderNumber: number //订单序号，每个订单有先后顺序，每一天第一个订单为1号，往后递增
   customer: string // 客户昵称
   orderNotes: string // 订单备注
   orderTime: string // 下单时间，精确月-日-时-分
@@ -81,7 +81,7 @@ export type OderItem = {
   totalPrice: number //总价
   coupon: number
   actualPrice: number // 实际支付金额，总价减去优惠券
-  orderType: number
+  orderType: number // 订单类型，外卖0，堂食1
   orderStatus: number // 订单状态，待处理订单0，已确认订单1（点击接单还未完成），已完成的订单2（已确认的订单点击完成），已取消订单3（点击复原退回到状态1），已退款订单4
   addressID: number // 配送地址ID，当oderType=0时有此字段内容,否则为-1
   address: string // 配送地址，当oderType=0时有此字段内容,否则为空字符''

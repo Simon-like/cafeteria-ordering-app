@@ -37,9 +37,14 @@ const addItem = () => {
       :class="{ active: item.active }"
       :key="item.itemId"
     >
-      {{ item.itemName }}
+      <view class="title">
+        {{ item.itemName }}
+        <view v-if="!!item.addNumber && item.addNumber > 0" class="add-number">{{
+          item.addNumber
+        }}</view></view
+      >
     </view>
-    <view class="addItem" v-show="!!props.addItem" @click="addItem">
+    <view class="addItem" v-if="!!props.addItem" @click="addItem">
       {{ props.addItem }}
     </view>
   </view>
@@ -51,19 +56,35 @@ const addItem = () => {
   height: 100%;
   border-right: 1px solid rgba(3, 3, 3, 0.8);
   .item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     min-height: 115rpx;
     border-bottom: 2px solid rgba(3, 3, 3, 0.8);
     transition: all 0.3s ease;
-    font-size: 25rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 8rpx;
-    //text-align: center;
-    //line-height: 115rpx;
     &.active {
       background-color: rgba(0, 225, 225, 0.8);
+    }
+    .title {
+      text-align: center;
+      font-size: 25rpx;
+      position: relative;
+      .add-number {
+        position: absolute;
+        right: -20rpx;
+        top: -20rpx;
+        z-index: 99;
+        width: 30rpx;
+        height: 30rpx;
+        font-size: 25rpx;
+        text-align: center;
+        line-height: 30rpx;
+        background-color: rgba(248, 82, 0, 0.5);
+        color: #fff;
+        border-radius: 50%;
+      }
     }
   }
   .addItem {
