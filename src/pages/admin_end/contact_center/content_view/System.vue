@@ -11,13 +11,38 @@ import { debounce, splitContent, deepCopy } from '@/composables/tools'
  */
 
 // 送餐地址设置
+
+//编号随机生成函数
+function generateUniqueId(existingIds: string[]) {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const digits = '0123456789'
+
+  // 生成一个随机的字母和数字的组合
+  function generateRandomId() {
+    const randomLetter = letters[Math.floor(Math.random() * letters.length)]
+    const randomDigit = digits[Math.floor(Math.random() * digits.length)]
+    return randomLetter + randomDigit
+  }
+
+  // 生成的编号
+  let newId
+
+  do {
+    newId = generateRandomId()
+  } while (existingIds.includes(newId)) // 如果生成的编号已存在，则重新生成
+
+  return newId
+}
+
 const resAdress = ref<AdressItem[]>([
-  { adressId: 12, adressNumber: 'A8', adress: '11公寓', DeliveryPrice: 75.5 },
+  { adressId: 10, adressNumber: 'A8', adress: '11公寓', DeliveryPrice: 75.5 },
   { adressId: 12, adressNumber: 'A7', adress: '15公寓', DeliveryPrice: 75.5 },
-  { adressId: 12, adressNumber: 'A45', adress: '17公寓', DeliveryPrice: 75.5 },
-  { adressId: 12, adressNumber: 'A3', adress: '18公寓', DeliveryPrice: 75.5 },
+  { adressId: 13, adressNumber: 'A45', adress: '17公寓', DeliveryPrice: 75.5 },
+  { adressId: 15, adressNumber: 'A3', adress: '18公寓', DeliveryPrice: 75.5 },
 ])
-const editAdress = reactive<AdressItem>(resAdress.value[0])
+// 当前选中的索引值
+const AdressIndex = ref<number>(0)
+const editAdress = reactive<AdressItem>(deepCopy(resAdress.value[AdressIndex.value]))
 
 const adressPopup = ref()
 
@@ -26,6 +51,14 @@ const onChosseAdressLine = (index: number) => {
   adressActiveList.value.fill(false)
   adressActiveList.value[index] = true
   Object.assign(editAdress, resAdress.value[index])
+  AdressIndex.value = index
+}
+
+// 初始化参数
+const InitAdress = () => {
+  AdressIndex.value = 0
+  Object.assign(editAdress, { adressId: -1, adressNumber: '', adress: '', DeliveryPrice: 0 })
+  adressActiveList.value.fill(false)
 }
 
 const onEditAdress = () => {
@@ -33,6 +66,21 @@ const onEditAdress = () => {
   adressActiveList.value[0] = true
   Object.assign(editAdress, deepCopy(resAdress.value[0]))
   adressPopup.value.open('center')
+}
+
+//随机生成编号事件
+const onRandomly = () => {
+  editAdress.adressNumber = generateUniqueId(resAdress.value.map((item) => item.adressNumber))
+}
+
+//修改送餐地址
+const onComfirnAdress = () => {
+  Object.assign(resAdress.value[AdressIndex.value], deepCopy(editAdress))
+}
+
+// 删除某地址
+const onDeleteAdress = (index: number) => {
+  InitAdress()
 }
 
 //商家区域设置
@@ -84,7 +132,8 @@ const onEditRegion = () => {}
               <view class="title">地址{{ index + 1 }}:{{ item.adress }}</view>
               <view class="DeliveryPrice">配送费:{{ item.DeliveryPrice }}</view>
               <view class="adress-number"
-                >编号:{{ item.adressNumber }}<i class="iconfont icon-jianhao"></i
+                >编号:{{ item.adressNumber
+                }}<i class="iconfont icon-jianhao" @click="onDeleteAdress(index)"></i
               ></view>
             </view>
             <view class="line add-line" style="justify-content: flex-start">
@@ -106,10 +155,10 @@ const onEditRegion = () => {}
             </view>
             <view class="line">
               <view class="title">编号：{{ editAdress.adressNumber }}</view>
-              <view class="btn">点击随机生成</view>
+              <view class="btn" @click="onRandomly">点击随机生成</view>
             </view>
             <view class="line btn-line">
-              <view class="btn popup-btn">确认</view>
+              <view class="btn popup-btn" @click="onComfirnAdress">确认</view>
               <view class="btn popup-btn">取消</view>
             </view>
           </view>
@@ -148,6 +197,17 @@ const onEditRegion = () => {}
   }
   .align-end {
     align-self: flex-end;
+  }
+
+  :deep(.uni-easyinput) {
+    width: 300rpx;
+    flex: 0;
+    .uni-easyinput__content {
+      width: 300rpx;
+      uni-input {
+        height: auto;
+      }
+    }
   }
 
   .section {
@@ -212,6 +272,10 @@ const onEditRegion = () => {}
       &.add-wrapper {
         background: rgba(0, 0, 0, 0.2);
         padding: 10rpx;
+
+        .line {
+          justify-content: space-between;
+        }
         .btn-line {
           justify-content: center;
           gap: 45rpx;
