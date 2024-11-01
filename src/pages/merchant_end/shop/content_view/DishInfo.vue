@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AsideItem } from '@/types/aside'
 import { ref, reactive, nextTick } from 'vue'
-import type { categoryType, dishData, specItem, specOptionsItem } from '@/types/merchant_return'
+import type { categoryType, dishData } from '@/types/merchant_return'
 import { useMerchantShopStore } from '@/stores'
 import {
   getDishByGroup,
@@ -96,7 +96,7 @@ const dish_info_list = ref<
     isDiscounted: number // 是否打折。0表示不打折，1表示打折
     isDeliver: number // 单点是否配送。0表示单点不配送，1单点配送
     todayInventory: number
-    specList: specItem[] // 规格S
+    specifications: string[] // 规格S
     dishDesc_show: boolean
     index: number
   }[]
@@ -525,7 +525,7 @@ const onMinusDishInCategory = async () => {
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y">
-          <view class="dish-wrapper" v-for="value in dish_info_list" :key="value.dishName">
+          <view class="dish-wrapper" v-for="value in dish_info_list" :key="value.id">
             <view class="explicit-info">
               <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
               <view class="dish-info">
@@ -571,29 +571,9 @@ const onMinusDishInCategory = async () => {
             </view>
             <view class="implicit-info" :class="{ active: value.dishDesc_show }">
               <view class="inner">
-                <view class="spec-line" v-for="(item, index) in value.specList" :key="item">
-                  <view class="title" style="display: flex; align-items: center">
-                    <view>规格{{ index + 1 }}:</view>
-                    <h4>{{ item.specTitle }}</h4>
-                    <view style="margin-left: 20rpx" v-if="item.isEssential">
-                      <i class="iconfont icon-dian"></i>必选
-                    </view>
-                  </view>
-                  <view class="specItem-box">
-                    <view
-                      class="specItem"
-                      v-for="option in item.specOptions"
-                      :key="option.optionsName"
-                    >
-                      <text>
-                        {{ option.optionsName }}
-                      </text>
-                      <view class="Options-price" v-if="!!option.price">
-                        <i class="iconfont icon-renminbi"></i>
-                        {{ option.price }}</view
-                      >
-                    </view>
-                  </view>
+                <view class="spec-line" v-for="(item, index) in value.specifications" :key="item">
+                  <view class="title">规格{{ index + 1 }}:</view>
+                  <view class="specItem">{{ item }}</view>
                 </view>
                 <view class="dish-description">
                   <view class="label">菜品描述：</view>
@@ -618,11 +598,7 @@ const onMinusDishInCategory = async () => {
         <uni-card class="form-card">
           <scroll-view scroll-y="true" class="scroll-Y">
             <uni-section title="调整已有分组信息" type="line">
-              <view
-                class="input-line"
-                v-for="(line, index) in categoryData"
-                :key="line.categoryName"
-              >
+              <view class="input-line" v-for="(line, index) in categoryData" :key="line">
                 <view class="label">分组{{ index + 1 }}：</view>
                 <view class="input-box">
                   <uni-easyinput v-model="line.categoryName" placeholder="请输入此分组名称" />
@@ -684,11 +660,7 @@ const onMinusDishInCategory = async () => {
         <uni-card class="form-card addDish-in-category">
           <scroll-view scroll-y="true" class="scroll-Y">
             <uni-section title="向该分组添加菜品" type="line">
-              <view
-                class="dish-line"
-                v-for="(value, index) in dish_choose_list"
-                :key="value.dishName"
-              >
+              <view class="dish-line" v-for="(value, index) in dish_choose_list" :key="value">
                 <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
                 <view class="label"
                   >菜品{{ index + 1 }}:<text class="dishName">{{ value.dishName }}</text></view
@@ -708,11 +680,7 @@ const onMinusDishInCategory = async () => {
         <uni-card class="form-card addDish-in-category">
           <scroll-view scroll-y="true" class="scroll-Y">
             <uni-section title="从该分组删除菜品" type="line">
-              <view
-                class="dish-line"
-                v-for="(value, index) in dish_choose_list"
-                :key="value.dishName"
-              >
+              <view class="dish-line" v-for="(value, index) in dish_choose_list" :key="value">
                 <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
                 <view class="label"
                   >菜品{{ index + 1 }}:<text class="dishName">{{ value.dishName }}</text></view
@@ -1031,33 +999,14 @@ const onMinusDishInCategory = async () => {
           }
           .spec-line {
             display: flex;
-            border-bottom: 1px solid #000;
-            padding-bottom: 20rpx;
-            gap: 20rpx;
             width: 100%;
-            flex-direction: column;
             justify-content: space-between;
-            .specItem-box {
-              display: flex;
-              align-items: center;
-              gap: 12rpx;
-              flex-wrap: wrap;
-              .specItem {
-                border: 1px solid rgb(0, 0, 0);
-                border-radius: 16rpx;
-                padding: 5rpx;
-                align-items: center;
-                display: flex;
-                font-size: 30rpx;
-                gap: 10rpx;
-                .Options-price {
-                  text-align: center;
-                  font-size: 25rpx;
-                  .iconfont {
-                    font-size: 20rpx;
-                  }
-                }
-              }
+            align-items: center;
+            .specItem {
+              border: 1px solid rgb(0, 0, 0);
+              border-radius: 16rpx;
+              padding: 5rpx;
+              text-align: center;
             }
           }
         }

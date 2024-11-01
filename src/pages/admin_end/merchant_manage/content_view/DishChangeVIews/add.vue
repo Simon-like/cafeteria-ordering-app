@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-
+/**
+ * @description 管理端商户管理子页面模块
+ * @author 钟礼豪
+ * @date 2024-10-27
+ * @lastModifiedBy 钟礼豪
+ * @lastModifiedTime  2024-10-27
+ */
 interface Dish {
   id: number
   name: string
