@@ -10,8 +10,9 @@ import { debounce, splitContent, deepCopy } from '@/composables/tools'
  * @lastModifiedTime  2024-10-31
  */
 
-// 送餐地址设置
-
+/**
+ * @description 送餐地址设置
+ */
 //编号随机生成函数
 function generateUniqueId(existingIds: string[]) {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -40,13 +41,32 @@ const resAdress = ref<AdressItem[]>([
   { adressId: 13, adressNumber: 'A45', adress: '17公寓', DeliveryPrice: 75.5 },
   { adressId: 15, adressNumber: 'A3', adress: '18公寓', DeliveryPrice: 75.5 },
 ])
-// 当前选中的索引值
+// 当前选中的索引值，-1表示当前无地址选择，-2表示处于新增地址状态
 const AdressIndex = ref<number>(0)
-const editAdress = reactive<AdressItem>(deepCopy(resAdress.value[AdressIndex.value]))
+const editAdress = reactive<AdressItem>({
+  adressId: -1,
+  adressNumber: '',
+  adress: '',
+  DeliveryPrice: 0,
+})
 
 const adressPopup = ref()
 
 const adressActiveList = ref<boolean[]>(new Array(resAdress.value.length).fill(false))
+
+// 编辑某地址
+const onEditAdress = () => {
+  if (resAdress.value.length === 0) {
+    AdressIndex.value = -1
+  } else {
+    adressActiveList.value.fill(false)
+    adressActiveList.value[0] = true
+    Object.assign(editAdress, deepCopy(resAdress.value[0]))
+  }
+  adressPopup.value.open('center')
+}
+
+// 选择某条地址
 const onChosseAdressLine = (index: number) => {
   adressActiveList.value.fill(false)
   adressActiveList.value[index] = true
@@ -56,16 +76,9 @@ const onChosseAdressLine = (index: number) => {
 
 // 初始化参数
 const InitAdress = () => {
-  AdressIndex.value = 0
+  AdressIndex.value = -1
   Object.assign(editAdress, { adressId: -1, adressNumber: '', adress: '', DeliveryPrice: 0 })
   adressActiveList.value.fill(false)
-}
-
-const onEditAdress = () => {
-  adressActiveList.value.fill(false)
-  adressActiveList.value[0] = true
-  Object.assign(editAdress, deepCopy(resAdress.value[0]))
-  adressPopup.value.open('center')
 }
 
 //随机生成编号事件
@@ -75,20 +88,110 @@ const onRandomly = () => {
 
 //修改送餐地址
 const onComfirnAdress = () => {
-  Object.assign(resAdress.value[AdressIndex.value], deepCopy(editAdress))
+  if (AdressIndex.value === -2) {
+    //保存新增地址信息
+    resAdress.value.push(deepCopy(editAdress))
+    adressActiveList.value.push(true)
+    AdressIndex.value = resAdress.value.length - 1
+  } else {
+    Object.assign(resAdress.value[AdressIndex.value], deepCopy(editAdress))
+  }
 }
 
 // 删除某地址
 const onDeleteAdress = (index: number) => {
   InitAdress()
+  resAdress.value.splice(index, 1)
+  adressActiveList.value.splice(index, 1)
 }
 
-//商家区域设置
+// 取消地址编辑
+const onCloseAdress = () => {
+  InitAdress()
+}
+
+// 新增一个地址
+const onAddAdress = () => {
+  AdressIndex.value = -2
+  adressActiveList.value.fill(false)
+  Object.assign(editAdress, { adressId: -1, adressNumber: '', adress: '', DeliveryPrice: 0 })
+}
+
+/**
+ * @description 商家区域设置
+ */
+
+const regionPopup = ref()
 const resRegion = ref([
   { region: '学子', regionId: 213 },
   { region: '学苑', regionId: 213 },
 ])
-const onEditRegion = () => {}
+
+const regionActiveList = ref<boolean[]>(new Array(resRegion.value.length).fill(false))
+const RegionIndex = ref<number>(0)
+const editRegion = reactive<{ region: string; regionId: number }>(
+  deepCopy({ region: '', regionId: 0 }),
+)
+// 打开区域设置弹框
+const onEditRegion = () => {
+  if (resRegion.value.length === 0) {
+    RegionIndex.value = -1
+  } else {
+    regionActiveList.value.fill(false)
+    regionActiveList.value[0] = true
+    Object.assign(editRegion, deepCopy(resRegion.value[0]))
+  }
+  regionPopup.value.open('center')
+}
+
+// 初始化参数
+const InitRegion = () => {
+  RegionIndex.value = -1
+  Object.assign(editRegion, { region: '', regionId: -1 })
+  regionActiveList.value.fill(false)
+}
+
+const onChosseRegionLine = (index: number) => {
+  regionActiveList.value.fill(false)
+  regionActiveList.value[index] = true
+  Object.assign(editRegion, resRegion.value[index])
+  RegionIndex.value = index
+}
+
+const onComfirnRegion = () => {
+  if (RegionIndex.value === -2) {
+    //保存新增地址信息
+    resRegion.value.push(deepCopy(editRegion))
+    regionActiveList.value.push(true)
+    RegionIndex.value = resRegion.value.length - 1
+  } else {
+    Object.assign(resRegion.value[RegionIndex.value], deepCopy(editRegion))
+  }
+}
+
+const onCloseRegion = () => {
+  InitRegion()
+}
+
+// 删除某条区域
+const onDeleteRegion = (index: number) => {
+  InitRegion()
+  resRegion.value.splice(index, 1)
+  regionActiveList.value.splice(index, 1)
+}
+
+// 新增一个区域
+const onAddRegion = () => {
+  RegionIndex.value = -2
+  regionActiveList.value.fill(false)
+  Object.assign(editRegion, { region: '', regionId: -1 })
+}
+
+// 取消弹框
+const onBack = () => {
+  adressPopup.value.close()
+  regionPopup.value.close()
+}
 </script>
 
 <template>
@@ -122,25 +225,37 @@ const onEditRegion = () => {}
       <view class="popup-content">
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="wrapper">
-            <view
-              class="line"
-              v-for="(item, index) in resAdress"
-              :key="item.adressId"
-              :class="{ active: adressActiveList[index] }"
-              @click="onChosseAdressLine(index)"
-            >
-              <view class="title">地址{{ index + 1 }}:{{ item.adress }}</view>
-              <view class="DeliveryPrice">配送费:{{ item.DeliveryPrice }}</view>
-              <view class="adress-number"
-                >编号:{{ item.adressNumber
-                }}<i class="iconfont icon-jianhao" @click="onDeleteAdress(index)"></i
-              ></view>
+            <view class="line" v-for="(item, index) in resAdress" :key="item.adressId">
+              <view
+                class="y-wrapper"
+                :class="{ active: adressActiveList[index] }"
+                @click="onChosseAdressLine(index)"
+              >
+                <view class="title">地址{{ index + 1 }}:{{ item.adress }}</view>
+                <view class="x-wrapper">
+                  <view class="DeliveryPrice">配送费:{{ item.DeliveryPrice }}</view>
+                  <view class="adress-number">编号:{{ item.adressNumber }}</view>
+                </view>
+              </view>
+              <view @click="onDeleteAdress(index)"><i class="iconfont icon-jianhao"></i></view>
             </view>
             <view class="line add-line" style="justify-content: flex-start">
-              <view><i class="iconfont icon-jiahao"></i>地址{{ resAdress.length + 1 }}</view>
+              <view
+                class="add-adress-line"
+                @click="onAddAdress"
+                :class="{ active: AdressIndex === -2 }"
+                ><i class="iconfont icon-jiahao"></i>新增地址</view
+              >
             </view>
           </view>
-          <view class="wrapper add-wrapper">
+
+          <!-- /修改框 -->
+          <view class="wrapper add-wrapper" v-show="AdressIndex !== -1">
+            <view class="line">
+              <view class="title"
+                >{{ AdressIndex === -2 ? '新增地址' : `地址${AdressIndex + 1}` }}：</view
+              >
+            </view>
             <view class="line">
               <view class="title">名称：</view>
               <uni-easyinput v-model="editAdress.adress" placeholder="请输入地址名称" />
@@ -158,10 +273,72 @@ const onEditRegion = () => {}
               <view class="btn" @click="onRandomly">点击随机生成</view>
             </view>
             <view class="line btn-line">
-              <view class="btn popup-btn" @click="onComfirnAdress">确认</view>
-              <view class="btn popup-btn">取消</view>
+              <view class="btn popup-btn" @click="onComfirnAdress">确认编辑</view>
+              <view class="btn popup-btn" @click="onCloseAdress">取消编辑</view>
             </view>
           </view>
+
+          <view class="wrapper add-wrapper" v-show="AdressIndex === -1">
+            请点击选择一个地址或者新增地址
+          </view>
+          <view class="line">
+            <view class="btn" @click="onBack">返回设置页面</view>
+          </view>
+          <!-- 修改框/ -->
+        </scroll-view>
+      </view>
+    </uni-popup>
+
+    <!-- 商家区域信息编辑 -->
+    <uni-popup ref="regionPopup" type="dialog">
+      <view class="popup-content">
+        <scroll-view scroll-y="true" class="scroll-Y">
+          <view class="wrapper">
+            <view class="line" v-for="(item, index) in resRegion" :key="item.region">
+              <view
+                class="y-wrapper"
+                :class="{ active: regionActiveList[index] }"
+                @click="onChosseRegionLine(index)"
+              >
+                <view class="title">区域{{ index + 1 }}:{{ item.region }}</view>
+              </view>
+              <view @click="onDeleteRegion(index)"><i class="iconfont icon-jianhao"></i></view>
+            </view>
+            <view class="line add-line" style="justify-content: flex-start">
+              <view
+                class="add-region-line"
+                @click="onAddRegion"
+                :class="{ active: RegionIndex === -2 }"
+                ><i class="iconfont icon-jiahao"></i>新增区域</view
+              >
+            </view>
+          </view>
+
+          <!-- /修改框 -->
+          <view class="wrapper add-wrapper" v-show="RegionIndex !== -1">
+            <view class="line">
+              <view class="title"
+                >{{ RegionIndex === -2 ? '新增区域' : `区域${RegionIndex + 1}` }}：</view
+              >
+            </view>
+            <view class="line">
+              <view class="title">名称：</view>
+              <uni-easyinput v-model="editRegion.region" placeholder="请输入区域名称" />
+            </view>
+
+            <view class="line btn-line">
+              <view class="btn popup-btn" @click="onComfirnRegion">确认编辑</view>
+              <view class="btn popup-btn" @click="onCloseRegion">取消编辑</view>
+            </view>
+          </view>
+
+          <view class="wrapper add-wrapper" v-show="RegionIndex === -1">
+            请点击选择一个地址或者新增地址
+          </view>
+          <view class="line">
+            <view class="btn" @click="onBack">返回设置页面</view>
+          </view>
+          <!-- 修改框/ -->
         </scroll-view>
       </view>
     </uni-popup>
@@ -181,15 +358,13 @@ const onEditRegion = () => {}
     justify-content: space-between;
     gap: 15rpx;
     transition: all 0.2s ease-in;
-    &.active {
-      background: rgba(139, 209, 0, 0.3);
-    }
   }
   .btn {
     padding: 6rpx 35rpx;
     background: rgba(0, 0, 0, 0.2);
     font-weight: 550;
     text-align: center;
+    white-space: nowrap;
     transition: 0.2s ease;
     &:active {
       scale: 0.95;
@@ -207,6 +382,23 @@ const onEditRegion = () => {}
       uni-input {
         height: auto;
       }
+    }
+  }
+
+  .x-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15rpx;
+  }
+  .y-wrapper {
+    padding: 10rpx;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15rpx;
+    &.active {
+      background: rgba(139, 209, 0, 0.3);
     }
   }
 
@@ -248,7 +440,7 @@ const onEditRegion = () => {}
 
   .popup-content {
     width: 600rpx;
-    height: 800rpx;
+    height: 60vh;
     border: 1px solid #000;
     padding: 50rpx 26rpx;
     background: #fff;
@@ -282,9 +474,16 @@ const onEditRegion = () => {}
           .popup-btn {
             border: 1px solid #000;
             background: #fff;
-            width: 160rpx;
+            min-width: 160rpx;
           }
         }
+      }
+    }
+
+    .add-adress-line {
+      padding: 10rpx;
+      &.active {
+        background: rgba(139, 209, 0, 0.3);
       }
     }
   }
