@@ -348,7 +348,7 @@ const onAddressChange = (e: any) => {
 
 <style lang="scss" scoped>
 .store-info {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   display: flex;
   align-items: flex-start;
@@ -387,7 +387,7 @@ const onAddressChange = (e: any) => {
   .form-card {
     width: 700rpx;
     .scroll-Y {
-      height: 500rpx;
+      height: 1000rpx;
     }
 
     .img-picker {

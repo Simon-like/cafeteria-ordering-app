@@ -504,6 +504,7 @@ const onMinusDishInCategory = async () => {
         :addItem="'调整分组'"
         @switch="onSwitch"
         @add="onOpenCategory"
+        :style="'category'"
       />
       <view class="dish-content">
         <view class="box">
@@ -701,17 +702,16 @@ const onMinusDishInCategory = async () => {
 
 <style lang="scss" scope>
 .dish-info {
-  width: 610rpx;
+  width: 585rpx;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   font-size: 30rpx;
-  padding: 0;
+  padding: 0 0 0 5rpx;
   .status-header {
     width: 100%;
     height: 115rpx;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.8);
     padding: 0 30rpx;
     display: flex;
     align-items: center;
@@ -847,7 +847,7 @@ const onMinusDishInCategory = async () => {
 
     .dish-content {
       width: 470rpx;
-      height: 1200rpx;
+      height: 1090rpx;
       display: flex;
       flex-direction: column;
       align-items: center;

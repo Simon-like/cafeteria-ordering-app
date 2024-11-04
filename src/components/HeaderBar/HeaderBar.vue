@@ -28,8 +28,6 @@ watchEffect(() => {
   justify-content: center;
   align-items: center;
   height: 115rpx;
-  border-bottom: 2px solid rgba(16, 16, 16, 0.5);
-  box-shadow: 0 3px 3px rgba(16, 16, 16, 0.2);
 
   .title-box {
     display: flex;

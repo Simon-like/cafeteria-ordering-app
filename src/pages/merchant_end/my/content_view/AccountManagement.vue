@@ -16,7 +16,7 @@ const Merchant = useMerchantStore()
 
 <style lang="scss" scoped>
 .account-mana {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   display: flex;
   align-items: center;

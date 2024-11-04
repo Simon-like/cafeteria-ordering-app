@@ -30,7 +30,7 @@ const value = ref<string>('')
 
 <style lang="scss" scoped>
 .contact-customerservice {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   display: flex;
   align-items: center;
