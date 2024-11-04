@@ -90,7 +90,7 @@ const goBack = () => {
 
 <style lang="scss" scoped>
 .menu-manage {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   .box {
     margin: 20rpx;

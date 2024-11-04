@@ -1,0 +1,66 @@
+@import 'mixin.scss';
+
+/**
+ * @description 常用样式组合
+ * @author 应东林
+ * @date 2024-11-04
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-11-04
+ */
+
+// flex快捷样式
+.flex {
+    display: flex;
+}
+
+.flex_wr {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex_jcsb {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex_jcsb_aic {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.flex_jcsa {
+    display: flex;
+    justify-content: space-around;
+}
+
+.flex_aic {
+    display: flex;
+    align-items: center;
+}
+
+.flex_cc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.col_flex{
+	display: flex;
+	flex-direction:column;
+}
+
+.col_flex_cc{
+	display: flex;
+	flex-direction:column;
+	justify-content: center;
+	align-items: center;
+}
+
+.col_flex_csb{
+	display: flex;
+	flex-direction:column;
+	justify-content: space-between;
+	align-items: center;
+}
+

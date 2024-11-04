@@ -35,6 +35,8 @@ const onSwitch = (e: number) => {
 <style lang="scss" scoped>
 .contact_center {
   width: 100%;
+  border-radius: 28rpx 28rpx 0 0;
+  box-shadow: 0 -6rpx 10rpx rgba(0, 0, 0, 0.15);
   height: 100%;
   display: flex;
   justify-content: space-between;

@@ -347,7 +347,7 @@ const onBack = () => {
 
 <style lang="scss" scope>
 .system {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   font-size: 30rpx;
   padding: 30rpx 18rpx;

@@ -54,23 +54,48 @@ const addItem = () => {
 .aside-bar {
   width: 140rpx;
   height: 100%;
-  border-right: 1px solid rgba(3, 3, 3, 0.8);
+  border-bottom: none;
+  border-radius: 20rpx 20rpx 0 0;
+  color: $text-color-gray;
+  overflow: hidden;
+  background: $bg-color-dark;
+
   .item {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     min-height: 115rpx;
-    border-bottom: 2px solid rgba(3, 3, 3, 0.8);
     transition: all 0.3s ease;
     padding: 8rpx;
+    position: relative;
     &.active {
-      background-color: rgba(0, 225, 225, 0.8);
+      .title {
+        color: #fff;
+      }
     }
+    &::after {
+      content: '';
+      position: absolute;
+      width: 8rpx;
+      height: 70%;
+      background: #fff;
+      right: 0;
+      transform-origin: 50% 0%;
+      transform: scaleX(0);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    &.active::after {
+      transform-origin: 50% 100%;
+      transform: scaleX(1);
+    }
+
     .title {
       text-align: center;
       font-size: 25rpx;
       position: relative;
+      transition: all 0.3s ease;
       .add-number {
         position: absolute;
         right: -20rpx;

@@ -12,4 +12,10 @@
   <view class="feedback"> </view>
 </template>
 
-<style lang="scss" scope></style>
+<style lang="scss" scope>
+.feedback {
+  width: 590rpx;
+  font-size: 30rpx;
+  padding: 30rpx 18rpx;
+}
+</style>

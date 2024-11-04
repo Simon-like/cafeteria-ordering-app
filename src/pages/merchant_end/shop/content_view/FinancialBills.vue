@@ -40,11 +40,63 @@ const oderType_confirm = (e: any) => {
   oderType_value.value = value[0].label
   oderType_show.value = false
 }
+
+type OrderItem = {
+  orderId: number
+  orderCode: string // 订单编号，有规定格式的一个编码
+  orderTime: string
+  payMethod: number // 支付方式，微信支付0，支付宝支付1
+  actualPrice: number // 实际支付金额
+  orderStatus: number //2->已支付;4->已退款;
+}
+
+const resOrder = ref<OrderItem[]>([
+  {
+    orderId: 12,
+    orderCode: 'DSG534',
+    orderTime: '09-31',
+    payMethod: 0,
+    actualPrice: 52.36,
+    orderStatus: 2,
+  },
+  {
+    orderId: 12,
+    orderCode: 'DSG534',
+    orderTime: '09-31',
+    payMethod: 0,
+    actualPrice: 52.36,
+    orderStatus: 2,
+  },
+  {
+    orderId: 15,
+    orderCode: 'DSG534',
+    orderTime: '09-31',
+    payMethod: 0,
+    actualPrice: 52.36,
+    orderStatus: 2,
+  },
+  {
+    orderId: 1,
+    orderCode: 'DSG534',
+    orderTime: '09-31',
+    payMethod: 0,
+    actualPrice: 52.36,
+    orderStatus: 2,
+  },
+  {
+    orderId: 13,
+    orderCode: 'DSG534',
+    orderTime: '09-31',
+    payMethod: 0,
+    actualPrice: 52.36,
+    orderStatus: 2,
+  },
+])
 </script>
 
 <template>
   <view class="financial-bills">
-    <Header />
+    <Header :totalPrice="562.69" :difference="-52.36" />
     <view class="main">
       <view class="line">
         <view>流水明细</view>
@@ -55,7 +107,7 @@ const oderType_confirm = (e: any) => {
       </view>
       <view class="content">
         <scroll-view scroll-y="true" class="scroll-Y">
-          <OderItem v-for="item in 15" />
+          <OderItem v-for="item in resOrder" :key="item.orderId" :orderItem="item" />
         </scroll-view>
       </view>
     </view>

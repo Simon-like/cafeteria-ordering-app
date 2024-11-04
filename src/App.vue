@@ -17,6 +17,8 @@ onHide(() => {
 @import '@/uni_modules/uview-plus/index.scss';
 // 字体图标
 @import '@/styles/font/iconfont.scss';
+// // 通用样式
+// @import '@/styles/commen-style.scss';
 
 view,
 navigator,

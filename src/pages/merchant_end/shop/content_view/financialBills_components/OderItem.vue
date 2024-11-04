@@ -4,24 +4,39 @@
  * @author 应东林
  * @date 2024-10-27
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-27
+ * @lastModifiedTime  2024-11-1
  */
+type OrderItem = {
+  orderId: number
+  orderCode: string // 订单编号，有规定格式的一个编码
+  orderTime: string
+  payMethod: number // 支付方式，微信支付0，支付宝支付1
+  actualPrice: number // 实际支付金额
+  orderStatus: number //2->已支付;4->已退款;
+}
+
+// 传递的数据
+const props = defineProps<{
+  orderItem: OrderItem
+}>()
 </script>
 
 <template>
   <view class="oder-item">
     <view class="line">
-      <view class="title">订单编号:DSDF1354125452</view>
-      <view class="status">已支付</view>
+      <view class="title">订单编号:{{ props.orderItem.orderCode }}</view>
+      <view class="status">{{ props.orderItem.orderStatus === 2 ? '已支付' : '已退款' }}</view>
     </view>
     <view class="line">
-      <view class="title">订单金额:77.2</view>
+      <view class="title">订单金额:{{ props.orderItem.actualPrice }}</view>
     </view>
     <view class="line">
-      <view class="title">支付方式:微信支付</view>
+      <view class="title"
+        >支付方式:{{ props.orderItem.payMethod ? '支付宝支付' : '微信支付' }}</view
+      >
     </view>
     <view class="line">
-      <view class="title">支付时间:xxx:xx:xx</view>
+      <view class="title">支付时间:{{ props.orderItem.orderTime }}</view>
     </view>
   </view>
 </template>

@@ -169,7 +169,9 @@ onLoad(async () => {
   <view class="notice-send">
     <view class="box">
       <view class="button-box">
-        <view class="add-notice-btn btn" @click="onEdit">+ 新增公告</view>
+        <view class="add-notice-btn btn" @click="onEdit"
+          ><i class="iconfont icon-jia"></i> 新增公告</view
+        >
         <view class="toTop btn" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
       </view>
       <view class="wrapper">
@@ -192,11 +194,11 @@ onLoad(async () => {
                   <p v-for="line in splitContent(item.noticeContent)" :key="line">{{ line }}</p>
                 </view>
               </view>
-              <view @click="onDescShow(item.index)" class="icon">
-                <i class="iconfont icon-jiantouarrow483"></i>
-              </view>
             </view>
             <view class="delete btn" @click="onDELETE(item.id)">删除</view>
+            <view @click="onDescShow(item.index)" class="icon" :class="{ show: item.is_show }">
+              <i class="iconfont icon-jiantou_xia"></i>
+            </view>
           </view>
         </scroll-view>
 
@@ -259,8 +261,8 @@ onLoad(async () => {
 
 <style lang="scss" scoped>
 .notice-send {
-  width: 610rpx;
-  height: 82vh;
+  width: 590rpx;
+  height: 80vh;
   font-size: 30rpx;
   padding: 30rpx 18rpx;
   .btn {
@@ -280,12 +282,19 @@ onLoad(async () => {
     justify-content: center;
     gap: 40rpx;
     .add-notice-btn {
+      background: $bg-color-light;
+      border-radius: 40rpx;
       padding: 0 10rpx;
       width: 280rpx;
       height: 60rpx;
       line-height: 60rpx;
+      i {
+        color: #fff;
+        margin-right: 20rpx;
+      }
     }
     .toTop {
+      background: $bg-color-light;
       padding: 10rpx;
       border-radius: 16rpx;
     }
@@ -305,12 +314,12 @@ onLoad(async () => {
 
   .notice-box {
     width: 100%;
+    background: $bg-color-gray-light;
     padding: 20rpx;
     display: flex;
     flex-direction: column;
     gap: 20rpx;
     margin-bottom: 20rpx;
-    background-color: rgba(0, 0, 0, 0.2);
     .notice-line {
       display: flex;
       gap: 10rpx;
@@ -331,28 +340,32 @@ onLoad(async () => {
         }
       }
 
-      .icon {
-        width: 100%;
-        text-align: center;
-        transition: 0.3s ease-out;
+      &.show .content {
+        border-top: 1px solid #000;
+        grid-template-rows: 1fr;
       }
+    }
 
+    .icon {
+      width: 100%;
+      text-align: center;
+      transition: 0.3s ease-out;
+      color: #b1caae;
       &.show {
-        .icon {
-          transform: rotate(180deg);
-        }
-
-        .content {
-          border-top: 1px solid #000;
-          grid-template-rows: 1fr;
-        }
+        transform: rotate(180deg);
       }
     }
 
     .delete {
       align-self: flex-end;
       margin-right: 20rpx;
+      font-size: 28rpx;
+      padding: 10rpx 20rpx;
       background: transparent;
+      color: #b1caae;
+      border: 1px solid #b1caae;
+      background: #fff;
+      border-radius: 40rpx;
     }
   }
 

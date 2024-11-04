@@ -74,7 +74,7 @@ const res: ColleagueItem[] = [
 
 <style lang="scss" scope>
 .colleagues {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   font-size: 30rpx;
   padding: 30rpx 18rpx;

@@ -94,6 +94,7 @@ const changeShow = (index: number) => {
 
 <style lang="scss" scoped>
 .info-box {
+  width: 590rpx;
   font-size: 25rpx;
   padding: 20rpx;
   display: flex;

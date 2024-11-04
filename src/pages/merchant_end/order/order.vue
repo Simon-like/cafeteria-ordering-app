@@ -84,6 +84,8 @@ const res: OrderItem = {
   address: '11公寓',
   addressNumber: 'A4',
 }
+
+const resOrder = ref<OrderItem[]>([res, res, res, res, res, res, res, res, res])
 </script>
 
 <template>
@@ -94,7 +96,7 @@ const res: OrderItem = {
       <view class="content">
         <view class="fn-wrapper">
           <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y">
-            <OderItemComponent :orderItem="res" v-for="item in 15" />
+            <OderItemComponent :orderItem="item" v-for="item in resOrder" :key="item.orderID" />
           </scroll-view>
         </view>
       </view>

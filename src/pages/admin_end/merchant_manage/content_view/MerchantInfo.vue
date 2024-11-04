@@ -92,9 +92,9 @@ const goToDetail = (placeIndex, merchantIndex) => {
 
 <style lang="scss" scoped>
 .content {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
-  margin: 15rpx 15rpx 15rpx 15rpx;
+  padding: 15rpx;
   .place {
     font-size: 36rpx;
     width: 100%;

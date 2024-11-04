@@ -7,8 +7,14 @@ import { getLastDays } from '@/composables/tools'
  * @author 应东林
  * @date 2024-10-27
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-27
+ * @lastModifiedTime  2024-11-01
  */
+
+// 传递的数据
+const props = defineProps<{
+  totalPrice: number
+  difference: number
+}>()
 
 //下拉时间选择逻辑实现
 const date_PickerRef = ref()
@@ -33,7 +39,17 @@ const date_confirm = (e: any) => {
       <view class="">总金额流水(/￥):</view>
     </view>
     <view class="line">
-      <view class="total-price">577.31</view>
+      <view class="total-price">{{ props.totalPrice }}</view>
+      <view class="difference"
+        >与昨日的差值:<text>{{ props.difference }}</text
+        ><i
+          class="iconfont"
+          :class="{
+            'icon-arrdown': props.difference >= 0,
+            'icon-long_arrow_down': props.difference < 0,
+          }"
+        ></i
+      ></view>
     </view>
 
     <up-picker
@@ -62,6 +78,18 @@ const date_confirm = (e: any) => {
   .total-price {
     font-size: 45rpx;
     font-weight: 550;
+  }
+  .difference {
+    display: flex;
+    align-items: center;
+    font-size: 25rpx;
+    i,
+    text {
+      font-weight: 550;
+    }
+    .iconfont {
+      font-size: 20rpx;
+    }
   }
 }
 </style>
