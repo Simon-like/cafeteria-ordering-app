@@ -192,6 +192,10 @@ const onBack = () => {
   adressPopup.value.close()
   regionPopup.value.close()
 }
+const onCloseBtn = () => {
+  adressPopup.value.close()
+  regionPopup.value.close()
+}
 </script>
 
 <template>
@@ -223,6 +227,7 @@ const onBack = () => {
     <!-- 送餐地址信息编辑 -->
     <uni-popup ref="adressPopup" type="dialog">
       <view class="popup-content">
+        <view class="close-btn" @click="onCloseBtn"><i class="iconfont icon-x"></i></view>
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="wrapper">
             <view class="line" v-for="(item, index) in resAdress" :key="item.adressId">
@@ -231,7 +236,9 @@ const onBack = () => {
                 :class="{ active: adressActiveList[index] }"
                 @click="onChosseAdressLine(index)"
               >
-                <view class="title">地址{{ index + 1 }}:{{ item.adress }}</view>
+                <view class="title"
+                  ><text>地址{{ index + 1 }}:</text>{{ item.adress }}</view
+                >
                 <view class="x-wrapper">
                   <view class="DeliveryPrice">配送费:{{ item.DeliveryPrice }}</view>
                   <view class="adress-number">编号:{{ item.adressNumber }}</view>
@@ -270,11 +277,11 @@ const onBack = () => {
             </view>
             <view class="line">
               <view class="title">编号：{{ editAdress.adressNumber }}</view>
-              <view class="btn" @click="onRandomly">点击随机生成</view>
+              <view class="Randomly-btn btn" @click="onRandomly">点击随机生成</view>
             </view>
             <view class="line btn-line">
-              <view class="btn popup-btn" @click="onComfirnAdress">确认编辑</view>
-              <view class="btn popup-btn" @click="onCloseAdress">取消编辑</view>
+              <view class="btn popup-confirm-btn" @click="onComfirnAdress">确认编辑</view>
+              <view class="btn popup-close-btn" @click="onCloseAdress">取消编辑</view>
             </view>
           </view>
 
@@ -292,6 +299,7 @@ const onBack = () => {
     <!-- 商家区域信息编辑 -->
     <uni-popup ref="regionPopup" type="dialog">
       <view class="popup-content">
+        <view class="close-btn" @click="onCloseBtn"><i class="iconfont icon-x"></i></view>
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="wrapper">
             <view class="line" v-for="(item, index) in resRegion" :key="item.region">
@@ -361,7 +369,8 @@ const onBack = () => {
   }
   .btn {
     padding: 6rpx 35rpx;
-    background: rgba(0, 0, 0, 0.2);
+    background: $bg-color-green;
+    border-radius: 40rpx;
     font-weight: 550;
     text-align: center;
     white-space: nowrap;
@@ -398,7 +407,8 @@ const onBack = () => {
     flex-direction: column;
     gap: 15rpx;
     &.active {
-      background: rgba(139, 209, 0, 0.3);
+      border-radius: 20rpx;
+      background: $bg-color-green;
     }
   }
 
@@ -410,17 +420,18 @@ const onBack = () => {
     gap: 20rpx;
     font-size: 30rpx;
     margin-bottom: 30rpx;
-    background: rgba(0, 0, 0, 0.1);
+    background: $bg-color-light;
     padding: 20rpx;
+    white-space: nowrap;
     .section-title {
       font-weight: 550;
       font-size: 32rpx;
       align-self: flex-start;
+      color: $text-color-active;
     }
     .section-content {
       width: 100%;
       padding: 15rpx;
-      background: rgba(0, 0, 0, 0.2);
       display: flex;
       align-items: center;
       flex-direction: column;
@@ -439,11 +450,22 @@ const onBack = () => {
   }
 
   .popup-content {
+    position: relative;
     width: 600rpx;
     height: 60vh;
-    border: 1px solid #000;
     padding: 50rpx 26rpx;
     background: #fff;
+    .close-btn {
+      position: absolute;
+      color: $text-color-green;
+      top: 12rpx;
+      right: 12rpx;
+      font-size: 30rpx;
+      transition: 0.2s ease;
+      &:active {
+        scale: 0.95;
+      }
+    }
     .iconfont {
       font-weight: 550;
       margin: 0 10rpx;
@@ -459,33 +481,66 @@ const onBack = () => {
       .add-line {
         font-weight: 550;
         font-size: 30rpx;
+        text {
+          color: $text-color-active;
+        }
       }
 
       &.add-wrapper {
-        background: rgba(0, 0, 0, 0.2);
+        background: $bg-color-light;
         padding: 10rpx;
 
         .line {
           justify-content: space-between;
         }
+        .Randomly-btn {
+          background: #fff;
+          color: $text-color-green;
+          border-radius: 0rpx;
+          border: 1px solid $text-color-green;
+        }
         .btn-line {
           justify-content: center;
           gap: 45rpx;
-          .popup-btn {
-            border: 1px solid #000;
+          .popup-close-btn {
             background: #fff;
-            min-width: 160rpx;
+            border: 1px solid $text-color-green;
           }
         }
       }
     }
 
-    .add-adress-line {
+    .add-adress-line,
+    .add-region-line {
       padding: 10rpx;
+      color: $text-color-active;
+      border-radius: 20rpx;
       &.active {
-        background: rgba(139, 209, 0, 0.3);
+        background: $bg-color-green;
       }
     }
   }
+}
+
+// 样式穿透
+:deep(.uni-stat__select) {
+  background-color: $bg-color-light;
+  border: 2rpx solid $text-color-green;
+  border-radius: 10rpx;
+  color: $text-color-active;
+}
+:deep(.uni-select__input-text) {
+  color: $text-color-active;
+}
+
+:deep(.uni-easyinput__content) {
+  background-color: $bg-color-light !important;
+  border: 2rpx solid $text-color-green !important;
+  border-radius: 10rpx;
+  color: $text-color-active;
+  height: 50rpx;
+}
+:deep(.uni-easyinput__placeholder-class) {
+  color: $text-color-green;
 }
 </style>

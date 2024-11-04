@@ -369,7 +369,7 @@ const time_edit = () => {
   .form-card {
     width: 700rpx;
     .scroll-Y {
-      height: 500rpx;
+      height: 1000rpx;
     }
 
     .img-picker {

@@ -25,8 +25,11 @@ const onSearch = () => {}
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid #b1caae;
+  border-radius: 20rpx;
+  background: #fff;
   width: 230rpx;
+  transition: 0.2s ease;
   padding: 6rpx 10rpx;
   input {
     outline: none;
@@ -34,9 +37,12 @@ const onSearch = () => {}
     text-align: start;
     height: 50rpx;
   }
+  &:focus-within {
+    border: 1px solid $bg-color-dark; /* 当子元素获得焦点时，外层盒子的边框样式 */
+  }
   .icon {
     border-radius: 16rpx;
-    background-color: #fff;
+    color: #b1caae;
     padding: 8rpx;
     transition: 0.2s ease;
     &:active {

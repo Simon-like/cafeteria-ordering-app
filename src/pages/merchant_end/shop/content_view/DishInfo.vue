@@ -504,6 +504,7 @@ const onMinusDishInCategory = async () => {
         :addItem="'调整分组'"
         @switch="onSwitch"
         @add="onOpenCategory"
+        :style="'category'"
       />
       <view class="dish-content">
         <view class="box">

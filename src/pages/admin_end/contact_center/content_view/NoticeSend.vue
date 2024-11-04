@@ -204,7 +204,8 @@ onLoad(async () => {
 
         <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0">
           <uni-card class="form-card">
-            <uni-section title="编辑公告内容" type="line">
+            <section>
+              <h3>编辑公告</h3>
               <scroll-view scroll-y="true" class="scroll-Y">
                 <view class="form-wrapper">
                   <!-- 基础表单 -->
@@ -215,7 +216,7 @@ onLoad(async () => {
                     :rules="rules"
                   >
                     <uni-forms-item required name="targetGroup">
-                      <template #label><text>公告面向的群体：</text></template>
+                      <template #label><text class="label">面向群体：</text></template>
                       <uni-data-select
                         v-model="valiFormData.targetGroup"
                         :localdata="[
@@ -226,7 +227,7 @@ onLoad(async () => {
                       ></uni-data-select>
                     </uni-forms-item>
                     <uni-forms-item name="noticeContent" required>
-                      <template #label><text>公告内容：</text></template>
+                      <template #label><text class="label">公告内容：</text></template>
                       <uni-easyinput
                         type="textarea"
                         v-model="valiFormData.noticeContent"
@@ -234,16 +235,17 @@ onLoad(async () => {
                       />
                     </uni-forms-item>
                   </uni-forms>
-                  <view class="submit-button" @click="debounceSubmit"> 提交 </view>
+                  <view class="submit-button btn" @click="debounceSubmit"> 提交 </view>
                 </view>
               </scroll-view>
-            </uni-section>
+            </section>
           </uni-card>
         </uni-popup>
 
         <uni-popup ref="DELETEPopup" type="bottom" border-radius="10px 10px 0 0">
-          <uni-card class="form-card">
-            <uni-section title="删除提示框" type="line">
+          <uni-card class="form-card delete-card">
+            <section>
+              <h3>删除提示框</h3>
               <view class="wrapper">
                 <view class="content">您确认要删除该公告吗？</view>
                 <view class="button-box">
@@ -251,7 +253,7 @@ onLoad(async () => {
                   <view class="confirm btn" @click="onDELETE_confirm">确认删除</view>
                 </view>
               </view>
-            </uni-section>
+            </section>
           </uni-card>
         </uni-popup>
       </view>
@@ -266,9 +268,10 @@ onLoad(async () => {
   font-size: 30rpx;
   padding: 30rpx 18rpx;
   .btn {
+    background: $bg-color-green;
+    border-radius: 40rpx;
     text-align: center;
     transition: 0.2s ease;
-    background-color: rgba(0, 0, 0, 0.2);
     font-weight: 550;
     &:active {
       scale: 0.95;
@@ -282,8 +285,6 @@ onLoad(async () => {
     justify-content: center;
     gap: 40rpx;
     .add-notice-btn {
-      background: $bg-color-light;
-      border-radius: 40rpx;
       padding: 0 10rpx;
       width: 280rpx;
       height: 60rpx;
@@ -294,7 +295,7 @@ onLoad(async () => {
       }
     }
     .toTop {
-      background: $bg-color-light;
+      background: $bg-color-green;
       padding: 10rpx;
       border-radius: 16rpx;
     }
@@ -361,7 +362,6 @@ onLoad(async () => {
       margin-right: 20rpx;
       font-size: 28rpx;
       padding: 10rpx 20rpx;
-      background: transparent;
       color: #b1caae;
       border: 1px solid #b1caae;
       background: #fff;
@@ -370,7 +370,43 @@ onLoad(async () => {
   }
 
   .form-card {
-    width: 700rpx;
+    width: 600rpx;
+    height: 670rpx;
+    &.delete-card {
+      height: auto;
+    }
+
+    h3 {
+      font-size: 40rpx;
+      margin-bottom: 30rpx;
+      color: $text-color-active;
+    }
+
+    .label {
+      font-size: 32rpx;
+      color: #000;
+      margin-bottom: 16rpx;
+    }
+
+    :deep(.uni-stat__select) {
+      background-color: $bg-color-light;
+      border: 2rpx solid $text-color-green;
+      border-radius: 10rpx;
+      color: $text-color-active;
+    }
+    :deep(.uni-select__input-text) {
+      color: $text-color-active;
+    }
+
+    :deep(.uni-easyinput__content) {
+      background-color: $bg-color-light !important;
+      border: 2rpx solid $text-color-green !important;
+      border-radius: 10rpx;
+      color: $text-color-active;
+    }
+    :deep(.uni-easyinput__placeholder-class) {
+      color: $text-color-green;
+    }
 
     .wrapper {
       padding: 20rpx;
@@ -385,7 +421,7 @@ onLoad(async () => {
         align-items: center;
         .confirm,
         .close {
-          border: 1px solid rgba(0, 0, 0, 1);
+          color: #000;
           width: 200rpx;
           padding: 10rpx 0rpx;
         }
@@ -408,7 +444,6 @@ onLoad(async () => {
           width: 300rpx;
           height: 60rpx;
           line-height: 60rpx;
-          background-color: rgba(126, 126, 94, 0.7);
           text-align: center;
           transition: all 0.2s ease;
           &:active {

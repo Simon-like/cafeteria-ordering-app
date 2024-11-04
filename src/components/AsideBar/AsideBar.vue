@@ -12,6 +12,7 @@ import type { AsideItem } from '@/types/aside'
 const props = defineProps<{
   itemList: AsideItem[]
   addItem?: string
+  style?: string
 }>()
 const emit = defineEmits(['switch', 'add'])
 const channelSwitch = (id: number) => {
@@ -29,7 +30,7 @@ const addItem = () => {
 </script>
 
 <template>
-  <view class="aside-bar">
+  <view class="aside-bar-default" :class="{ '.aside-bar-category': props.style === 'category' }">
     <view
       class="item"
       v-for="item in props.itemList"
@@ -51,7 +52,7 @@ const addItem = () => {
 </template>
 
 <style lang="scss" scoped>
-.aside-bar {
+.aside-bar-default {
   width: 140rpx;
   height: 100%;
   border-bottom: none;
@@ -125,5 +126,9 @@ const addItem = () => {
       scale: 0.95;
     }
   }
+}
+
+.aside-bar-category {
+  background: transparent;
 }
 </style>
