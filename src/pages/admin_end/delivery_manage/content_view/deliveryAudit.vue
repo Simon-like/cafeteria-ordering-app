@@ -49,7 +49,7 @@ const reject = (index: number) => {
 
 <style lang="scss" scoped>
 .audit-item {
-  margin: 15rpx 15rpx 15rpx 15rpx;
+  margin: 15rpx;
   padding: 10rpx;
   display: flex;
   flex-direction: column;

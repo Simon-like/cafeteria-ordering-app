@@ -330,7 +330,7 @@ const time_edit = () => {
 
 <style lang="scss" scoped>
 .store-info {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   display: flex;
   align-items: flex-start;

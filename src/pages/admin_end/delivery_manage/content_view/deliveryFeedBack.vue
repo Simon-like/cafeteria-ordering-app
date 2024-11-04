@@ -108,7 +108,7 @@ const hidePopup = () => {
 <style lang="scss" scoped>
 .box {
   display: flex;
-  width: 610rpx;
+  width: 590rpx;
   flex-direction: column;
   .card {
     margin: 15rpx 15rpx 15rpx 15rpx;

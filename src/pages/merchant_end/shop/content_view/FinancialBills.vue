@@ -125,7 +125,7 @@ const resOrder = ref<OrderItem[]>([
 
 <style lang="scss" scope>
 .financial-bills {
-  width: 610rpx;
+  width: 590rpx;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -146,7 +146,7 @@ const resOrder = ref<OrderItem[]>([
     .content {
       margin-top: 30rpx;
       width: 100%;
-      height: 55vh;
+      height: 52vh;
     }
   }
 }
