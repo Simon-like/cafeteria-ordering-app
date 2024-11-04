@@ -54,6 +54,23 @@ const onUniversityChange = (e) => {
     console.log(merchantStore.collegeId, merchantStore.collegeName)
   }
 }
+
+const resRegion = ref([
+  { region: '学子', regionId: 213 },
+  { region: '学苑', regionId: 213 },
+])
+
+const selectedRegion = ref('')
+
+const onRegionChange = (e) => {
+  const index = e.detail.value
+  if (resRegion.value[index]) {
+    const selected = resRegion.value[index]
+    // 更新显示的店铺地址
+    selectedRegion.value = selected.region
+    merchantStore.address = selectedRegion.value
+  }
+}
 </script>
 
 <template>
@@ -83,15 +100,23 @@ const onUniversityChange = (e) => {
         <input type="text" v-model="name" />
       </view>
       <view class="input-item">
-        <text>店铺地址</text>
-        <input type="text" v-model="address" />
-      </view>
-      <view class="input-item">
         <text>选择大学</text>
         <picker class="uni" mode="selector" :range="universityNames" @change="onUniversityChange"
           ><view class="uni-text">{{ college || '请选择大学' }}</view>
           <!-- 显示选择的大学 --></picker
         >
+      </view>
+      <view class="input-item">
+        <text>选择店铺地址</text>
+        <picker
+          class="uni"
+          mode="selector"
+          :range="resRegion.map((item) => item.region)"
+          @change="onRegionChange"
+        >
+          <view class="uni-text">{{ selectedRegion || '请选择店铺地址' }}</view>
+          <!-- 显示选择的店铺地址 -->
+        </picker>
       </view>
     </view>
 

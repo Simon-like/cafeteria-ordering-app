@@ -50,11 +50,11 @@ const handleLogin_pp = async () => {
           >还没有账号？去注册</navigator
         >
       </view>
-      <text>______________________________________</text>
+      <i class="line"></i>
       <view class="wxlogin">
         <text>第三方登录方式</text>
         <view class="img">
-          <i class="circle_icon"></i>
+          <image src="@/static/images/wxlogin.png"></image>
         </view>
         <text>微信</text>
       </view>
@@ -70,98 +70,95 @@ const handleLogin_pp = async () => {
   justify-content: center;
   margin: 0;
   padding: 0;
-}
-
-.title {
-  font-size: 18px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-.input {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.userid,
-.password {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20rpx;
-  margin-left: 150rpx;
-  margin-right: 0;
-  text {
-    margin: 0 30rpx;
+  .title {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 20px;
   }
-  input {
-    position: relative;
-    padding: 4px 0 3px 8px;
-    border: 1px solid #ccc;
-    background-color: #ccc;
-    border-radius: 8px;
-  }
-}
+  .input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 
-.forgetpassword {
-  position: relative;
-  margin-left: 70%;
-  navigator {
-    font-size: 12px;
-    color: #000;
-    text-decoration: none;
-  }
-}
+    .userid,
+    .password {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20rpx;
+      margin-left: 150rpx;
+      margin-right: 0;
+      text {
+        margin: 0 30rpx;
+      }
+      input {
+        height: 50rpx;
+        position: relative;
+        padding: 4rpx 0 3rpx 8rpx;
+        border: 1px solid #b1caae;
+        background-color: $bg-color-gray-light;
+        border-radius: 8rpx;
+      }
+    }
 
-.phonelogin {
-  margin: 50rpx auto;
-  margin-bottom: 20rpx;
-  font-size: 32rpx;
-  navigator {
-    color: #000;
-    text-decoration: underline;
-    text-underline-offset: 3rpx;
-  }
-}
+    .forgetpassword {
+      position: relative;
+      margin-left: 70%;
+      navigator {
+        font-size: 12px;
+        color: #949494;
+        text-decoration: none;
+      }
+    }
 
-.nouserid {
-  position: relative;
-  margin-left: 340rpx;
-  navigator {
-    color: #000;
-    text-decoration: underline;
-    text-underline-offset: 3rpx;
-  }
-}
-text {
-  margin: 10rpx auto;
-}
-.wxlogin {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-top: 10rpx;
-  .img {
-    margin: 10rpx 0;
-    .circle_icon {
-      width: 80rpx;
-      height: 80rpx;
-      border-radius: 50%;
-      background-color: #ccc;
-      display: inline-block;
+    .phonelogin {
+      margin: 50rpx auto;
+      margin-bottom: 20rpx;
+      font-size: 32rpx;
+      navigator {
+        color: #000;
+        text-decoration: underline;
+        text-underline-offset: 3rpx;
+      }
+    }
+    .nouserid {
+      position: relative;
+      margin-left: 340rpx;
+      navigator {
+        color: #949494;
+        text-decoration: underline;
+        text-underline-offset: 3rpx;
+      }
+    }
+
+    .line {
+      background-color: #000;
+      width: 90%;
+      margin: 20rpx auto;
+      height: 2rpx;
+    }
+
+    .wxlogin {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: 10rpx;
+      .img {
+        margin: 10rpx 0;
+        object-fit: cover;
+        width: 80rpx;
+        height: 80rpx;
+      }
     }
   }
-
-  text {
-    font-size: 26rpx;
-  }
 }
+
 button {
   margin: 20px auto;
-  width: 257px;
-  height: 45px;
-  border-radius: 5px;
+  width: 357rpx;
+  height: 75rpx;
+  border-radius: 5%;
   border: #000 solid 1rpx;
+  background-color: $bg-color-green;
 }
 </style>

@@ -21,14 +21,23 @@ const my_aside_list = ref<AsideItem[]>([
 ])
 
 const onSwitch = (e: number) => {
-  AdminPages.myIndex = e
+  AdminPages.deliveryIndex = e
 }
+
+onLoad(() => {
+  my_aside_list.value.forEach((value, index, arr) => {
+    arr[index].active = false
+    if (index === AdminPages.deliveryIndex) {
+      arr[index].active = true
+    }
+  })
+})
 </script>
 
 <template>
   <view class="contact_center">
     <AsideBar :itemList="my_aside_list" @switch="onSwitch" />
-    <component :is="componentList[AdminPages.myIndex]"></component>
+    <component :is="componentList[AdminPages.deliveryIndex]"></component>
   </view>
 </template>
 

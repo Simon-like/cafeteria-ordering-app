@@ -213,6 +213,16 @@ const time_edit = () => {
   valiFormData.businessHours = Merchant.businessHours =
     Merchant.time_start + ' - ' + Merchant.time_end
 }
+
+const resRegion = ref([
+  { region: '学子', regionId: 213 },
+  { region: '学苑', regionId: 213 },
+])
+
+const onAddressChange = (e: any) => {
+  const index = e.detail.value
+  valiFormData.address = resRegion.value[index].region
+}
 </script>
 
 <template>
@@ -278,7 +288,15 @@ const time_edit = () => {
                 </uni-forms-item>
                 <uni-forms-item required name="address">
                   <template #label><text>店铺地址</text></template>
-                  <uni-easyinput v-model="valiFormData.address" placeholder="请输入店铺地址" />
+                  <picker
+                    mode="selector"
+                    :range="resRegion.map((item) => item.region)"
+                    @change="onAddressChange"
+                  >
+                    <view class="picker">
+                      {{ valiFormData.address || '请选择店铺地址' }}
+                    </view>
+                  </picker>
                 </uni-forms-item>
                 <uni-forms-item required name="number">
                   <template #label><text>联系电话</text></template>
@@ -445,5 +463,10 @@ const time_edit = () => {
 .upload-button {
   margin: 50rpx auto;
   background-color: #fff;
+}
+.picker {
+  border: 1rpx solid #ccc;
+  border-radius: 5%;
+  height: 50rpx;
 }
 </style>

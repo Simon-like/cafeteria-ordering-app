@@ -22,7 +22,7 @@ const gotoRegister = () => {
 <template>
   <view class="login">
     <view class="logo">
-      <text>logo</text>
+      <image src="@/static/images/kssdt.png"></image>
     </view>
     <view class="identity">
       <view
@@ -39,8 +39,8 @@ const gotoRegister = () => {
         >管理员登录</view
       >
     </view>
-    <button @click="gotoLogin">登录</button>
-    <button @click="gotoRegister">注册</button>
+    <button @click="gotoLogin" class="btn_login">登录</button>
+    <button @click="gotoRegister" class="btn_register">注册</button>
   </view>
 </template>
 
@@ -48,35 +48,44 @@ const gotoRegister = () => {
 //
 .login {
   font-size: 14px;
-}
-.logo {
-  width: 184px;
-  height: 184px;
-  margin: 20px auto;
-  background-color: aliceblue;
-}
-.identity {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  width: 180px;
-  .navigator {
-    margin-right: 10px;
-    margin-left: 10px;
-    color: #000;
-    text-decoration: none;
-    &.active {
-      text-decoration: underline;
-      text-underline-offset: 10px;
+  .logo {
+    width: 184px;
+    height: 184px;
+    margin: 20px auto;
+    background-color: aliceblue;
+    image {
+      object-fit: cover;
     }
   }
-}
-
-button {
-  margin: 20px auto;
-  width: 257px;
-  height: 45px;
-  border-radius: 5px;
+  .identity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 180px;
+    .navigator {
+      margin-right: 10px;
+      margin-left: 10px;
+      color: #000;
+      text-decoration: none;
+      &.active {
+        text-decoration: underline;
+        text-underline-offset: 10px;
+      }
+    }
+  }
+  button {
+    margin: 20px auto;
+    width: 257px;
+    height: 45px;
+    border-radius: 5px;
+  }
+  .btn_login {
+    background-color: $bg-color-green;
+  }
+  .btn_register {
+    background-color: $bg-color-gray-light;
+    border: 1px solid #07bb00;
+  }
 }
 </style>
