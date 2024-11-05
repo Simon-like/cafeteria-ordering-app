@@ -18,47 +18,68 @@ interface TabbarItem {
   selectedIconPath: string //点击的图标
 }
 
+const tabbar_icon_list = [
+  { default: '/static/tabs/home-default.png', selected: '/static/tabs/home-selected.png' },
+  { default: '/static/tabs/shop-default.png', selected: '/static/tabs/shop-selected.png' },
+  { default: '/static/tabs/delivery-default.png', selected: '/static/tabs/delivery-selected.png' },
+  { default: '/static/tabs/user-default.png', selected: '/static/tabs/user-selected.png' },
+]
+
 // 管理端tabbar选项
 const AdminTabbarItem: TabbarItem[] = [
   {
     index: 0,
     text: '首页',
     pagePath: '/pages/admin_end/index/index',
-    iconPath: 'home',
+    iconPath: '/static/tabs/home-default.png',
   },
   {
     index: 1,
     text: '商户管理',
     pagePath: '/pages/admin_end/merchant_manage/merchant_manage',
-    iconPath: 'bag',
+    iconPath: '/static/tabs/shop-default.png',
   },
   {
     index: 2,
     text: '外卖员管理',
     pagePath: '/pages/admin_end/delivery_manage/delivery_manage',
-    iconPath: 'shopping-cart',
+    iconPath: '/static/tabs/delivery-default.png',
   },
   {
     index: 3,
     text: '联络中心',
     pagePath: '/pages/admin_end/contact_center/contact_center',
-    iconPath: 'account',
+    iconPath: '/static/tabs/user-default.png',
   },
 ]
 
-const emit = defineEmits(['switch'])
-const change = (index: number) => {
-  emit('switch', index)
+const onChange = (id: number) => {
+  AdminPages.tabbarIndex = id
+  AdminTabbarItem.forEach((item, index) => {
+    if (index === id) {
+      item.iconPath = tabbar_icon_list[index].selected
+    } else {
+      item.iconPath = tabbar_icon_list[index].default
+    }
+  })
 }
+
+AdminTabbarItem.forEach((item, index) => {
+  if (index === AdminPages.tabbarIndex) {
+    item.iconPath = tabbar_icon_list[index].selected
+  } else {
+    item.iconPath = tabbar_icon_list[index].default
+  }
+})
 </script>
 
 <template>
   <up-tabbar
     :value="AdminPages.tabbarIndex"
-    @change="(id) => (AdminPages.tabbarIndex = id)"
+    @change="(id) => onChange(id)"
     :fixed="false"
     :placeholder="false"
-    activeColor="#d81e06"
+    activeColor="#60cb5c"
     :safeAreaInsetBottom="false"
   >
     <up-tabbar-item
@@ -66,7 +87,6 @@ const change = (index: number) => {
       :text="item.text"
       :key="item.index"
       :icon="item.iconPath"
-      @click="change(item.index)"
     >
     </up-tabbar-item>
   </up-tabbar>

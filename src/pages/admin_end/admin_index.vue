@@ -12,10 +12,6 @@ import adminHeaderBar from '@/components/HeaderBar/adminHeaderBar.vue'
  */
 
 const AdminPages = useAdminPagesStore()
-
-const onSwitch = (e: number) => {
-  AdminPages.tabbarIndex = e
-}
 </script>
 
 <template>
@@ -23,7 +19,7 @@ const onSwitch = (e: number) => {
     <custom-nav-bar></custom-nav-bar>
     <adminHeaderBar></adminHeaderBar>
     <component :is="componentList[AdminPages.tabbarIndex]"></component>
-    <AdminTabbar @switch="onSwitch"></AdminTabbar>
+    <AdminTabbar></AdminTabbar>
   </view>
 </template>
 

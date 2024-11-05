@@ -47,6 +47,7 @@ const addItem = () => {
     </view>
     <view class="addItem" v-if="!!props.addItem" @click="addItem">
       {{ props.addItem }}
+      <i class="iconfont icon-genggai"></i>
     </view>
   </view>
 </template>
@@ -115,15 +116,17 @@ const addItem = () => {
   }
   .addItem {
     font-size: 22rpx;
-    height: 40rpx;
-    line-height: 40rpx;
-    margin: 20rpx 10rpx 10rpx 10rpx;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 16rpx;
+    color: $text-color-active;
+    background: transparent;
+    white-space: nowrap;
     text-align: center;
     transition: 0.2s ease;
+    vertical-align: middle;
     &.active {
       scale: 0.95;
+    }
+    i {
+      font-size: 22rpx;
     }
   }
 }
@@ -142,10 +145,6 @@ const addItem = () => {
       content: '';
       transform: scaleX(0);
     }
-  }
-  .addItem {
-    color: $text-color-active;
-    background: transparent;
   }
 }
 </style>

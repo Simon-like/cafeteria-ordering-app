@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AsideItem } from '@/types/aside'
 import { ref, reactive, nextTick } from 'vue'
-import type { categoryType, dishData } from '@/types/merchant_return'
+import type { categoryType, dishData, specItem } from '@/types/merchant_return'
 import { useMerchantShopStore } from '@/stores'
 import {
   getDishByGroup,
@@ -14,6 +14,7 @@ import {
   addCategory,
   updateCategory,
   deleteFromCategory,
+  upDish,
 } from '@/services/merchant/merchant_shop_dish_api'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 /**
@@ -96,7 +97,7 @@ const dish_info_list = ref<
     isDiscounted: number // 是否打折。0表示不打折，1表示打折
     isDeliver: number // 单点是否配送。0表示单点不配送，1单点配送
     todayInventory: number
-    specifications: string[] // 规格S
+    specList: specItem[] // 规格S
     dishDesc_show: boolean
     index: number
   }[]
@@ -481,6 +482,23 @@ const onMinusDishInCategory = async () => {
     })
   }
 }
+
+//恢复接单,重新上架
+const onUpDish = async (id: number) => {
+  const res = await upDish(id)
+  if (res.code === 1) {
+    await dish_byGroup_info_loading()
+    uni.showToast({
+      icon: 'none',
+      title: '菜品已经重新上架！',
+    })
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '上架失败！',
+    })
+  }
+}
 </script>
 
 <template>
@@ -509,30 +527,37 @@ const onMinusDishInCategory = async () => {
       <view class="dish-content">
         <view class="box">
           <view class="addDish-box" @click="add" v-show="category_list[0].active === true"
-            >+ 新增菜品(需要审核)</view
-          >
+            >新增菜品(待审核)<i class="iconfont icon-jiahao"></i
+          ></view>
           <view
             class="addDish-box"
             @click="addByCategory"
             v-show="category_list[0].active === false"
-            >+ 新增菜品</view
-          >
+            >添加菜品<i class="iconfont icon-jiahao"></i
+          ></view>
           <view
             class="addDish-box"
             @click="minusByCategory"
             v-show="category_list[0].active === false"
-            >- 删除菜品</view
-          >
+            >删除菜品<i class="iconfont icon-jianhao"></i
+          ></view>
           <view class="toTop" @click="goTop"><i class="iconfont icon-jiantou-copy"></i></view>
         </view>
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y">
-          <view class="dish-wrapper" v-for="value in dish_info_list" :key="value.id">
+          <view
+            class="dish-wrapper"
+            v-for="value in dish_info_list"
+            :key="value.id"
+            :class="{ down: value.dishStatus === 2 }"
+          >
             <view class="explicit-info">
               <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
               <view class="dish-info">
                 <view class="dish-name">{{ value.dishName }}</view>
                 <view class="dish-value-line">
-                  <view class="today-inventory">今日库存(/份) {{ value.todayInventory }}</view>
+                  <view class="today-inventory"
+                    >每日最高销售份数： <text>{{ value.todayInventory }}</text></view
+                  >
                 </view>
 
                 <view v-show="value.isDiscounted === 1">
@@ -559,37 +584,59 @@ const onMinusDishInCategory = async () => {
 
                 <view class="dish-status-line">{{ value.isDeliver ? '可配送' : '单点不送' }}</view>
                 <view class="button-box">
-                  <view class="edit btn" @click="edit(value.id)">修改信息</view>
-                  <view
-                    class="discontinued btn"
-                    @click="onDownDish(value.id)"
-                    v-show="value.dishStatus !== 2"
-                    >下架</view
+                  <view class="btn" v-show="value.dishStatus === 2" @click="onUpDish(value.id)"
+                    >恢复接单</view
                   >
-                  <view class="discontinued btn" v-show="value.dishStatus === 2">已被下架</view>
                 </view>
               </view>
             </view>
             <view class="implicit-info" :class="{ active: value.dishDesc_show }">
               <view class="inner">
-                <view class="spec-line" v-for="(item, index) in value.specifications" :key="item">
-                  <view class="title">规格{{ index + 1 }}:</view>
-                  <view class="specItem">{{ item }}</view>
+                <view class="spec-line" v-for="(item, index) in value.specList" :key="item">
+                  <view class="title" style="display: flex; align-items: center">
+                    <view>规格{{ index + 1 }}:</view>
+                    <h4>{{ item.specTitle }}</h4>
+                    <view style="margin-left: 20rpx" v-if="item.isEssential">
+                      <i class="iconfont icon-dian"></i>必选
+                    </view>
+                  </view>
+                  <view class="specItem-box">
+                    <view
+                      class="specItem"
+                      v-for="option in item.specOptions"
+                      :key="option.optionsName"
+                    >
+                      <text>{{ option.optionsName }}</text>
+                      <view class="Options-price" v-if="!!option.price">
+                        <i class="iconfont icon-renminbi"></i>{{ option.price }}</view
+                      >
+                    </view>
+                  </view>
                 </view>
                 <view class="dish-description">
                   <view class="label">菜品描述：</view>
                   <view class="content">{{ value.dishDescription }}</view>
                 </view>
+                <view class="button-box">
+                  <view
+                    class="downDish btn"
+                    @click="onDownDish(value.id)"
+                    v-show="value.dishStatus !== 2"
+                    >暂不接单</view
+                  >
+                  <view class="btn" v-show="value.dishStatus === 2">已被下架</view>
+                  <view class="edit btn" @click="edit(value.id)">修改信息</view>
+                </view>
               </view>
             </view>
-            <view class="Btn" @click="dishDesc_switch(value.index)">
-              <i
-                class="iconfont"
-                :class="{
-                  'icon-jiantouarrow483': !value.dishDesc_show,
-                  'icon-jiantou-copy': value.dishDesc_show,
-                }"
-              ></i>
+            <view
+              class="Btn"
+              @click="dishDesc_switch(value.index)"
+              :class="{
+                show: value.dishDesc_show,
+              }"
+            >
+              <i class="iconfont icon-jiantou_xia"></i>
             </view>
           </view>
         </scroll-view>
@@ -717,12 +764,15 @@ const onMinusDishInCategory = async () => {
     align-items: center;
     gap: 20rpx;
     overflow-x: auto;
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
 
     .status-box {
       position: relative;
       display: flex;
       gap: 10rpx;
       padding: 8rpx;
+      color: rgba(0, 0, 0, 0.5);
+      transition: all 0.5s ease;
       .title {
         white-space: nowrap;
       }
@@ -744,6 +794,9 @@ const onMinusDishInCategory = async () => {
       &.active::after {
         transform-origin: left;
         transform: scaleX(1);
+      }
+      &.active {
+        color: #000;
       }
     }
   }
@@ -825,6 +878,7 @@ const onMinusDishInCategory = async () => {
           width: 100rpx;
           height: 100rpx;
           background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 10rpx;
         }
         .label {
           text {
@@ -845,6 +899,7 @@ const onMinusDishInCategory = async () => {
       }
     }
 
+    // 菜单样式
     .dish-content {
       width: 470rpx;
       height: 1090rpx;
@@ -859,24 +914,25 @@ const onMinusDishInCategory = async () => {
         width: 100%;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         gap: 10rpx;
         .addDish-box {
-          padding: 0 10rpx;
-          height: 50rpx;
-          background-color: rgba(0, 0, 0, 0.2);
-          border-radius: 16rpx;
-          line-height: 50rpx;
-          text-align: center;
-          font-weight: 550;
+          font-weight: 400;
+          font-size: 24rpx;
+          vertical-align: middle;
+          color: $text-color-active;
           transition: 0.2s ease;
           &:active {
             scale: 0.95;
           }
+          i {
+            font-size: 24rpx;
+            margin-left: 10rpx;
+          }
         }
         .toTop {
           padding: 10rpx;
-          background-color: rgba(0, 0, 0, 0.2);
+          background-color: rgba(169, 255, 168, 0.5);
           border-radius: 16rpx;
           font-weight: 550;
           transition: 0.2s ease;
@@ -888,24 +944,27 @@ const onMinusDishInCategory = async () => {
       .dish-wrapper {
         width: 100%;
         position: relative;
-        background-color: rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #d2fed1 10%, #fff 60%);
+        border-radius: 10rpx;
         margin-bottom: 10rpx;
         padding: 0 5rpx;
         display: flex;
         flex-direction: column;
         align-items: center;
+        transition: all 0.3s ease;
         .explicit-info {
           width: 100%;
           padding: 18rpx 5rpx;
           height: 240rpx;
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
           gap: 20rpx;
           .dish-img {
-            width: 150rpx;
-            height: 150rpx;
+            width: 174rpx;
+            height: 174rpx;
             background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10rpx;
           }
           .dish-info {
             flex: 1;
@@ -921,32 +980,47 @@ const onMinusDishInCategory = async () => {
               font-size: 18rpx;
               display: flex;
               align-items: center;
+              vertical-align: middle;
+              margin-bottom: 8rpx;
+              text {
+                font-weight: 550;
+              }
             }
             .dish-price-line {
               display: flex;
-              gap: 5rpx;
-              align-items: bottom;
+              align-items: flex-end;
+              gap: 6rpx;
+              margin-bottom: 4rpx;
               .price {
                 position: relative;
-                font-size: 22rpx;
+                font-size: 20rpx;
+                font-weight: 550;
                 .iconfont {
-                  color: rgba(236, 154, 0, 0.9);
-                  font-size: 20rpx;
+                  color: $bg-color-orange;
+                  font-size: 24rpx;
                 }
                 &.original {
-                  scale: 0.8;
+                  color: #a5a5a5;
+                  vertical-align: middle;
+                  font-size: 12rpx;
+                  .iconfont {
+                    color: #a5a5a5;
+                    font-size: 14rpx;
+                  }
                   .underline {
                     height: 0;
                     width: 100%;
                     position: absolute;
                     top: 50%;
-                    border-bottom: 1px solid rgb(0, 0, 0);
+                    border-bottom: 1px solid #a5a5a5;
                   }
                   .discount {
+                    font-size: 16rpx;
                     position: absolute;
                     white-space: nowrap;
                     padding: 2rpx 4rpx;
-                    background-color: rgba(0, 0, 0, 0.2);
+                    color: $bg-color-orange;
+                    background-color: rgba(255, 80, 0, 0.2);
                     left: 110%;
                     top: -80%;
                     border-radius: 8rpx;
@@ -957,18 +1031,19 @@ const onMinusDishInCategory = async () => {
 
             .dish-status-line {
               font-size: 18rpx;
+              color: $bg-color-orange;
             }
 
             .button-box {
               display: flex;
-              font-size: 20rpx;
+              font-size: 24rpx;
               gap: 15rpx;
               align-self: flex-end;
               margin-right: 20rpx;
               .btn {
                 padding: 8rpx 12rpx;
-                background-color: rgba(0, 0, 0, 0.2);
-                border-radius: 8rpx;
+                background-color: $bg-color-green;
+                border-radius: 20rpx;
                 font-weight: 550;
                 transition: 0.2s ease;
                 &:active {
@@ -1001,20 +1076,88 @@ const onMinusDishInCategory = async () => {
             display: flex;
             width: 100%;
             justify-content: space-between;
-            align-items: center;
-            .specItem {
-              border: 1px solid rgb(0, 0, 0);
-              border-radius: 16rpx;
-              padding: 5rpx;
+            border-bottom: 1px solid #000;
+            padding-bottom: 20rpx;
+            flex-direction: column;
+            .specItem-box {
+              display: flex;
+              align-items: center;
+              gap: 12rpx;
+              flex-wrap: wrap;
+              .specItem {
+                border: 1px solid rgb(0, 0, 0);
+                border-radius: 16rpx;
+                padding: 5rpx;
+                align-items: center;
+                display: flex;
+                font-size: 30rpx;
+                gap: 10rpx;
+                .Options-price {
+                  text-align: center;
+                  font-size: 25rpx;
+                  .iconfont {
+                    font-size: 20rpx;
+                  }
+                }
+              }
+            }
+          }
+
+          .button-box {
+            width: 100%;
+
+            display: flex;
+            font-size: 30rpx;
+            gap: 20rpx;
+            .btn {
+              flex: 1;
+              padding: 12rpx;
+              background-color: rgba(0, 0, 0, 0.2);
+              border-radius: 20rpx;
+              transition: 0.2s ease;
               text-align: center;
+              &:active {
+                scale: 0.9;
+              }
+              &.downDish {
+                background: $bg-color-orange;
+                color: #fff;
+              }
+              &.edit {
+                background: rgba(169, 255, 168, 0.5);
+              }
             }
           }
         }
         .Btn {
           width: 100%;
           text-align: center;
-          color: #000;
-          font-size: 50rpx;
+          font-size: 45rpx;
+          transition: 0.3s ease-out;
+          color: #b1caae;
+          &.show {
+            transform: rotate(180deg);
+          }
+        }
+      }
+      //下架菜品样式
+      .down {
+        background: linear-gradient(135deg, #dddddd 10%, #fff 60%);
+        .explicit-info {
+          .dish-img {
+            opacity: 0.5;
+          }
+          .price .iconfont,
+          .original .iconfont {
+            color: #000 !important;
+          }
+          .discount {
+            color: #000 !important;
+            background-color: rgba(221, 221, 221, 0.2) !important;
+          }
+          .dish-status-line {
+            color: #000 !important;
+          }
         }
       }
     }

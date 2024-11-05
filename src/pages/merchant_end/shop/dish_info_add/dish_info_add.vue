@@ -95,7 +95,6 @@ const onCloseSpec = (index: number) => {
 // 提交新增菜品信息
 const onAddDish = async () => {
   if (
-    !MerchantShopStore.imageUrl ||
     !MerchantShopStore.price ||
     !MerchantShopStore.dishName ||
     !MerchantShopStore.dishDescription ||

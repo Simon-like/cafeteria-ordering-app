@@ -18,44 +18,70 @@ interface TabbarItem {
   selectedIconPath: string //点击的图标
 }
 
+const tabbar_icon_list = [
+  { default: '/static/tabs/home-default.png', selected: '/static/tabs/home-selected.png' },
+  { default: '/static/tabs/shop-default.png', selected: '/static/tabs/shop-selected.png' },
+  { default: '/static/tabs/order-default.png', selected: '/static/tabs/order-selected.png' },
+  { default: '/static/tabs/user-default.png', selected: '/static/tabs/user-selected.png' },
+]
+
 // 商家端tabbar选项
 const MerchantTabbarItem: Tabbartem[] = [
   {
     index: 0,
     text: '首页',
     pagePath: '/pages/merchant_end/index/index',
-    iconPath: 'home',
+    iconPath: '/static/tabs/home-default.png',
   },
   {
     index: 1,
     text: '店铺管理',
     pagePath: '/pages/merchant_end/shop/shop',
-    iconPath: 'bag',
+    iconPath: '/static/tabs/shop-default.png',
   },
   {
     index: 2,
     text: '订单管理',
     pagePath: '/pages/merchant_end/order/order',
-    iconPath: 'shopping-cart',
+    iconPath: '/static/tabs/order-default.png',
   },
   {
     index: 3,
     text: '个人中心',
     pagePath: '/pages/merchant_end/my/my',
-    iconPath: 'account',
+    iconPath: '/static/tabs/user-default.png',
   },
 ]
 
 const MerchantPages = useMerchantPagesStore()
+
+const onChange = (id: number) => {
+  MerchantPages.tabbarIndex = id
+  MerchantTabbarItem.forEach((item, index) => {
+    if (index === id) {
+      item.iconPath = tabbar_icon_list[index].selected
+    } else {
+      item.iconPath = tabbar_icon_list[index].default
+    }
+  })
+}
+
+MerchantTabbarItem.forEach((item, index) => {
+  if (index === MerchantPages.tabbarIndex) {
+    item.iconPath = tabbar_icon_list[index].selected
+  } else {
+    item.iconPath = tabbar_icon_list[index].default
+  }
+})
 </script>
 
 <template>
   <up-tabbar
     :value="MerchantPages.tabbarIndex"
-    @change="(id) => (MerchantPages.tabbarIndex = id)"
+    @change="(id) => onChange(id)"
     :fixed="false"
     :placeholder="false"
-    activeColor="#d81e06"
+    activeColor="#60cb5c"
     :safeAreaInsetBottom="false"
   >
     <up-tabbar-item
