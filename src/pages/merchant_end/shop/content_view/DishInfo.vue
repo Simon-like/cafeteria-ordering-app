@@ -645,7 +645,8 @@ const onUpDish = async (id: number) => {
       <uni-popup ref="categoryPopup" type="dialog" border-radius="10px 10px 0 0">
         <uni-card class="form-card">
           <scroll-view scroll-y="true" class="scroll-Y">
-            <uni-section title="调整已有分组信息" type="line">
+            <section>
+              <h3>调整已有分组信息</h3>
               <view class="input-line" v-for="(line, index) in categoryData" :key="line">
                 <view class="label">分组{{ index + 1 }}：</view>
                 <view class="input-box">
@@ -673,9 +674,10 @@ const onUpDish = async (id: number) => {
                   </view>
                 </view>
               </view>
-            </uni-section>
+            </section>
 
-            <uni-section title="新增分组" type="line">
+            <section>
+              <h3>新增分组</h3>
               <view class="input-line">
                 <view class="label">新增一个分组：</view>
                 <view class="input-box">
@@ -690,16 +692,18 @@ const onUpDish = async (id: number) => {
                     :placement="'top'"
                   ></uni-data-select>
                 </view>
-                <view
-                  class="add-category-line"
-                  @click="
-                    onCategoryAdd(addCategoryLine.categoryName, addCategoryLine.categoryPriority)
-                  "
-                >
-                  添加一个分组
+                <view class="button-box">
+                  <view
+                    class="category-button edit"
+                    @click="
+                      onCategoryAdd(addCategoryLine.categoryName, addCategoryLine.categoryPriority)
+                    "
+                  >
+                    确认添加
+                  </view>
                 </view>
               </view>
-            </uni-section>
+            </section>
           </scroll-view>
         </uni-card>
       </uni-popup>
@@ -707,7 +711,8 @@ const onUpDish = async (id: number) => {
       <uni-popup ref="ADDallDishInfoPopup" type="dialog" border-radius="10px 10px 0 0">
         <uni-card class="form-card addDish-in-category">
           <scroll-view scroll-y="true" class="scroll-Y">
-            <uni-section title="向该分组添加菜品" type="line">
+            <section>
+              <h3>向该分组添加菜品</h3>
               <view class="dish-line" v-for="(value, index) in dish_choose_list" :key="value">
                 <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
                 <view class="label"
@@ -719,7 +724,7 @@ const onUpDish = async (id: number) => {
                 />
               </view>
               <view class="btn" @click="onAddDishInCategory">确认添加</view>
-            </uni-section>
+            </section>
           </scroll-view>
         </uni-card>
       </uni-popup>
@@ -727,7 +732,8 @@ const onUpDish = async (id: number) => {
       <uni-popup ref="MINUSallDishInfoPopup" type="dialog" border-radius="10px 10px 0 0">
         <uni-card class="form-card addDish-in-category">
           <scroll-view scroll-y="true" class="scroll-Y">
-            <uni-section title="从该分组删除菜品" type="line">
+            <section>
+              <h3>从该分组删除菜品</h3>
               <view class="dish-line" v-for="(value, index) in dish_choose_list" :key="value">
                 <image :src="value.imageUrl" mode="aspectFill" class="dish-img"></image>
                 <view class="label"
@@ -739,7 +745,7 @@ const onUpDish = async (id: number) => {
                 />
               </view>
               <view class="btn" @click="onMinusDishInCategory">确认删除</view>
-            </uni-section>
+            </section>
           </scroll-view>
         </uni-card>
       </uni-popup>
@@ -807,8 +813,36 @@ const onUpDish = async (id: number) => {
     justify-content: space-between;
     .form-card {
       width: 700rpx;
+      padding: 40rpx;
+      border-radius: 10rpx;
       .scroll-Y {
         height: 1000rpx;
+      }
+
+      h3 {
+        font-size: 30rpx;
+        margin-bottom: 30rpx;
+        color: $text-color-active;
+      }
+
+      :deep(.uni-stat__select) {
+        background-color: $bg-color-light;
+        border: 2rpx solid $text-color-green;
+        border-radius: 10rpx;
+        color: $text-color-active;
+      }
+      :deep(.uni-select__input-text) {
+        color: $text-color-active;
+      }
+
+      :deep(.uni-easyinput__content) {
+        background-color: $bg-color-light !important;
+        border: 2rpx solid $text-color-green !important;
+        border-radius: 10rpx;
+        color: $text-color-active;
+      }
+      :deep(.uni-easyinput__placeholder-class) {
+        color: $text-color-green;
       }
 
       .input-line {
@@ -816,21 +850,24 @@ const onUpDish = async (id: number) => {
         flex-direction: column;
         gap: 10rpx;
         align-items: center;
-        border: 1px solid rgba(0, 0, 0, 0.5);
+        border-radius: 10rpx;
         padding: 10rpx;
         margin-bottom: 20rpx;
+        background: $bg-color-light;
 
         .label {
           align-self: flex-start;
+          font-size: 30rpx;
+          color: $text-color-green;
         }
         .button-box {
-          width: 100%;
+          align-self: flex-end;
           display: flex;
-          justify-content: space-between;
+          justify-content: center;
           align-items: center;
           gap: 20rpx;
           .category-button {
-            border-radius: 12rpx;
+            border-radius: 30rpx;
             color: #fff;
             text-align: center;
             padding: 5rpx 15rpx;
@@ -840,20 +877,12 @@ const onUpDish = async (id: number) => {
             }
 
             &.edit {
-              background-color: rgba(0, 229, 0, 0.4);
+              background-color: $bg-color-green;
+              color: #000;
             }
             &.delete {
-              background-color: rgba(218, 0, 0, 0.4);
+              background-color: $bg-color-orange;
             }
-          }
-        }
-        .add-category-line {
-          text-align: center;
-          padding: 5rpx 15rpx;
-          border: 1px solid rgba(0, 0, 0, 0.8);
-          transition: 0.2s ease;
-          &:active {
-            scale: 0.95;
           }
         }
         .input-box {
@@ -867,16 +896,23 @@ const onUpDish = async (id: number) => {
     }
 
     .addDish-in-category {
+      width: 620rpx;
+      padding: 40rpx;
+      border-radius: 10rpx;
+      .scroll-Y {
+        height: 800rpx;
+      }
       .dish-line {
         display: flex;
         gap: 10rpx;
         align-items: center;
-        border: 1px solid rgba(0, 0, 0, 0.5);
+        background: $bg-color-light;
+        border-radius: 10rpx;
         padding: 10rpx;
         margin-bottom: 20rpx;
         .dish-img {
-          width: 100rpx;
-          height: 100rpx;
+          width: 120rpx;
+          height: 120rpx;
           background-color: rgba(0, 0, 0, 0.2);
           border-radius: 10rpx;
         }
@@ -888,10 +924,14 @@ const onUpDish = async (id: number) => {
       }
 
       .btn {
+        width: 200rpx;
+        padding: 16rpx;
+        margin: 0 auto;
         margin-top: 25rpx;
-        width: 100%;
         text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.8);
+        background: $bg-color-green;
+        border-radius: 30rpx;
+        font-weight: 550;
         transition: 0.2s ease;
         &:active {
           scale: 0.95;
