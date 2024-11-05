@@ -79,7 +79,7 @@ const res: OrderItem = {
   coupon: 6,
   actualPrice: 106.64,
   orderType: 0,
-  orderStatus: 2,
+  orderStatus: 1,
   addressID: 0,
   address: '11公寓',
   addressNumber: 'A4',

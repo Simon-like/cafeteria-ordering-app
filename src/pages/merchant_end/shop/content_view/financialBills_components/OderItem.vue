@@ -49,7 +49,9 @@ const props = defineProps<{
   flex-direction: column;
   font-size: 30rpx;
   white-space: nowrap;
-  background: rgba(0, 0, 0, 0.2);
+  background: #fff;
+  border-radius: 10rpx;
+  border: 1px solid $text-color-green;
   gap: 16rpx;
   margin-bottom: 30rpx;
   .line {

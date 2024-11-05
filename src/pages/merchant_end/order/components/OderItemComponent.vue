@@ -35,9 +35,9 @@ const onDescShow = () => {
       <view class="x-wrapper">
         <view class="btn" v-if="orderData.orderStatus === 0">接单</view>
         <view class="btn" v-if="orderData.orderStatus === 1">完成</view>
-        <view class="btn" v-if="orderData.orderStatus === 1">取消</view>
+        <view class="btn warning-btn" v-if="orderData.orderStatus === 1">取消</view>
         <view class="btn" v-if="orderData.orderStatus === 3">恢复</view>
-        <view class="btn" v-if="orderData.orderStatus === 3">确认退款</view>
+        <view class="btn warning-btn" v-if="orderData.orderStatus === 3">确认退款</view>
         <view v-if="orderData.orderStatus === 2">已完成</view>
         <view v-if="orderData.orderStatus === 4">已退款</view>
       </view>
@@ -111,14 +111,14 @@ const onDescShow = () => {
       </view>
     </view>
     <view @click="onDescShow()" class="icon" :class="{ 'icon-show': show }">
-      <i class="iconfont icon-jiantouarrow483"></i>
+      <i class="iconfont icon-jiantou_xia"></i>
     </view>
   </view>
 </template>
 
 <style lang="scss" scope>
 .oder-item {
-  background: rgba(0, 0, 0, 0.2);
+  background: $bg-color-light;
   width: 100%;
   font-size: 25rpx;
   display: flex;
@@ -133,11 +133,16 @@ const onDescShow = () => {
     text-align: center;
     transition: 0.2s ease;
     font-size: 30rpx;
-    border: 1px solid #000;
+    background: $bg-color-green;
     padding: 10rpx;
+    border-radius: 30rpx;
     min-width: 115rpx;
     &:active {
       scale: 0.95;
+    }
+    &.warning-btn {
+      background: #fff;
+      border: 1px solid $text-color-green;
     }
   }
   .x-wrapper {
@@ -176,7 +181,8 @@ const onDescShow = () => {
       justify-content: space-between;
       gap: 20rpx;
       white-space: nowrap;
-      border: 1px solid #000;
+      border: 1px solid $text-color-green;
+      border-radius: 10rpx;
       padding: 15rpx;
     }
     .dishSpecList {
@@ -185,10 +191,10 @@ const onDescShow = () => {
       gap: 10rpx;
       flex-wrap: wrap;
       .dishSpecItem {
-        border: 1px solid rgb(0, 0, 0);
         border-radius: 16rpx;
         padding: 5rpx;
         white-space: nowrap;
+        background-color: $bg-color-green;
       }
     }
   }
@@ -197,6 +203,10 @@ const onDescShow = () => {
     width: 100%;
     text-align: center;
     transition: 0.3s ease-out;
+    .iconfont {
+      font-size: 24rpx;
+      color: $text-color-green;
+    }
   }
 
   .HIDDEN-box {

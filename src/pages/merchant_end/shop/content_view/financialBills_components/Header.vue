@@ -34,7 +34,7 @@ const date_confirm = (e: any) => {
   <view class="header">
     <view class="line">
       <view class="date-picker" @click="date_show = true">
-        {{ date_value }}<i class="iconfont icon-jiantouarrow483"></i>
+        {{ date_value }}<i class="iconfont icon-jiantou_xia"></i>
       </view>
       <view class="">总金额流水(/￥):</view>
     </view>
@@ -69,6 +69,8 @@ const date_confirm = (e: any) => {
   font-size: 30rpx;
   flex-direction: column;
   gap: 50rpx;
+  background: $bg-color-light;
+  padding: 20rpx;
   .line {
     width: 100%;
     display: flex;
@@ -78,6 +80,13 @@ const date_confirm = (e: any) => {
   .total-price {
     font-size: 45rpx;
     font-weight: 550;
+  }
+  .date-picker {
+    vertical-align: middle;
+    .iconfont {
+      font-size: 20rpx;
+      color: $text-color-green;
+    }
   }
   .difference {
     display: flex;

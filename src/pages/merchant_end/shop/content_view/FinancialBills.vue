@@ -102,7 +102,7 @@ const resOrder = ref<OrderItem[]>([
         <view>流水明细</view>
         <SearchBox />
         <view class="oderType-picker" @click="oderType_show = true">
-          筛选：{{ oderType_value }}<i class="iconfont icon-jiantouarrow483"></i>
+          筛选：{{ oderType_value }}<i class="iconfont icon-jiantou_xia"></i>
         </view>
       </view>
       <view class="content">
@@ -139,14 +139,22 @@ const resOrder = ref<OrderItem[]>([
     justify-content: space-between;
     gap: 20rpx;
   }
+  .oderType-picker {
+    vertical-align: middle;
+    .iconfont {
+      font-size: 20rpx;
+      color: $text-color-green;
+    }
+  }
   .main {
     width: 100%;
-    border-top: 1px solid #000;
-    padding: 16rpx 0;
+    margin-top: 30rpx;
+    padding: 20rpx 10rpx;
+    background: $bg-color-light;
     .content {
       margin-top: 30rpx;
       width: 100%;
-      height: 52vh;
+      height: 50vh;
     }
   }
 }

@@ -52,10 +52,10 @@ const oderType_confirm = (e: any) => {
 <template>
   <view class="header">
     <view class="date-picker" @click="date_show = true">
-      {{ date_value }}<i class="iconfont icon-jiantouarrow483"></i>
+      {{ date_value }}<i class="iconfont icon-jiantou_xia"></i>
     </view>
     <view class="oderType-picker" @click="oderType_show = true">
-      {{ oderType_value }}<i class="iconfont icon-jiantouarrow483"></i>
+      {{ oderType_value }}<i class="iconfont icon-jiantou_xia"></i>
     </view>
     <SearchBox />
   </view>
@@ -83,5 +83,10 @@ const oderType_confirm = (e: any) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  .iconfont {
+    font-size: 20rpx;
+    margin-left: 8rpx;
+    color: $text-color-green;
+  }
 }
 </style>
