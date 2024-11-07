@@ -67,11 +67,11 @@ const gotoNext = async () => {
     <view class="title"> 注册 </view>
     <view class="nav">
       <view class="nav-item">
-        <view class="circle" id="line"> 1 </view>
+        <view class="circle line" id="active"> 1 </view>
         <text>注册账户</text>
       </view>
       <view class="nav-item">
-        <view class="circle" id="line"> 2 </view>
+        <view class="circle line"> 2 </view>
         <text>门店信息</text>
       </view>
       <view class="nav-item">
@@ -135,13 +135,17 @@ const gotoNext = async () => {
       width: 40rpx;
       height: 40rpx;
       border-radius: 50%;
-      background-color: #ccc;
+      background-color: #ecf8ec;
       margin-left: 42rpx;
       margin-bottom: 20rpx;
     }
+
+    #active {
+      background-image: linear-gradient(180deg, #6ce867 -14.29%, #c1fec1 105.36%);
+    }
   }
 }
-#line {
+.circle.line {
   position: relative;
   &::after {
     content: '';
@@ -149,8 +153,8 @@ const gotoNext = async () => {
     right: -170rpx;
     top: 50%;
     width: 170rpx;
-    height: 10rpx;
-    background-color: #ccc;
+    height: 2rpx;
+    background-color: $text-color-green;
     transform: translateY(-50%);
   }
 }
@@ -171,10 +175,10 @@ const gotoNext = async () => {
       white-space: nowrap;
     }
     input {
-      font-size: 16px;
+      height: 50rpx;
       padding-left: 3rpx;
-      background-color: #ccc;
-      border: #000 solid 1rpx;
+      background-color: $bg-color-gray-light;
+      border: $text-color-green solid 0.5px;
       width: 420rpx;
       margin-left: 20rpx;
       text-align: left;
@@ -190,8 +194,11 @@ const gotoNext = async () => {
   display: flex;
   justify-content: center;
 }
-button {
-  width: 45%;
-  border: #000 solid 1rpx;
+.next {
+  width: 620rpx;
+  height: 90rpx;
+  border-radius: 5px;
+  border: $text-color-green solid 1rpx;
+  background-color: $bg-color-green;
 }
 </style>

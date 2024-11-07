@@ -104,11 +104,13 @@ const gotoNext = async () => {
     margin-bottom: 40rpx;
     margin-left: 140rpx;
     input {
+      height: 50rpx;
       margin-left: 20px;
       padding: 4px 0 3px 8px;
-      border: 1px solid #ccc;
-      background-color: #ccc;
+      border: 1px solid $text-color-green;
+      background-color: $bg-color-light;
       border-radius: 8px;
+      width: 370rpx;
     }
   }
 
@@ -120,9 +122,10 @@ const gotoNext = async () => {
     .input_password {
       margin-left: 20px;
       padding: 4px 0 3px 8px;
-      border: 1px solid #ccc;
-      background-color: #ccc;
+      border: 1px solid $text-color-green;
+      background-color: $bg-color-light;
       border-radius: 8px;
+      height: 50rpx;
       width: 150rpx;
     }
     button {
@@ -134,7 +137,7 @@ const gotoNext = async () => {
       height: 50rpx;
       border: #000 solid 1rpx;
       background-color: transparent;
-      border-radius: 8px;
+      border-radius: 8rpx;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -144,9 +147,9 @@ const gotoNext = async () => {
     margin: 50rpx 160rpx;
     width: 470rpx;
     height: 90rpx;
-    border-radius: 5px;
-    border: #000 solid 1rpx;
-    background-color: transparent;
+    border-radius: 8rpx;
+    border: $text-color-green solid 1rpx;
+    background-color: $bg-color-green;
   }
 }
 </style>
