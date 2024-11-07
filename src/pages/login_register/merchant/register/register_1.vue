@@ -139,7 +139,6 @@ const gotoNext = async () => {
       margin-left: 42rpx;
       margin-bottom: 20rpx;
     }
-
     #active {
       background-image: linear-gradient(180deg, #6ce867 -14.29%, #c1fec1 105.36%);
     }
