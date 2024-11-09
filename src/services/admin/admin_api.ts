@@ -1,5 +1,6 @@
 import { http } from '@/utils/http'
 import type { TokenType } from '@/types/login_register'
+import type { AdressItem, ColleagueItem } from '@/types/admin_return'
 export const admin_Login_pp = (phoneNumber: string, password: string) => {
   return http<TokenType>({
     method: 'POST',
@@ -107,5 +108,57 @@ export const deleteNoticeById = (noticeId: number) => {
   return http({
     method: 'DELETE',
     url: `/administer/notice/deleteNoticeById?noticeId=${noticeId}`,
+  })
+}
+
+/**
+ * 系统设置
+ */
+
+// 新增地址信息
+export const addAddress = (address: string, addressNumber: string, deliveryPrice: number) => {
+  return http({
+    method: 'POST',
+    url: `/address/addAddress`,
+    data: {
+      address,
+      addressNumber,
+      deliveryPrice,
+    },
+  })
+}
+
+// 删除地址信息
+export const deleteAddress = (id: number) => {
+  return http({
+    method: 'DELETE',
+    url: `/address/deleteAddress/${id}`,
+  })
+}
+
+// 获取所有地址信息
+export const getAddress = () => {
+  return http<AdressItem[]>({
+    method: 'GET',
+    url: `/address/getAddress`,
+  })
+}
+
+// 修改地址信息
+export const updateAddress = (
+  id: number,
+  address: string,
+  addressNumber: string,
+  deliveryPrice: number,
+) => {
+  return http({
+    method: 'POST',
+    url: `/address/updateAddress`,
+    data: {
+      id,
+      address,
+      addressNumber,
+      deliveryPrice,
+    },
   })
 }

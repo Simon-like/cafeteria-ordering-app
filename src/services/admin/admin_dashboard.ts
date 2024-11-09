@@ -16,7 +16,7 @@ export const getTopSellingDish = () => {
     }[]
   >({
     method: 'GET',
-    url: '/search/administer/TopSellingDish',
+    url: '/administer/statistics/search/TopSellingDish',
   })
 }
 
@@ -29,7 +29,7 @@ export const getSalesTrends = () => {
     }[]
   >({
     method: 'GET',
-    url: '/search/administer/salesTrends',
+    url: '/administer/statistics/search/salesTrends',
   })
 }
 
@@ -44,6 +44,6 @@ export const getStatistics = () => {
     platformFees: number
   }>({
     method: 'GET',
-    url: '/merchant/statistics/administer/Statistics',
+    url: '/administer/statistics',
   })
 }

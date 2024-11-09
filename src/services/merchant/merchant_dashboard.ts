@@ -16,7 +16,7 @@ export const getTopSellingDish = () => {
     }[]
   >({
     method: 'GET',
-    url: '/search/merchant/TopSellingDish',
+    url: '/merchant/statistics/search/TopSellingDish',
   })
 }
 

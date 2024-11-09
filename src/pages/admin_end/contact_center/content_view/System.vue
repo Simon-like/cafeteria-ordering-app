@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { ref, nextTick, reactive } from 'vue'
-import type { AdressItem, ColleagueItem } from '@/types/admin_return'
+import type { AddressItem, ColleagueItem } from '@/types/admin_return'
 import { debounce, splitContent, deepCopy } from '@/composables/tools'
+import { onLoad } from '@dcloudio/uni-app'
+import { addAddress, deleteAddress, getAddress, updateAddress } from '@/services/admin/admin_api'
 /**
  * @description 管理端联络中心页面系统设置模块
  * @author 应东林
@@ -35,86 +37,118 @@ function generateUniqueId(existingIds: string[]) {
   return newId
 }
 
-const resAdress = ref<AdressItem[]>([
-  { adressId: 10, adressNumber: 'A8', adress: '11公寓', DeliveryPrice: 75.5 },
-  { adressId: 12, adressNumber: 'A7', adress: '15公寓', DeliveryPrice: 75.5 },
-  { adressId: 13, adressNumber: 'A45', adress: '17公寓', DeliveryPrice: 75.5 },
-  { adressId: 15, adressNumber: 'A3', adress: '18公寓', DeliveryPrice: 75.5 },
+// 获取所有地址信息并加载
+const getAddress_loading = async () => {
+  const res = await getAddress()
+  if (res.code === 1) {
+    resaddress.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取地址信息失败！',
+    })
+  }
+}
+
+//  送餐地址信息列表
+const resaddress = ref<AddressItem[]>([
+  { id: 10, addressNumber: 'A8', address: '11公寓', deliveryPrice: 75.5 },
+  { id: 12, addressNumber: 'A7', address: '15公寓', deliveryPrice: 75.5 },
+  { id: 13, addressNumber: 'A45', address: '17公寓', deliveryPrice: 75.5 },
+  { id: 15, addressNumber: 'A3', address: '18公寓', deliveryPrice: 75.5 },
 ])
 // 当前选中的索引值，-1表示当前无地址选择，-2表示处于新增地址状态
-const AdressIndex = ref<number>(0)
-const editAdress = reactive<AdressItem>({
-  adressId: -1,
-  adressNumber: '',
-  adress: '',
-  DeliveryPrice: 0,
+const addressIndex = ref<number>(0)
+const editaddress = reactive<addressItem>({
+  id: -1,
+  addressNumber: '',
+  address: '',
+  deliveryPrice: 0,
 })
 
-const adressPopup = ref()
+const addressPopup = ref()
 
-const adressActiveList = ref<boolean[]>(new Array(resAdress.value.length).fill(false))
+const addressActiveList = ref<boolean[]>(new Array(resaddress.value.length).fill(false))
 
 // 编辑某地址
-const onEditAdress = () => {
-  if (resAdress.value.length === 0) {
-    AdressIndex.value = -1
+const onEditaddress = () => {
+  if (resaddress.value.length === 0) {
+    addressIndex.value = -1
   } else {
-    adressActiveList.value.fill(false)
-    adressActiveList.value[0] = true
-    Object.assign(editAdress, deepCopy(resAdress.value[0]))
+    addressActiveList.value.fill(false)
+    addressActiveList.value[0] = true
+    Object.assign(editaddress, deepCopy(resaddress.value[0]))
   }
-  adressPopup.value.open('center')
+  addressPopup.value.open('center')
 }
 
 // 选择某条地址
-const onChosseAdressLine = (index: number) => {
-  adressActiveList.value.fill(false)
-  adressActiveList.value[index] = true
-  Object.assign(editAdress, resAdress.value[index])
-  AdressIndex.value = index
+const onChosseaddressLine = (index: number) => {
+  addressActiveList.value.fill(false)
+  addressActiveList.value[index] = true
+  Object.assign(editaddress, resaddress.value[index])
+  addressIndex.value = index
 }
 
 // 初始化参数
-const InitAdress = () => {
-  AdressIndex.value = -1
-  Object.assign(editAdress, { adressId: -1, adressNumber: '', adress: '', DeliveryPrice: 0 })
-  adressActiveList.value.fill(false)
+const Initaddress = () => {
+  addressIndex.value = -1
+  Object.assign(editaddress, { id: -1, addressNumber: '', address: '', deliveryPrice: 0 })
+  addressActiveList.value.fill(false)
 }
 
 //随机生成编号事件
 const onRandomly = () => {
-  editAdress.adressNumber = generateUniqueId(resAdress.value.map((item) => item.adressNumber))
+  editaddress.addressNumber = generateUniqueId(resaddress.value.map((item) => item.addressNumber))
 }
 
 //修改送餐地址
-const onComfirnAdress = () => {
-  if (AdressIndex.value === -2) {
+const onComfirnaddress = async () => {
+  editaddress.deliveryPrice = +editaddress.deliveryPrice
+  if (addressIndex.value === -2) {
     //保存新增地址信息
-    resAdress.value.push(deepCopy(editAdress))
-    adressActiveList.value.push(true)
-    AdressIndex.value = resAdress.value.length - 1
+    // resaddress.value.push(deepCopy(editaddress))
+    // addressActiveList.value.push(true)
+    // addressIndex.value = resaddress.value.length - 1
+    const res = await addAddress(
+      editaddress.address,
+      editaddress.addressNumber,
+      editaddress.deliveryPrice,
+    )
+    if (res.code === 1) {
+      console.log(5555)
+      await getAddress_loading()
+    } else {
+      uni.showToast({
+        icon: 'none',
+        title: '新增地址信息失败！',
+      })
+    }
   } else {
-    Object.assign(resAdress.value[AdressIndex.value], deepCopy(editAdress))
+    Object.assign(resaddress.value[addressIndex.value], deepCopy(editaddress))
   }
 }
 
+//防抖
+const onComfirnaddress__debounce = debounce(onComfirnaddress, 1000, true)
+
 // 删除某地址
-const onDeleteAdress = (index: number) => {
-  InitAdress()
-  resAdress.value.splice(index, 1)
-  adressActiveList.value.splice(index, 1)
+const onDeleteaddress = (index: number) => {
+  Initaddress()
+  resaddress.value.splice(index, 1)
+  addressActiveList.value.splice(index, 1)
 }
 
 // 取消地址编辑
-const onCloseAdress = () => {
-  InitAdress()
+const onCloseaddress = () => {
+  Initaddress()
 }
 
 // 新增一个地址
-const onAddAdress = () => {
-  AdressIndex.value = -2
-  adressActiveList.value.fill(false)
-  Object.assign(editAdress, { adressId: -1, adressNumber: '', adress: '', DeliveryPrice: 0 })
+const onAddaddress = () => {
+  addressIndex.value = -2
+  addressActiveList.value.fill(false)
+  Object.assign(editaddress, { id: -1, addressNumber: '', address: '', deliveryPrice: 0 })
 }
 
 /**
@@ -189,28 +223,33 @@ const onAddRegion = () => {
 
 // 取消弹框
 const onBack = () => {
-  adressPopup.value.close()
+  addressPopup.value.close()
   regionPopup.value.close()
 }
 const onCloseBtn = () => {
-  adressPopup.value.close()
+  addressPopup.value.close()
   regionPopup.value.close()
 }
+
+// 数据加载
+onLoad(async () => {
+  await getAddress_loading()
+})
 </script>
 
 <template>
   <view class="system">
     <!-- 送餐地址设置 -->
-    <view class="section adress-section">
+    <view class="section address-section">
       <view class="section-title">送餐固定地址设置：</view>
       <view class="section-content">
-        <view class="line" v-for="(item, index) in resAdress" :key="item.adressId">
-          <view class="adress">地址{{ index + 1 }}:{{ item.adress }}</view>
-          <view class="delivery-price">配送费：{{ item.DeliveryPrice }}</view>
-          <view class="adress-number">编号：{{ item.adressNumber }}</view>
+        <view class="line" v-for="(item, index) in resaddress" :key="item.id">
+          <view class="address">地址{{ index + 1 }}:{{ item.address }}</view>
+          <view class="delivery-price">配送费：{{ item.deliveryPrice }}</view>
+          <view class="address-number">编号：{{ item.addressNumber }}</view>
         </view>
       </view>
-      <view class="btn align-end" @click="onEditAdress">修改信息</view>
+      <view class="btn align-end" @click="onEditaddress">修改信息</view>
     </view>
 
     <!-- 商家区域设置 -->
@@ -225,67 +264,69 @@ const onCloseBtn = () => {
     </view>
 
     <!-- 送餐地址信息编辑 -->
-    <uni-popup ref="adressPopup" type="dialog">
+    <uni-popup ref="addressPopup" type="dialog">
       <view class="popup-content">
         <view class="close-btn" @click="onCloseBtn"><i class="iconfont icon-x"></i></view>
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="wrapper">
-            <view class="line" v-for="(item, index) in resAdress" :key="item.adressId">
+            <view class="line" v-for="(item, index) in resaddress" :key="item.id">
               <view
                 class="y-wrapper"
-                :class="{ active: adressActiveList[index] }"
-                @click="onChosseAdressLine(index)"
+                :class="{ active: addressActiveList[index] }"
+                @click="onChosseaddressLine(index)"
               >
                 <view class="title"
-                  ><text>地址{{ index + 1 }}:</text>{{ item.adress }}</view
+                  ><text>地址{{ index + 1 }}:</text>{{ item.address }}</view
                 >
                 <view class="x-wrapper">
-                  <view class="DeliveryPrice">配送费:{{ item.DeliveryPrice }}</view>
-                  <view class="adress-number">编号:{{ item.adressNumber }}</view>
+                  <view class="deliveryPrice">配送费:{{ item.deliveryPrice }}</view>
+                  <view class="address-number">编号:{{ item.addressNumber }}</view>
                 </view>
               </view>
-              <view @click="onDeleteAdress(index)"><i class="iconfont icon-jianhao"></i></view>
+              <view @click="onDeleteaddress(index)"><i class="iconfont icon-jianhao"></i></view>
             </view>
             <view class="line add-line" style="justify-content: flex-start">
               <view
-                class="add-adress-line"
-                @click="onAddAdress"
-                :class="{ active: AdressIndex === -2 }"
+                class="add-address-line"
+                @click="onAddaddress"
+                :class="{ active: addressIndex === -2 }"
                 ><i class="iconfont icon-jiahao"></i>新增地址</view
               >
             </view>
           </view>
 
           <!-- /修改框 -->
-          <view class="wrapper add-wrapper" v-show="AdressIndex !== -1">
+          <view class="wrapper add-wrapper" v-show="addressIndex !== -1">
             <view class="line">
               <view class="title"
-                >{{ AdressIndex === -2 ? '新增地址' : `地址${AdressIndex + 1}` }}：</view
+                >{{ addressIndex === -2 ? '新增地址' : `地址${addressIndex + 1}` }}：</view
               >
             </view>
             <view class="line">
               <view class="title">名称：</view>
-              <uni-easyinput v-model="editAdress.adress" placeholder="请输入地址名称" />
+              <uni-easyinput v-model="editaddress.address" placeholder="请输入地址名称" />
             </view>
             <view class="line">
               <view class="title">配送费：</view>
               <uni-easyinput
-                v-model="editAdress.DeliveryPrice"
+                v-model="editaddress.deliveryPrice"
                 placeholder="请输入配送费"
                 type="number"
               />
             </view>
             <view class="line">
-              <view class="title">编号：{{ editAdress.adressNumber }}</view>
+              <view class="title">编号：{{ editaddress.addressNumber }}</view>
               <view class="Randomly-btn btn" @click="onRandomly">点击随机生成</view>
             </view>
             <view class="line btn-line">
-              <view class="btn popup-confirm-btn" @click="onComfirnAdress">确认编辑</view>
-              <view class="btn popup-close-btn" @click="onCloseAdress">取消编辑</view>
+              <view class="btn popup-confirm-btn" @click="onComfirnaddress__debounce"
+                >确认编辑</view
+              >
+              <view class="btn popup-close-btn" @click="onCloseaddress">取消编辑</view>
             </view>
           </view>
 
-          <view class="wrapper add-wrapper" v-show="AdressIndex === -1">
+          <view class="wrapper add-wrapper" v-show="addressIndex === -1">
             请点击选择一个地址或者新增地址
           </view>
           <view class="line">
@@ -363,9 +404,9 @@ const onCloseBtn = () => {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 15rpx;
     transition: all 0.2s ease-in;
+    flex-wrap: wrap;
   }
   .btn {
     padding: 6rpx 35rpx;
@@ -423,6 +464,7 @@ const onCloseBtn = () => {
     background: $bg-color-light;
     padding: 20rpx;
     white-space: nowrap;
+    overflow: hidden;
     .section-title {
       font-weight: 550;
       font-size: 32rpx;
@@ -439,12 +481,12 @@ const onCloseBtn = () => {
     }
   }
 
-  .adress-section {
-    .adress {
+  .address-section {
+    .address {
       font-weight: 550;
     }
     .delivery-price,
-    .adress-number {
+    .address-number {
       font-size: 26rpx;
     }
   }
@@ -477,6 +519,10 @@ const onCloseBtn = () => {
       flex-direction: column;
       gap: 22rpx;
       margin-bottom: 22rpx;
+      .line {
+        justify-content: space-between;
+        flex-wrap: nowrap;
+      }
       .title,
       .add-line {
         font-weight: 550;
@@ -510,7 +556,7 @@ const onCloseBtn = () => {
       }
     }
 
-    .add-adress-line,
+    .add-address-line,
     .add-region-line {
       padding: 10rpx;
       color: $text-color-active;

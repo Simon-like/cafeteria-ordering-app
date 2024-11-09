@@ -3,11 +3,11 @@
  */
 // 系统设置
 //送餐地址信息
-export type AdressItem = {
-  adressNumber: string
-  adressId: number
-  adress: string
-  DeliveryPrice: number
+export type AddressItem = {
+  addressNumber: string
+  id: number
+  address: string
+  deliveryPrice: number
 }
 
 // 管理员同事
