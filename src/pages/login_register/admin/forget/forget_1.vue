@@ -76,10 +76,11 @@ const handleForget = async () => {
     margin-bottom: 40rpx;
 
     input {
+      height: 50rpx;
       margin-left: 30rpx;
       padding: 4px 0 3px 8px;
-      border: 1rpx solid #ccc;
-      background-color: #ccc;
+      border: 1px solid $text-color-green;
+      background-color: $bg-color-light;
       border-radius: 8px;
     }
   }
@@ -88,8 +89,8 @@ const handleForget = async () => {
     width: 470rpx;
     height: 90rpx;
     border-radius: 5px;
-    border: #000 solid 1rpx;
-    background-color: transparent;
+    border: $text-color-green solid 1rpx;
+    background-color: $bg-color-green;
   }
 }
 </style>

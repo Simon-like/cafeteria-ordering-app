@@ -22,25 +22,26 @@ const handleRegister = async () => {
     <view class="title"> 注册 </view>
     <view class="nav">
       <view class="nav-item">
-        <view class="circle" id="line"> 1 </view>
+        <view class="circle line"> 1 </view>
         <text>注册账户</text>
       </view>
       <view class="nav-item">
-        <view class="circle" id="line"> 2 </view>
+        <view class="circle line"> 2 </view>
         <text>门店信息</text>
       </view>
       <view class="nav-item">
-        <view class="circle"> 3 </view>
+        <view class="circle" id="active"> 3 </view>
         <text>资质审核</text>
       </view>
+
       <view class="content">
         <text>手机号：{{ merchantStore.phoneNumber }}</text>
         <text>所有人姓名：{{ merchantStore.realName }}</text>
         <text>店铺名称：{{ merchantStore.name }}</text>
         <text>店铺地址：{{ merchantStore.address }}</text>
       </view>
-      <button @click="handleRegister">提交审核</button>
     </view>
+    <button @click="handleRegister">提交审核</button>
   </view>
 </template>
 
@@ -65,25 +66,30 @@ const handleRegister = async () => {
       width: 40rpx;
       height: 40rpx;
       border-radius: 50%;
-      background-color: #ccc;
+      background-color: #ecf8ec;
       margin-left: 42rpx;
       margin-bottom: 20rpx;
     }
+
+    #active {
+      background-image: linear-gradient(180deg, #6ce867 -14.29%, #c1fec1 105.36%);
+    }
   }
 }
-#line {
+.circle.line {
   position: relative;
   &::after {
     content: '';
     position: absolute;
-    right: -350%;
+    right: -170rpx;
     top: 50%;
-    width: 140rpx;
-    height: 10rpx;
-    background-color: #ccc;
+    width: 170rpx;
+    height: 2rpx;
+    background-color: $text-color-green;
     transform: translateY(-50%);
   }
 }
+
 .content {
   position: absolute;
   top: 300rpx;
@@ -94,7 +100,12 @@ const handleRegister = async () => {
 }
 button {
   position: absolute;
-  top: 550rpx;
-  margin-left: 40rpx;
+  top: 600rpx;
+  left: 70rpx;
+  width: 620rpx;
+  height: 90rpx;
+  border-radius: 5px;
+  border: $text-color-green solid 1rpx;
+  background-color: $bg-color-green;
 }
 </style>

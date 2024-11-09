@@ -68,11 +68,12 @@ const handleLogin_pv = async () => {
       width: 400rpx;
     }
     input {
-      margin-left: 20px;
+      height: 50rpx;
+      margin-left: 20rpx;
       padding: 4px 0 3px 8px;
-      border: 1px solid #ccc;
-      background-color: #ccc;
-      border-radius: 8px;
+      border: 1px solid $text-color-green;
+      background-color: $bg-color-light;
+      border-radius: 8rpx;
       width: 170rpx;
     }
   }
@@ -82,8 +83,8 @@ const handleLogin_pv = async () => {
     width: 470rpx;
     height: 90rpx;
     border-radius: 5px;
-    border: #000 solid 1rpx;
-    background-color: transparent;
+    border: $text-color-green solid 1rpx;
+    background-color: $bg-color-green;
   }
 }
 </style>

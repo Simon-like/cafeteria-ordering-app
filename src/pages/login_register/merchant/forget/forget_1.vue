@@ -27,7 +27,7 @@ const handleForget = async () => {
   } else {
     uni.showToast({
       icon: 'none',
-      title: '两次输入密码不同',
+      title: '两次输入的密码不一致',
     })
     return
   }
@@ -80,7 +80,9 @@ const handleForget = async () => {
       margin-left: 30rpx;
       padding: 4px 0 3px 8px;
       border: 1rpx solid #ccc;
-      background-color: #ccc;
+      border: 1px solid $text-color-green;
+      background-color: $bg-color-light;
+      height: 50rpx;
       border-radius: 8px;
     }
   }
@@ -89,8 +91,8 @@ const handleForget = async () => {
     width: 470rpx;
     height: 90rpx;
     border-radius: 5px;
-    border: #000 solid 1rpx;
-    background-color: transparent;
+    border: $text-color-green solid 1rpx;
+    background-color: $bg-color-green;
   }
 }
 </style>

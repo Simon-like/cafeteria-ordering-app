@@ -78,11 +78,11 @@ const onRegionChange = (e) => {
     <view class="title"> 注册 </view>
     <view class="nav">
       <view class="nav-item">
-        <view class="circle" id="line"> 1 </view>
+        <view class="circle line"> 1 </view>
         <text>注册账户</text>
       </view>
       <view class="nav-item">
-        <view class="circle" id="line"> 2 </view>
+        <view class="circle line" id="active"> 2 </view>
         <text>门店信息</text>
       </view>
       <view class="nav-item">
@@ -121,9 +121,6 @@ const onRegionChange = (e) => {
     </view>
 
     <text class="tips">--店铺详细信息注册完成后可在门店管理页面中更改--</text>
-    <view class="checkbox__container">
-      <label> <checkbox /><text>我已阅读并同意xxxxxx</text> </label>
-    </view>
     <button @click="gotoNext()">下一步</button>
   </view>
 </template>
@@ -149,22 +146,25 @@ const onRegionChange = (e) => {
       width: 40rpx;
       height: 40rpx;
       border-radius: 50%;
-      background-color: #ccc;
+      background-color: #ecf8ec;
       margin-left: 42rpx;
       margin-bottom: 20rpx;
     }
+    #active {
+      background-image: linear-gradient(180deg, #6ce867 -14.29%, #c1fec1 105.36%);
+    }
   }
 }
-#line {
+.circle.line {
   position: relative;
   &::after {
     content: '';
     position: absolute;
-    right: -80px;
+    right: -170rpx;
     top: 50%;
-    width: 150rpx;
-    height: 10rpx;
-    background-color: #ccc;
+    width: 170rpx;
+    height: 2rpx;
+    background-color: $text-color-green;
     transform: translateY(-50%);
   }
 }
@@ -185,9 +185,10 @@ const onRegionChange = (e) => {
 
     input {
       padding-left: 10rpx;
-      background-color: #ccc;
-      border: #000 solid 1rpx;
+      background-color: $bg-color-gray-light;
+      border: $text-color-green solid 0.5px;
       width: 400rpx;
+      height: 50rpx;
     }
 
     .uni {
@@ -206,18 +207,18 @@ const onRegionChange = (e) => {
   }
 }
 .tips {
+  margin-top: 60rpx;
   display: flex;
   justify-content: center;
   font-size: xx-small;
   color: #ccc;
 }
-.checkbox__container {
-  margin: 20rpx 0;
-  display: flex;
-  justify-content: center;
-}
 button {
-  width: 45%;
-  border: #000 solid 1rpx;
+  margin-top: 20rpx;
+  width: 620rpx;
+  height: 90rpx;
+  border-radius: 5px;
+  border: $text-color-green solid 1rpx;
+  background-color: $bg-color-green;
 }
 </style>
