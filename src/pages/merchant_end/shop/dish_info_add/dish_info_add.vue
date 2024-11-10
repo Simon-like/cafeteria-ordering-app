@@ -434,7 +434,7 @@ const onAddDish = async () => {
   </view>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .add-view {
   width: 750rpx;
   height: 100vh;

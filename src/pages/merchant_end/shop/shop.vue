@@ -35,14 +35,14 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="my">
+  <view class="shop">
     <AsideBar :itemList="my_aside_list" @switch="onSwitch" />
     <component :is="componentList[MerchantPages.shopIndex]"></component>
   </view>
 </template>
 
 <style lang="scss" scoped>
-.my {
+.shop {
   border-radius: 28rpx 28rpx 0 0;
   box-shadow: 0 -6rpx 10rpx rgba(0, 0, 0, 0.15);
   padding: 25rpx 0 0 20rpx;

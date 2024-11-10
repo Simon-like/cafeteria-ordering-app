@@ -753,7 +753,7 @@ const onUpDish = async (id: number) => {
   </view>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .dish-info {
   width: 585rpx;
   height: 100%;
