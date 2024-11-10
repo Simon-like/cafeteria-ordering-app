@@ -72,7 +72,7 @@ const res: ColleagueItem[] = [
   </view>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .colleagues {
   width: 590rpx;
   height: 100%;

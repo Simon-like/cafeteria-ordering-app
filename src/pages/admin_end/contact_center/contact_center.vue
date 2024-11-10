@@ -43,7 +43,7 @@ onLoad(() => {
   </view>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .contact_center {
   border-radius: 28rpx 28rpx 0 0;
   box-shadow: 0 -6rpx 10rpx rgba(0, 0, 0, 0.15);

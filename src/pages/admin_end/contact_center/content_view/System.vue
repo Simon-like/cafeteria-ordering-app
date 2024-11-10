@@ -116,7 +116,6 @@ const onComfirnaddress = async () => {
       editaddress.deliveryPrice,
     )
     if (res.code === 1) {
-      console.log(5555)
       await getAddress_loading()
     } else {
       uni.showToast({
@@ -394,7 +393,7 @@ onLoad(async () => {
   </view>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .system {
   width: 590rpx;
   height: 100%;

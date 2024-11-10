@@ -76,7 +76,7 @@ const oderType_confirm = (e: any) => {
   ></up-picker>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .header {
   width: 100%;
   font-size: 30rpx;

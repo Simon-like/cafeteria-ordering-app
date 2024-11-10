@@ -116,7 +116,7 @@ const onDescShow = () => {
   </view>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .oder-item {
   background: $bg-color-light;
   width: 100%;

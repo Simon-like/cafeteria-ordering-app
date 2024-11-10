@@ -123,7 +123,7 @@ const resOrder = ref<OrderItem[]>([
   </view>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .financial-bills {
   width: 590rpx;
   height: 100%;
