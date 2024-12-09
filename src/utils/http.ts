@@ -1,5 +1,6 @@
 import { useDoubleTokenStore } from '@/stores'
 import { refreshToken } from '@/utils/refreshToken'
+import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
 
 /**
  * @description 网络请求拦截器，已初步完成双token设置
@@ -79,6 +80,16 @@ export const http = <T>(options: UniApp.RequestOptions) => {
                 success(res) {
                   console.log('第一层响应信息：', res)
                   resolve(res.data as Data<T>)
+                  // 如果返回的请求code仍然不正确，那么退回到登录页！
+                  if ((res.data as Data<T>).code !== 1) {
+                    gotoLoginAndRegister()
+                    setTimeout(() => {
+                      uni.showToast({
+                        icon: 'error',
+                        title: '登录超时！',
+                      })
+                    }, 500)
+                  }
                 },
               })
             })

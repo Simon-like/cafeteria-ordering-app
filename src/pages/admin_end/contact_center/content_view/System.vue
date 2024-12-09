@@ -3,7 +3,16 @@ import { ref, nextTick, reactive } from 'vue'
 import type { AddressItem, ColleagueItem } from '@/types/admin_return'
 import { debounce, splitContent, deepCopy } from '@/composables/tools'
 import { onLoad } from '@dcloudio/uni-app'
-import { addAddress, deleteAddress, getAddress, updateAddress } from '@/services/admin/admin_api'
+import {
+  addAddress,
+  deleteAddress,
+  getAddress,
+  updateAddress,
+  getAllPlace,
+  updatePlace,
+  addPlace,
+  deletePlace,
+} from '@/services/admin/admin_api'
 /**
  * @description 管理端联络中心页面系统设置模块
  * @author 应东林
@@ -37,6 +46,20 @@ function generateUniqueId(existingIds: string[]) {
   return newId
 }
 
+//  送餐地址信息列表
+const resaddress = ref<AddressItem[]>([])
+// 当前选中的索引值，-1表示当前无地址选择，-2表示处于新增地址状态
+const addressIndex = ref<number>(0)
+const editaddress = reactive<AddressItem>({
+  id: -1,
+  addressNumber: '',
+  address: '',
+  deliveryPrice: 0,
+})
+
+const addressPopup = ref()
+const addressActiveList = ref<boolean[]>(new Array(resaddress.value.length).fill(false))
+
 // 获取所有地址信息并加载
 const getAddress_loading = async () => {
   const res = await getAddress()
@@ -50,27 +73,7 @@ const getAddress_loading = async () => {
   }
 }
 
-//  送餐地址信息列表
-const resaddress = ref<AddressItem[]>([
-  { id: 10, addressNumber: 'A8', address: '11公寓', deliveryPrice: 75.5 },
-  { id: 12, addressNumber: 'A7', address: '15公寓', deliveryPrice: 75.5 },
-  { id: 13, addressNumber: 'A45', address: '17公寓', deliveryPrice: 75.5 },
-  { id: 15, addressNumber: 'A3', address: '18公寓', deliveryPrice: 75.5 },
-])
-// 当前选中的索引值，-1表示当前无地址选择，-2表示处于新增地址状态
-const addressIndex = ref<number>(0)
-const editaddress = reactive<addressItem>({
-  id: -1,
-  addressNumber: '',
-  address: '',
-  deliveryPrice: 0,
-})
-
-const addressPopup = ref()
-
-const addressActiveList = ref<boolean[]>(new Array(resaddress.value.length).fill(false))
-
-// 编辑某地址
+// 打开编辑框
 const onEditaddress = () => {
   if (resaddress.value.length === 0) {
     addressIndex.value = -1
@@ -102,14 +105,27 @@ const onRandomly = () => {
   editaddress.addressNumber = generateUniqueId(resaddress.value.map((item) => item.addressNumber))
 }
 
-//修改送餐地址
+//修改或新增送餐地址
 const onComfirnaddress = async () => {
   editaddress.deliveryPrice = +editaddress.deliveryPrice
+  //校验
+  if (!editaddress.address || !editaddress.addressNumber) {
+    uni.showToast({
+      icon: 'none',
+      title: '请正确的填写地址信息！',
+    })
+    return
+  }
+  if (editaddress.deliveryPrice < 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '配送费用太低了！',
+    })
+    return
+  }
+  //新增或者修改
   if (addressIndex.value === -2) {
-    //保存新增地址信息
-    // resaddress.value.push(deepCopy(editaddress))
-    // addressActiveList.value.push(true)
-    // addressIndex.value = resaddress.value.length - 1
+    //新增地址
     const res = await addAddress(
       editaddress.address,
       editaddress.addressNumber,
@@ -117,6 +133,10 @@ const onComfirnaddress = async () => {
     )
     if (res.code === 1) {
       await getAddress_loading()
+      uni.showToast({
+        icon: 'none',
+        title: '新增地址成功！',
+      })
     } else {
       uni.showToast({
         icon: 'none',
@@ -124,18 +144,69 @@ const onComfirnaddress = async () => {
       })
     }
   } else {
-    Object.assign(resaddress.value[addressIndex.value], deepCopy(editaddress))
+    //修改地址
+    const res = await updateAddress(
+      editaddress.id,
+      editaddress.address,
+      editaddress.addressNumber,
+      editaddress.deliveryPrice,
+    )
+    if (res.code === 1) {
+      await getAddress_loading()
+      uni.showToast({
+        icon: 'none',
+        title: '修改地址成功！',
+      })
+    } else {
+      uni.showToast({
+        icon: 'none',
+        title: '修改地址信息失败！',
+      })
+    }
   }
 }
 
 //防抖
 const onComfirnaddress__debounce = debounce(onComfirnaddress, 1000, true)
 
-// 删除某地址
+//确认配送地址删除
+const address_delete_list = ref([
+  {
+    name: '确认删除',
+    color: '#e50000',
+    fontSize: '20',
+  },
+])
+const address_delete_show = ref(false)
+// 确认删除某条地址
+const onDeleteaddress_comfirn = async () => {
+  const res = await deleteAddress(resaddress.value[addressIndex.value].id)
+  if (res.code === 1) {
+    uni.showToast({
+      icon: 'success',
+      title: '删除地址成功！',
+    })
+    Initaddress()
+    resaddress.value.splice(addressIndex.value, 1)
+    addressActiveList.value.splice(addressIndex.value, 1)
+    address_delete_show.value = false
+  } else {
+    uni.showToast({
+      icon: 'success',
+      title: '删除地址失败！',
+    })
+  }
+}
+
+// 删除某地址，打开弹出框
 const onDeleteaddress = (index: number) => {
-  Initaddress()
-  resaddress.value.splice(index, 1)
-  addressActiveList.value.splice(index, 1)
+  onChosseaddressLine(index)
+  address_delete_show.value = true
+}
+
+// 关闭弹出框
+const onClose_address = () => {
+  address_delete_show.value = false
 }
 
 // 取消地址编辑
@@ -155,16 +226,33 @@ const onAddaddress = () => {
  */
 
 const regionPopup = ref()
-const resRegion = ref([
-  { region: '学子', regionId: 213 },
-  { region: '学苑', regionId: 213 },
-])
+//区域信息列表
+const resRegion = ref<
+  {
+    region: string
+    regionId: number
+  }[]
+>([])
 
 const regionActiveList = ref<boolean[]>(new Array(resRegion.value.length).fill(false))
 const RegionIndex = ref<number>(0)
 const editRegion = reactive<{ region: string; regionId: number }>(
   deepCopy({ region: '', regionId: 0 }),
 )
+
+// 加载所有区域信息
+const getAllRegion_loading = async () => {
+  const res = await getAllPlace()
+  if (res.code === 1) {
+    resRegion.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'error',
+      title: '获取区域信息失败！',
+    })
+  }
+}
+
 // 打开区域设置弹框
 const onEditRegion = () => {
   if (resRegion.value.length === 0) {
@@ -184,6 +272,7 @@ const InitRegion = () => {
   regionActiveList.value.fill(false)
 }
 
+// 选择某条区域信息
 const onChosseRegionLine = (index: number) => {
   regionActiveList.value.fill(false)
   regionActiveList.value[index] = true
@@ -191,26 +280,95 @@ const onChosseRegionLine = (index: number) => {
   RegionIndex.value = index
 }
 
-const onComfirnRegion = () => {
+// 确认区域信息修改或新增
+const onComfirnRegion = async () => {
+  if (!editRegion.region) {
+    uni.showToast({
+      icon: 'error',
+      title: '名称不可为空！',
+    })
+    return
+  }
+
   if (RegionIndex.value === -2) {
-    //保存新增地址信息
-    resRegion.value.push(deepCopy(editRegion))
-    regionActiveList.value.push(true)
-    RegionIndex.value = resRegion.value.length - 1
+    //新增区域
+    const res = await addPlace(editRegion.region)
+    if (res.code === 1) {
+      uni.showToast({
+        icon: 'success',
+        title: '新增成功！',
+      })
+      await getAllRegion_loading()
+    } else {
+      uni.showToast({
+        icon: 'error',
+        title: '新增失败！',
+      })
+    }
   } else {
-    Object.assign(resRegion.value[RegionIndex.value], deepCopy(editRegion))
+    //修改区域
+    const res = await updatePlace(editRegion.region, editRegion.regionId)
+    if (res.code === 1) {
+      await getAllRegion_loading()
+      uni.showToast({
+        icon: 'none',
+        title: '修改区域成功！',
+      })
+    } else {
+      uni.showToast({
+        icon: 'none',
+        title: '修改区域信息失败！',
+      })
+    }
   }
 }
 
+//防抖
+const onComfirnRegion__debounce = debounce(onComfirnRegion, 1000, true)
+
+//关闭编辑框
 const onCloseRegion = () => {
   InitRegion()
 }
 
-// 删除某条区域
+//确认商家区域删除
+const region_delete_list = ref([
+  {
+    name: '确认删除',
+    color: '#e50000',
+    fontSize: '20',
+  },
+])
+const region_delete_show = ref(false)
+// 确认删除某条地址
+const onDeleteregion_comfirn = async () => {
+  const res = await deletePlace(resRegion.value[RegionIndex.value].regionId)
+  if (res.code === 1) {
+    uni.showToast({
+      icon: 'success',
+      title: '删除区域成功！',
+    })
+    InitRegion()
+    resRegion.value.splice(RegionIndex.value, 1)
+    regionActiveList.value.splice(RegionIndex.value, 1)
+    region_delete_show.value = false
+  } else {
+    uni.showToast({
+      icon: 'success',
+      title: '删除区域失败！',
+    })
+  }
+}
+
+// 删除某区域，打开弹出框
 const onDeleteRegion = (index: number) => {
-  InitRegion()
-  resRegion.value.splice(index, 1)
-  regionActiveList.value.splice(index, 1)
+  onChosseRegionLine(index)
+  region_delete_show.value = true
+}
+
+// 关闭弹出框
+const onClose_region = () => {
+  region_delete_show.value = false
 }
 
 // 新增一个区域
@@ -233,6 +391,7 @@ const onCloseBtn = () => {
 // 数据加载
 onLoad(async () => {
   await getAddress_loading()
+  await getAllRegion_loading()
 })
 </script>
 
@@ -242,6 +401,7 @@ onLoad(async () => {
     <view class="section address-section">
       <view class="section-title">送餐固定地址设置：</view>
       <view class="section-content">
+        <view class="line" v-show="resaddress.length === 0">没有内容呢</view>
         <view class="line" v-for="(item, index) in resaddress" :key="item.id">
           <view class="address">地址{{ index + 1 }}:{{ item.address }}</view>
           <view class="delivery-price">配送费：{{ item.deliveryPrice }}</view>
@@ -255,6 +415,7 @@ onLoad(async () => {
     <view class="section region-section">
       <view class="section-title">商家区域设置：</view>
       <view class="section-content">
+        <view class="line" v-show="resRegion.length === 0">没有内容呢</view>
         <view class="line" v-for="(item, index) in resRegion" :key="item.regionId">
           <view class="region">区域{{ index + 1 }}：{{ item.region }}</view>
         </view>
@@ -268,6 +429,7 @@ onLoad(async () => {
         <view class="close-btn" @click="onCloseBtn"><i class="iconfont icon-x"></i></view>
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="wrapper">
+            <view class="line title-line">请点击某地址或者新增地址</view>
             <view class="line" v-for="(item, index) in resaddress" :key="item.id">
               <view
                 class="y-wrapper"
@@ -336,12 +498,23 @@ onLoad(async () => {
       </view>
     </uni-popup>
 
+    <!-- 确认删除外卖配送地址 -->
+    <up-action-sheet
+      :actions="address_delete_list"
+      :title="'确认删除提示'"
+      :show="address_delete_show"
+      :cancelText="'误点了'"
+      @select="onDeleteaddress_comfirn"
+      @close="onClose_address"
+    ></up-action-sheet>
+
     <!-- 商家区域信息编辑 -->
     <uni-popup ref="regionPopup" type="dialog">
       <view class="popup-content">
         <view class="close-btn" @click="onCloseBtn"><i class="iconfont icon-x"></i></view>
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="wrapper">
+            <view class="line title-line">请点击某区域或者新增区域</view>
             <view class="line" v-for="(item, index) in resRegion" :key="item.region">
               <view
                 class="y-wrapper"
@@ -375,7 +548,7 @@ onLoad(async () => {
             </view>
 
             <view class="line btn-line">
-              <view class="btn popup-btn" @click="onComfirnRegion">确认编辑</view>
+              <view class="btn popup-btn" @click="onComfirnRegion__debounce">确认编辑</view>
               <view class="btn popup-btn" @click="onCloseRegion">取消编辑</view>
             </view>
           </view>
@@ -390,6 +563,16 @@ onLoad(async () => {
         </scroll-view>
       </view>
     </uni-popup>
+
+    <!-- 确认删除商家区域提示框 -->
+    <up-action-sheet
+      :actions="region_delete_list"
+      :title="'确认删除提示'"
+      :show="region_delete_show"
+      :cancelText="'误点了'"
+      @select="onDeleteregion_comfirn"
+      @close="onClose_region"
+    ></up-action-sheet>
   </view>
 </template>
 
@@ -521,6 +704,9 @@ onLoad(async () => {
       .line {
         justify-content: space-between;
         flex-wrap: nowrap;
+        &.title-line {
+          color: $text-color-green;
+        }
       }
       .title,
       .add-line {
@@ -562,6 +748,7 @@ onLoad(async () => {
       border-radius: 20rpx;
       &.active {
         background: $bg-color-green;
+        color: #000;
       }
     }
   }

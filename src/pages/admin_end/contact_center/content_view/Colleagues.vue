@@ -1,56 +1,59 @@
 <script lang="ts" setup>
 import { ref, nextTick } from 'vue'
-import type { ColleagueItem } from '@/types/aside'
+import type { ColleagueItem } from '@/types/admin_return'
 import { onLoad } from '@dcloudio/uni-app'
+import { getColleagueInfo, queryColleagueInfo } from '@/services/admin/admin_api'
 /**
  * @description 管理端联络中心页面管理员同事模块
  * @author 应东林
  * @date 2024-10-26
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-31
+ * @lastModifiedTime  2024-12-07
  */
-const res: ColleagueItem[] = [
-  {
-    phoneNumber: '16623819144',
-    realName: '应先生',
-    avater: 'static/images/car.png',
-    invitInfo: null,
-  },
-  {
-    phoneNumber: '16623819144',
-    realName: '应先生',
-    avater: 'static/images/car.png',
-    invitInfo: null,
-  },
-  {
-    phoneNumber: '16623819144',
-    realName: '应先生',
-    avater: 'static/images/car.png',
-    invitInfo: null,
-  },
-  {
-    phoneNumber: '16623819144',
-    realName: '应先生',
-    avater: 'static/images/car.png',
-    invitInfo: null,
-  },
-  {
-    phoneNumber: '17823089509',
-    realName: '蔡先生',
-    avater: 'static/images/car.png',
-    invitInfo: { invitUserName: '应先生', inviteTime: '2024.10.01' },
-  },
-]
+
+// 同事信息列表
+const colleague_res = ref<ColleagueItem[]>([])
+
+// 加载管理员信息
+const getColleagueInfo_loading = async () => {
+  const res = await getColleagueInfo()
+  if (res.code === 1) {
+    colleague_res.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取同事信息失败！',
+    })
+  }
+}
+const onSearch = async (realName: string) => {
+  const res = await queryColleagueInfo(realName)
+  if (res.code === 1) {
+    colleague_res.value = []
+    colleague_res.value.push(res.data)
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '查询同事信息失败！',
+    })
+    getColleagueInfo_loading()
+  }
+}
+
+// 数据加载
+onLoad(async () => {
+  await getColleagueInfo_loading()
+})
 </script>
 
 <template>
   <view class="colleagues">
     <view class="header">
-      <SearchBox />
+      <SearchBox :placeholder="'请输入查询姓名'" @search="onSearch" />
     </view>
     <view class="content">
       <scroll-view scroll-y="true" class="scroll-Y">
-        <view class="colleague-item" v-for="item in res" :key="item.realName">
+        <view class="colleague-item" v-for="item in colleague_res" :key="item.realName">
           <up-avatar :src="item.avater"></up-avatar>
           <view class="info-section">
             <view class="line">

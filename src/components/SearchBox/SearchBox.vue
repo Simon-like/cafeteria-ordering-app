@@ -7,13 +7,21 @@ import { ref, reactive } from 'vue'
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-10-24
  */
+const props = defineProps<{
+  placeholder?: string
+}>()
+
+const emit = defineEmits(['search'])
+
 const input_content = ref<string>('')
-const onSearch = () => {}
+const onSearch = () => {
+  emit('search', input_content.value)
+}
 </script>
 
 <template>
   <view class="search-box">
-    <input type="text" v-model="input_content" />
+    <input type="text" v-model="input_content" :placeholder="props.placeholder" />
     <view class="icon" @click="onSearch">
       <i class="iconfont icon-sousuo"></i>
     </view>
@@ -28,7 +36,7 @@ const onSearch = () => {}
   border: 1px solid #b1caae;
   border-radius: 20rpx;
   background: #fff;
-  width: 230rpx;
+  max-width: 300rpx;
   transition: 0.2s ease;
   padding: 6rpx 10rpx;
   input {
@@ -36,6 +44,10 @@ const onSearch = () => {}
     background: transparent;
     text-align: start;
     height: 50rpx;
+    font-size: 26rpx;
+    &::placeholder {
+      font-size: 20rpx;
+    }
   }
   &:focus-within {
     border: 1px solid $bg-color-dark; /* 当子元素获得焦点时，外层盒子的边框样式 */

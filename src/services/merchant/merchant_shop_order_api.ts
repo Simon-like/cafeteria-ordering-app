@@ -28,13 +28,48 @@ export const getAllOrdersByStatus = (
   })
 }
 
-// 待定ing
-export const confirmtheOrder = (orderId) => {
+// // 待定ing
+// export const confirmtheOrder = (orderId) => {
+//   return http({
+//     method: 'POST',
+//     url: '/merchant/OrdersManage',
+//     data: {
+//       orderId,
+//     },
+//   })
+// }
+
+/**
+ * 财务管理接口
+ */
+// 获取某日总金额流水
+export const getTotalAmountRollover = (orderTime: string) => {
   return http({
     method: 'POST',
-    url: '/merchant/OrdersManage',
+    url: `/merchant/statistics/getTotalAmountRollover`,
     data: {
-      orderId,
+      orderTime,
+    },
+  })
+}
+
+// 获取历史订单
+export const getCompletedOrRefund = (orderTime: string, status: number) => {
+  return http<
+    {
+      orderId: number
+      orderCode: string // 订单编号，有规定格式的一个编码
+      orderTime: string
+      payMethod: number // 支付方式，微信支付0，支付宝支付1
+      actualPrice: number // 实际支付金额
+      orderStatus: number //2->已支付;4->已退款;
+    }[]
+  >({
+    method: 'POST',
+    url: `/merchant/statistics/getCompletedOrRefund`,
+    data: {
+      orderTime,
+      status,
     },
   })
 }

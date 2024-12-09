@@ -4,6 +4,7 @@ import OderItem from '@/pages/merchant_end/shop/content_view/financialBills_comp
 import { ref, reactive } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { getLastDays } from '@/composables/tools'
+import { getCompletedOrRefund } from '@/services/merchant/merchant_shop_order_api'
 /**
  * @description 店铺管理财务信息管理
  * @author 应东林
@@ -11,35 +12,6 @@ import { getLastDays } from '@/composables/tools'
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-10-31
  */
-
-//下拉订单类型选择逻辑实现
-const oderType_PickerRef = ref()
-const oderType_show = ref<boolean>(false)
-const oderType_columns = reactive([
-  [
-    {
-      label: '全部',
-      id: 0,
-    },
-    {
-      label: '已支付',
-      id: 1,
-    },
-    {
-      label: '已退款',
-      id: 2,
-    },
-  ],
-])
-const oderType_value = ref<string>(oderType_columns[0][0].label) //当前选中订单类型
-const oderType_id = ref<number>(0) //对应ID
-
-const oderType_confirm = (e: any) => {
-  const { value, values, index } = e
-  oderType_id.value = value[0].id
-  oderType_value.value = value[0].label
-  oderType_show.value = false
-}
 
 type OrderItem = {
   orderId: number
@@ -49,64 +21,73 @@ type OrderItem = {
   actualPrice: number // 实际支付金额
   orderStatus: number //2->已支付;4->已退款;
 }
+const date_now = ref<string>('') //当前时间，依靠Header组件传递过来
+const resOrder = ref<OrderItem[]>([]) //订单数组
 
-const resOrder = ref<OrderItem[]>([
-  {
-    orderId: 12,
-    orderCode: 'DSG534',
-    orderTime: '09-31',
-    payMethod: 0,
-    actualPrice: 52.36,
-    orderStatus: 2,
-  },
-  {
-    orderId: 12,
-    orderCode: 'DSG534',
-    orderTime: '09-31',
-    payMethod: 0,
-    actualPrice: 52.36,
-    orderStatus: 2,
-  },
-  {
-    orderId: 15,
-    orderCode: 'DSG534',
-    orderTime: '09-31',
-    payMethod: 0,
-    actualPrice: 52.36,
-    orderStatus: 2,
-  },
-  {
-    orderId: 1,
-    orderCode: 'DSG534',
-    orderTime: '09-31',
-    payMethod: 0,
-    actualPrice: 52.36,
-    orderStatus: 2,
-  },
-  {
-    orderId: 13,
-    orderCode: 'DSG534',
-    orderTime: '09-31',
-    payMethod: 0,
-    actualPrice: 52.36,
-    orderStatus: 2,
-  },
+//下拉订单类型选择逻辑实现
+const oderType_PickerRef = ref()
+const oderType_show = ref<boolean>(false)
+const oderType_columns = reactive([
+  [
+    {
+      label: '全部',
+      id: -1,
+    },
+    {
+      label: '已支付',
+      id: 4,
+    },
+    {
+      label: '已退款',
+      id: 8,
+    },
+  ],
 ])
+const oderType_value = ref<string>(oderType_columns[0][0].label) //当前选中订单类型
+const oderType_id = ref<number>(0) //对应ID
+
+//选择订单类型
+const oderType_confirm = async (e: any) => {
+  const { value, values, index } = e
+  oderType_id.value = value[0].id
+  oderType_value.value = value[0].label
+  oderType_show.value = false
+  await getOrder_loading()
+}
+
+// 获取时间信息
+const onDate_selected = async (date: string) => {
+  date_now.value = date
+  await getOrder_loading()
+}
+
+// 加载订单数据
+const getOrder_loading = async () => {
+  const res = await getCompletedOrRefund(date_now.value, oderType_id.value)
+  if (res.code === 1) {
+    resOrder.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '加载订单数据失败！',
+    })
+  }
+}
 </script>
 
 <template>
   <view class="financial-bills">
-    <Header :totalPrice="562.69" :difference="-52.36" />
+    <Header @date="onDate_selected" />
     <view class="main">
       <view class="line">
         <view>流水明细</view>
-        <SearchBox />
         <view class="oderType-picker" @click="oderType_show = true">
           筛选：{{ oderType_value }}<i class="iconfont icon-jiantou_xia"></i>
         </view>
       </view>
       <view class="content">
         <scroll-view scroll-y="true" class="scroll-Y">
+          <view class="line-none" v-show="resOrder.length === 0">暂时没有数据！</view>
           <OderItem v-for="item in resOrder" :key="item.orderId" :orderItem="item" />
         </scroll-view>
       </view>
@@ -155,6 +136,17 @@ const resOrder = ref<OrderItem[]>([
       margin-top: 30rpx;
       width: 100%;
       height: 50vh;
+      .scroll-Y {
+        position: relative;
+        .line-none {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 36rpx;
+          font-weight: 600;
+        }
+      }
     }
   }
 }

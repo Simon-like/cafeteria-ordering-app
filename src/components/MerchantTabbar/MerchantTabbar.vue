@@ -15,7 +15,7 @@ interface TabbarItem {
   text: string //tabbar选项名称
   pagePath: string //tabbar页面路径
   iconPath: string //未点击的图标
-  selectedIconPath: string //点击的图标
+  selectedIconPath?: string //点击的图标
 }
 
 const tabbar_icon_list = [
@@ -26,7 +26,7 @@ const tabbar_icon_list = [
 ]
 
 // 商家端tabbar选项
-const MerchantTabbarItem: Tabbartem[] = [
+const MerchantTabbarItem: TabbarItem[] = [
   {
     index: 0,
     text: '首页',
