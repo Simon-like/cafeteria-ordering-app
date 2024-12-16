@@ -25,3 +25,32 @@ export type ColleagueItem = {
   avater: string
   invitInfo: InviteInfo | null
 }
+
+/**
+ * 外卖员管理模块
+ */
+//外卖员申述
+export type CourierFeedback = {
+  time: string
+  type: string
+  content: string
+  imgs: string
+  orderNumber: string
+  diliver: string
+  diliver_phone: string
+  name: string
+  contactPhone: string
+  customer: string
+  customer_phone: string
+}
+//外卖员信息
+export type CourierInfo = {
+  imageUrl: string
+  info: {
+    nums: [{}]
+    totalOrders: string
+    totalSalary: string
+  }
+  phoneNumber: string
+  realName: string
+}

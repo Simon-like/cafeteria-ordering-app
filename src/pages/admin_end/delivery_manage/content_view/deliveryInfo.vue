@@ -51,17 +51,17 @@ const changeShow = (index: number) => {
           <image :src="item.picture" mode="aspectFit"></image>
         </view>
         <view>
-          <view class="info-item">名称: {{ item.name }}</view>
-          <view class="info-item">联系方式: {{ item.phone }}</view>
+          <view class="info-item" style="font-size: 28rpx">{{ item.name }}</view>
+          <view class="info-item">电话: {{ item.phone }}</view>
         </view>
       </view>
       <view class="info-wrapper" :class="{ show: item.is_show }">
         <view class="content" v-if="item.is_show">
-          <view class="info-item">总收入: {{ item.totalsalary }}</view>
-          <view class="info-item">总订单: {{ item.totalorder }}</view>
-          <view class="info-item">指标A: {{ item.A }}</view>
-          <view class="info-item">指标B: {{ item.B }}</view>
-          <view class="info-item">指标C: {{ item.C }}</view>
+          <view class="info-item">近7天总配送费: {{ item.totalsalary }}</view>
+          <view class="info-item">固定地点总配送单数: {{ item.totalorder }}</view>
+          <view class="info-item">地点A总配送单数: {{ item.A }}</view>
+          <view class="info-item">地点B总配送单数: {{ item.B }}</view>
+          <view class="info-item">地点C总配送单数: {{ item.C }}</view>
         </view>
         <view @click="changeShow(index)" class="icon">
           <i class="iconfont icon-jiantouarrow483"></i>
@@ -78,7 +78,7 @@ const changeShow = (index: number) => {
   display: flex;
   flex-direction: column;
   margin: 15rpx 15rpx 15rpx 15rpx;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: $bg-color-light;
 
   .info {
     display: flex;

@@ -109,3 +109,10 @@ export const GetUniversity = () => {
     url: '/common/getUniversityList',
   })
 }
+
+export const GetRegion = (college: string) => {
+  return http<{ region: string; regionId: string }[]>({
+    method: 'GET',
+    url: `/administer/getplace?college=${college}`,
+  })
+}

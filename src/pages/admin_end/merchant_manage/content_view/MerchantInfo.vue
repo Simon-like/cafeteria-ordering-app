@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 /**
  * @description 管理端区域商家信息展示模块
@@ -9,6 +9,7 @@ import { ref } from 'vue'
  * @lastModifiedTime  2024-10-12
  */
 
+// 模拟数据
 const testInfo = ref([
   {
     place: '食堂a',
@@ -37,7 +38,7 @@ const testInfo = ref([
     place: '食堂b',
     merchantInfoList: [
       {
-        name: '兰州拉面',
+        name: '2-1',
         logo: 'http://lzlm',
         address: '哈V',
         contactPhone: '12345678901',
@@ -57,35 +58,64 @@ const testInfo = ref([
     ],
   },
 ])
-const goToDetail = (placeIndex, merchantIndex) => {
-  console.log(placeIndex, merchantIndex)
+
+// 获取所有的食堂名称，供选择使用
+const placeOptions = computed(() => {
+  return testInfo.value.length > 0 ? testInfo.value.map((item) => item.place) : []
+})
+
+// 默认选择第一个食堂
+const selectedPlaceIndex = ref(0)
+
+// 根据选中的食堂索引过滤商户信息
+const filteredMerchants = computed(() => {
+  const placeData = testInfo.value[selectedPlaceIndex.value]
+  return placeData ? placeData.merchantInfoList : []
+})
+
+// 切换食堂
+const selectPlace = (index: number) => {
+  if (index >= 0 && index < placeOptions.value.length) {
+    selectedPlaceIndex.value = index
+  }
+}
+
+// 查看商户详情
+const goToDetail = (place, merchantIndex) => {
+  console.log(place, merchantIndex)
   uni.navigateTo({
-    url: `/pages/admin_end/merchant_manage/content_view/detail?placeIndex=${placeIndex}&merchantIndex=${merchantIndex}`,
+    url: `/pages/admin_end/merchant_manage/content_view/detail?place=${place}&merchantIndex=${merchantIndex}`,
   })
 }
 </script>
-
 <template>
   <view class="content">
-    <scroll-view class="box" scroll-y="true"
-      ><view v-for="(area, placeIndex) in testInfo" :key="placeIndex" class="area">
-        <view class="place">
-          {{ area.place }}
-        </view>
-        <view v-for="(dish, index) in area.merchantInfoList" :key="index" class="dishList">
-          <view class="logo">
-            <image :src="dish.logo" class="logo"></image>
-          </view>
-          <view class="details">
-            <view class="name">{{ dish.name }}</view>
-            <view class="businessHours">营业时间:{{ dish.businessHours }}</view>
-            <view class="contactPhone">联系电话:{{ dish.contactPhone }}</view>
-            <view class="btns">
-              <button @click="goToDetail(placeIndex, index)">查看详细信息</button>
-            </view>
-          </view>
-        </view></view
+    <!-- 食堂选择下拉框 -->
+    <view class="place-picker">
+      <picker
+        :value="selectedPlaceIndex"
+        :range="placeOptions"
+        @change="(e) => selectPlace(e.detail.value)"
       >
+        <view class="picker-btn"> 当前选择食堂：{{ placeOptions[selectedPlaceIndex] }} </view>
+      </picker>
+    </view>
+
+    <!-- 展示商户信息 -->
+    <scroll-view class="box" scroll-y="true">
+      <view v-for="(merchant, index) in filteredMerchants" :key="index" class="dishList">
+        <view class="logo">
+          <image :src="merchant.logo" class="logo"></image>
+        </view>
+        <view class="details">
+          <view class="name">{{ merchant.name }}</view>
+          <view class="businessHours">营业时间:{{ merchant.businessHours }}</view>
+          <view class="contactPhone">联系电话:{{ merchant.contactPhone }}</view>
+          <view class="btns">
+            <button @click="goToDetail(selectedPlace, index)">查看详细信息</button>
+          </view>
+        </view>
+      </view>
     </scroll-view>
   </view>
 </template>
@@ -95,64 +125,75 @@ const goToDetail = (placeIndex, merchantIndex) => {
   width: 590rpx;
   height: 100%;
   padding: 15rpx;
-  .place {
-    font-size: 36rpx;
-    width: 100%;
-    height: 60rpx;
-    background-color: #fff;
-    display: flex;
-    padding: 0 10rpx;
-    justify-content: center;
-    align-items: center;
+
+  .place-picker {
+    margin-bottom: 20rpx;
+    font-size: 30rpx;
+    .picker-btn {
+      padding: 10rpx;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+      border-radius: 5rpx;
+      text-align: center;
+    }
   }
+
   .box {
     width: 100%;
-    max-height: 1400rpx; /* 设置最大高度，根据需要调整 */
-    overflow-y: auto; /* 当内容超出最大高度时显示滚动条 */
+    max-height: 1400rpx;
+    overflow-y: auto;
     display: flex;
-    flex-direction: column; /* 垂直排列子元素 */
+    flex-direction: column;
+
     .dishList {
       display: flex;
-      align-items: center; /* 垂直居中 */
-      padding: 10rpx; /* 增加内边距 */
-      border-bottom: 1px solid #333; /* 增加底部边框 */
-      background-color: #ccc;
+      align-items: center;
+      padding: 10rpx;
+      border-bottom: 1px solid #333;
+      background-color: $bg-color-light;
       margin-bottom: 20rpx;
       height: 220rpx;
-      &:last-child {
-        border-bottom: none; /* 最后一个元素不显示边框 */
-      }
+
       .logo {
-        width: 170rpx; /* 设置宽度 */
-        height: 170rpx; /* 设置高度 */
-        margin-right: 20rpx; /* 增加右边距 */
+        width: 170rpx;
+        height: 170rpx;
+        margin-right: 20rpx;
         background-color: #000;
       }
+
       .details {
         display: flex;
-        flex-direction: column; /* 垂直排列子元素 */
-        flex-grow: 1; /* 允许元素增长填充剩余空间 */
-        .name,
+        flex-direction: column;
+        flex-grow: 1;
+        .name {
+          margin-bottom: 5rpx;
+          padding: 5rpx;
+          font-size: 35rpx;
+        }
         .businessHours,
         .contactPhone {
-          margin-bottom: 5rpx; /* 增加底部边距 */
-          padding: 5rpx; /* 增加内边距 */
+          margin-bottom: 5rpx;
+          padding: 5rpx;
           font-size: 25rpx;
+          color: $text-color-active;
         }
+
         .name {
           font-size: 32rpx;
         }
       }
+
       .btns {
-        margin-left: auto; /* 按钮靠右 */
+        margin-left: auto;
         margin-right: 20rpx;
         margin-bottom: 25rpx;
         height: 20rpx;
         width: 280rpx;
+
         button {
-          font-size: 20rpx; /* 设置按钮字体大小 */
-          border: 1px solid black; /* 设置黑边框 */
-          border-radius: 0; /* 取消圆角 */
+          font-size: 20rpx;
+          background-color: $bg-color-green;
+          border-radius: 10rpx;
           padding: 0;
         }
       }

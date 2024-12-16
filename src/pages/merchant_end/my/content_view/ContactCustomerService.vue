@@ -16,7 +16,7 @@ const value = ref<string>('')
       }"
       :placeholderStyle="'color:rgba(0, 0, 0, 0.5);font-size:14px'"
     ></uni-easyinput>
-    <view class="sub-button">提交</view>
+    <view class="sub-button"><button>提交</button></view>
     <view class="text-area">
       <view class="line">
         如您的问题没有解决或客服没有在三个工作日内回复您，您可以选择以下方式联系：
@@ -56,23 +56,25 @@ const value = ref<string>('')
 
   .sub-button {
     margin: 0 auto;
-    margin-top: 46rpx;
-    width: 166rpx;
-    height: 46rpx;
-    background-color: rgba(126, 126, 94, 0.7);
-    line-height: 44rpx;
-    text-align: center;
-    transition: all 0.2s ease;
-
-    &:active {
-      opacity: 0.8;
-      transform: scale(0.95);
+    button {
+      font-size: 28rpx;
+      background-color: $bg-color-green;
+      color: #000;
+      width: 200rpx;
+      padding: 3rpx 10rpx;
+      border-radius: 80rpx;
+      text-align: center;
+      &:active {
+        opacity: 0.8;
+        transform: scale(0.95);
+      }
     }
   }
 
   .text-area {
     margin: 48rpx 30rpx 0 30rpx;
     font-size: 25rpx;
+    color: #ccc;
   }
 }
 </style>

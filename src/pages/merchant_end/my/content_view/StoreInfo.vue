@@ -228,33 +228,38 @@ const onAddressChange = (e: any) => {
 <template>
   <view class="store-info">
     <view class="store-logo">
-      <text>店铺logo:</text>
       <image :src="Merchant.logo" mode="aspectFill" class="logo" @click="openLogoPicker()"></image>
     </view>
-    <view class="store-name">店铺名称: {{ Merchant.name }}</view>
-    <view class="store-address">店铺地址: {{ Merchant.address }}</view>
-    <view class="contact-number">联系电话: {{ Merchant.contactPhone }}</view>
-    <view class="opening-hours">营业时间:{{ Merchant.businessHours }}</view>
-    <view class="owner">所有人: {{ Merchant.realName }}</view>
-    <view class="store-introduction">
-      <text>店铺简介: </text>
-      <view class="description">
-        {{ Merchant.discription }}
+    <view class="content">
+      <view class="content-items">店铺名称: {{ Merchant.name }}</view>
+      <view class="content-items">店铺地址: {{ Merchant.address }}</view>
+      <view class="content-items">联系电话: {{ Merchant.contactPhone }}</view>
+      <view class="content-items">营业时间:{{ Merchant.businessHours }}</view>
+      <view class="content-items">所有人: {{ Merchant.realName }}</view>
+      <view class="content-items">
+        <text>店铺简介: </text>
+        <view class="description">
+          {{ Merchant.discription }}
+        </view>
+      </view>
+      <view class="Operation">
+        <label>
+          <checkbox :checked="!Merchant.operationStatus" @click="HandleUpdate()" /><text
+            >是否营业</text
+          >
+        </label>
       </view>
     </view>
-    <view class="Operation">
-      <label>
-        <checkbox :checked="!Merchant.operationStatus" @click="HandleUpdate()" /><text
-          >是否营业</text
-        >
-      </label>
-    </view>
-
-    <view class="edit-button" @click="onEdit"> 修改资料 </view>
+    <view class="edit-button" @click="onEdit"> <button>修改资料</button> </view>
 
     <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
       <uni-card class="form-card">
-        <uni-section title="修改店铺logo" type="line">
+        <uni-section
+          title="修改店铺logo"
+          type="line"
+          titleColor="$bg-color-dark"
+          titleFontSize="26rpx"
+        >
           <up-upload
             :fileList="fileList1"
             @delete="deletePic"
@@ -272,7 +277,7 @@ const onAddressChange = (e: any) => {
 
     <uni-popup ref="popup" type="dialog" border-radius="10px 10px 0 0" @change="HandleGetInfo()">
       <uni-card class="form-card">
-        <uni-section title="修改资料" type="line">
+        <uni-section title="修改资料" title-color="rgba(25, 196, 126, 0.7)" title-font-size="40rpx">
           <scroll-view scroll-y="true" class="scroll-Y">
             <view class="form-wrapper">
               <!-- 基础表单 -->
@@ -337,7 +342,7 @@ const onAddressChange = (e: any) => {
                   />
                 </uni-forms-item>
               </uni-forms>
-              <view class="submit-button" @click="submit"> 提交 </view>
+              <view class="submit-button" @click="submit"> <button>确认修改</button> </view>
             </view>
           </scroll-view>
         </uni-section>
@@ -359,28 +364,38 @@ const onAddressChange = (e: any) => {
   font-size: 30rpx;
 
   .store-logo {
-    display: flex;
-    gap: 26rpx;
+    margin: 0 auto;
     .logo {
-      width: 170rpx;
-      height: 170rpx;
+      width: 200rpx;
+      height: 200rpx;
       border: 2px solid rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      object-fit: cover;
     }
   }
-
+  .content {
+    background-color: $bg-color-light;
+    width: 100%;
+    padding-left: 20rpx;
+    padding-top: 20rpx;
+    padding-bottom: 20rpx;
+    .content-items {
+      margin-bottom: 20rpx;
+    }
+  }
   .edit-button {
     margin: 0 auto;
-    margin-top: 46rpx;
-    width: 166rpx;
-    height: 46rpx;
-    background-color: rgba(126, 126, 94, 0.7);
-    line-height: 44rpx;
-    text-align: center;
-    transition: all 0.2s ease;
-
-    &:active {
-      opacity: 0.8;
-      transform: scale(0.95);
+    button {
+      background-color: $bg-color-green;
+      color: #000;
+      width: 400rpx;
+      padding: 10rpx 20rpx;
+      border-radius: 80rpx;
+      text-align: center;
+      &:active {
+        opacity: 0.8;
+        transform: scale(0.95);
+      }
     }
   }
 
@@ -414,7 +429,6 @@ const onAddressChange = (e: any) => {
           font-size: 30rpx;
           margin-right: 30rpx;
         }
-
         .picker {
           display: flex;
           align-items: center;
@@ -424,16 +438,17 @@ const onAddressChange = (e: any) => {
 
         .submit-button {
           margin: 0 auto;
-          margin-top: 46rpx;
-          width: 300rpx;
-          height: 60rpx;
-          line-height: 60rpx;
-          background-color: rgba(126, 126, 94, 0.7);
-          text-align: center;
-          transition: all 0.2s ease;
-          &:active {
-            opacity: 0.8;
-            transform: scale(0.95);
+          button {
+            background-color: $bg-color-green;
+            color: #000;
+            width: 400rpx;
+            padding: 10rpx 20rpx;
+            border-radius: 80rpx;
+            text-align: center;
+            &:active {
+              opacity: 0.8;
+              transform: scale(0.95);
+            }
           }
         }
       }

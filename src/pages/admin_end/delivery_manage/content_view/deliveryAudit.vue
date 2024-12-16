@@ -40,8 +40,8 @@ const reject = (index: number) => {
       <view>编号: {{ audit.id }}</view>
       <view>身份信息: {{ audit.identity }}</view>
       <view class="btn">
-        <button @click="approve(index)">通过</button>
-        <button @click="reject(index)">不通过</button>
+        <button @click="approve(index)" class="approve-btn">通过</button>
+        <button @click="reject(index)" class="reject-btn">不通过</button>
       </view>
     </view>
   </scroll-view>
@@ -53,20 +53,36 @@ const reject = (index: number) => {
   padding: 10rpx;
   display: flex;
   flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: $bg-color-light;
   view {
-    font-size: 25rpx;
+    font-size: 28rpx;
   }
   .btn {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20rpx;
-    .approve-btn,
+    margin: 0 auto;
+
+    button {
+      text-align: center;
+      color: #000;
+      font-size: 28rpx;
+      margin-right: 40rpx;
+      &:active {
+        opacity: 0.8;
+        transform: scale(0.95);
+      }
+    }
+    .approve-btn {
+      background-color: $bg-color-green;
+      width: 100rpx;
+      padding: 5rpx 10rpx;
+      border-radius: 15%;
+    }
     .reject-btn {
-      border: 2px solid black;
-      padding: 10rpx;
-      margin: 0 20rpx;
+      width: 150rpx;
+      padding: 5rpx 10rpx;
+      border-radius: 15%;
+      border: 1rpx solid $bg-color-dark;
+      background-color: $bg-color-light;
     }
   }
 }

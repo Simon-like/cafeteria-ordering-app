@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useMerchantStore } from '@/stores'
-import { GetUniversity } from '@/services/merchant/merchant_api'
+import { GetUniversity, GetRegion } from '@/services/merchant/merchant_api'
 import { onLoad } from '@dcloudio/uni-app'
 import type { University } from '@/types/merchant_return'
 const realName = ref<string>('')
@@ -13,7 +13,6 @@ const merchantStore = useMerchantStore()
 const gotoNext = () => {
   merchantStore.realName = realName.value
   merchantStore.name = name.value
-  merchantStore.address = address.value
   uni.navigateTo({
     url: '/pages/login_register/merchant/register/register_3',
   })
@@ -26,7 +25,6 @@ const universities = ref<University[]>([])
 const fetchUniversities = async () => {
   try {
     const res = await GetUniversity()
-    console.log(res.data)
     if (res.data && res.data.UniversityList) {
       universities.value = res.data.UniversityList
       console.log(universities.value)
@@ -40,7 +38,9 @@ const universityNames = computed(() => {
   return universities.value.map((university) => university.collegeName)
 })
 // 在页面加载时调用获取大学列表的函数
-onLoad(() => fetchUniversities())
+onLoad(() => {
+  fetchUniversities()
+})
 
 // 当选择大学时触发的函数
 const onUniversityChange = (e) => {
@@ -54,7 +54,15 @@ const onUniversityChange = (e) => {
     console.log(merchantStore.collegeId, merchantStore.collegeName)
   }
 }
-
+const fetchRegion = async () => {
+  if (merchantStore.collegeName) {
+    const res = await GetRegion(merchantStore.collegeName)
+    console.log('1')
+    console.log(res.data)
+  } else {
+    console.log('未选择大学')
+  }
+}
 const resRegion = ref([
   { region: '学子', regionId: 213 },
   { region: '学苑', regionId: 213 },
@@ -113,6 +121,7 @@ const onRegionChange = (e) => {
           mode="selector"
           :range="resRegion.map((item) => item.region)"
           @change="onRegionChange"
+          @click="fetchRegion"
         >
           <view class="uni-text">{{ selectedRegion || '请选择店铺地址' }}</view>
           <!-- 显示选择的店铺地址 -->

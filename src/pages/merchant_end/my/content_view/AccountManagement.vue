@@ -8,9 +8,9 @@ const Merchant = useMerchantStore()
 
 <template>
   <view class="account-mana">
-    <view class="platform-logo"> 平台logo </view>
+    <view class="platform-logo"> <image src="@/static/images/kssdt.png"></image> </view>
     <view class="account-info"> 当前账号：{{ Merchant.name }} </view>
-    <view class="outlogin" @click="gotoLoginAndRegister">退出登录</view>
+    <view class="outlogin" @click="gotoLoginAndRegister"><button>退出登录</button></view>
   </view>
 </template>
 
@@ -37,16 +37,19 @@ const Merchant = useMerchantStore()
   }
 
   .outlogin {
-    width: 270rpx;
-    height: 44rpx;
-    background-color: rgba(126, 126, 94, 0.7);
-    line-height: 44rpx;
-    text-align: center;
-    transition: all 0.2s ease;
-
-    &:active {
-      opacity: 0.8;
-      transform: scale(0.95);
+    margin: 0 auto;
+    button {
+      font-size: 28rpx;
+      background-color: $bg-color-green;
+      color: #000;
+      width: 200rpx;
+      padding: 5rpx 20rpx;
+      border-radius: 80rpx;
+      text-align: center;
+      &:active {
+        opacity: 0.8;
+        transform: scale(0.95);
+      }
     }
   }
 }
