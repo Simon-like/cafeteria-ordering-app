@@ -69,10 +69,11 @@ const dishes = ref<Dish>([
     .title {
       font-size: 35rpx;
       font-weight: bold;
+      color: $text-color-green;
     }
     .nav {
       font-size: 25rpx;
-      color: #ccc;
+      color: $text-color-green;
       text-decoration: underline;
     }
   }
@@ -81,7 +82,7 @@ const dishes = ref<Dish>([
     display: flex;
     align-items: center;
     padding: 15rpx;
-    background-color: #ccc;
+    background-color: $bg-color-light;
     margin-bottom: 10rpx;
     .logo {
       width: 150rpx;

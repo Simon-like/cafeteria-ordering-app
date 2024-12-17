@@ -1,21 +1,24 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
-import { admin_register } from '@/services/admin/admin_api'
+import { admin_register, verifyInviteCode } from '@/services/admin/admin_api'
 import { gotoLogin } from '@/composables/navigation/navigation'
 const adminStore = useAdminStore()
 const handleRegister = async () => {
-  admin_register(
-    adminStore.phoneNumber,
-    adminStore.password,
-    adminStore.inviteCode,
-    adminStore.realName,
-    adminStore.college,
-    adminStore.validationCode,
-  ).then((response) => {
-    console.log(response.data)
-    gotoLogin()
-  })
+  const res = await verifyInviteCode(adminStore.inviteCode)
+  if (res) {
+    admin_register(
+      adminStore.phoneNumber,
+      adminStore.password,
+      adminStore.inviteCode,
+      adminStore.realName,
+      adminStore.college,
+      adminStore.validationCode,
+    ).then((response) => {
+      console.log(response.data)
+      gotoLogin()
+    })
+  }
 }
 </script>
 <template>

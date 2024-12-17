@@ -80,8 +80,8 @@ const changeShow = (index: number) => {
             <view class="info-item"> 店铺简介: {{ item.shop_introduction }} </view>
           </view>
           <view class="btn">
-            <button @click="approve(index)">通过</button>
-            <button @click="reject(index)">不通过</button>
+            <button @click="approve(index)" class="approve">通过</button>
+            <button @click="reject(index)" class="reject">不通过</button>
           </view>
         </view>
         <view @click="changeShow(index)" class="icon">
@@ -100,7 +100,7 @@ const changeShow = (index: number) => {
   display: flex;
   flex-direction: column;
   margin: 15rpx 15rpx 15rpx 15rpx;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: $bg-color-light;
 
   .info {
     display: flex; // 使信息区域为水平排列
@@ -149,11 +149,18 @@ const changeShow = (index: number) => {
         justify-content: space-between;
         width: 100%;
         margin-top: 20rpx;
-        .approve-btn,
-        .reject-btn {
-          border: 2px solid black;
-          padding: 10rpx;
-          margin: 0 20rpx;
+        .approve {
+          background-color: $bg-color-green;
+          width: 100rpx;
+          padding: 5rpx 10rpx;
+          border-radius: 15%;
+        }
+        .reject {
+          width: 150rpx;
+          padding: 5rpx 10rpx;
+          border-radius: 15%;
+          border: 1rpx solid $bg-color-dark;
+          background-color: $bg-color-light;
         }
       }
     }

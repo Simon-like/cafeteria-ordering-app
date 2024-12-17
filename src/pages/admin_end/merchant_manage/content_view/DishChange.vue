@@ -1,88 +1,99 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import iconComponent from '@/components/icons/icons.vue'
-import addComponent from './DishChangeViews/add.vue'
-import changeComponent from './DishChangeViews/change.vue'
-import deleteComponent from './DishChangeVIews/delete.vue'
-/**
- * @description 管理端商家菜单管理模块
- * @author 钟礼豪
- * @date 2024-10-11
- * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-10-12
- */
+import DishAddComponent from './DishChangeViews/add.vue' // 新增菜品组件
+import DishEditComponent from './DishChangeViews/change.vue' // 更改菜品组件
+import DishDeleteComponent from './DishChangeViews/delete.vue' // 删除菜品组件
 
-// 状态管理，用于跟踪当前显示的视图
-const currentView = ref('main') // 初始视图为主页面
+// 管理当前页面的视图状态
+const currentView = ref('main') // 当前显示的视图，默认主页面
+const selectedMerchantId = ref<number | null>(null) // 当前选中的商户ID
 
-const showAddDish = () => {
-  currentView.value = 'addDish' // 点击新增菜品时设置状态
+// 模拟商户数据
+const merchants = ref([
+  { id: 1, name: '商家A', addDishData: 1, editDishData: 1 },
+  { id: 2, name: '商家B', addDishData: 0, editDishData: 1 },
+  { id: 3, name: '商家C', addDishData: 1, editDishData: 0 },
+  { id: 4, name: '商家D', addDishData: 1, editDishData: 1 },
+  { id: 5, name: '商家E', addDishData: 1, editDishData: 1 },
+  { id: 6, name: '商家F', addDishData: 0, editDishData: 0 },
+])
+
+// 展示增添菜品页面
+const showAddDish = (merchantId: number) => {
+  selectedMerchantId.value = merchantId
+  currentView.value = 'addDish' // 设置视图为新增菜品
 }
 
-const showEditDish = () => {
-  currentView.value = 'editDish' // 点击更改菜品时设置状态
+// 展示编辑菜品页面
+const showEditDish = (merchantId: number) => {
+  selectedMerchantId.value = merchantId
+  currentView.value = 'editDish' // 设置视图为编辑菜品
 }
-const showDeleteDish = () => {
-  currentView.value = 'deleteDish' // 点击更改菜品时设置状态
+
+// 展示删除菜品页面
+const showDeleteDish = (merchantId: number) => {
+  selectedMerchantId.value = merchantId
+  currentView.value = 'deleteDish' // 设置视图为删除菜品
 }
+
+// 返回主页面
 const goBack = () => {
   currentView.value = 'main' // 返回主页面
+  selectedMerchantId.value = null // 清空选中的商家ID
 }
 </script>
 
 <template>
   <view class="menu-manage">
     <view class="box">
-      <!-- 主页面内容 -->
-      <view v-if="currentView === 'main'" class="card">
-        <view class="info">
-          <view class="logo"></view>
-          <view class="merchant">
-            <view class="name">
-              xxx
-              <navigator url="pages/admin_end/merchant_manage/content_view/detail" class="nav">
-                (点击跳转到商家信息页面)
-              </navigator>
-            </view>
-            <view class="content">
-              <text>申请修改信息</text>
-              <view class="time">13:30</view>
-            </view>
-          </view>
-        </view>
-        <!-- 分割线 -->
-        <view class="divider"></view>
-
+      <scroll-view scroll-y class="merchant-list" v-if="currentView === 'main'">
         <view class="msg">
-          <view class="msg-item" @click="showAddDish">
-            新增菜品 <iconComponent :data="2" :radius="15"></iconComponent>
+          <view v-for="merchant in merchants" :key="merchant.id" class="msg-item">
+            <view class="merchant-box">
+              <view class="merchant-info">
+                <view class="logo"></view>
+                <view class="name">{{ merchant.name }}</view>
+              </view>
+
+              <view class="operations">
+                <view
+                  v-if="merchant.addDishData > 0"
+                  class="msg-item"
+                  @click="showAddDish(merchant.id)"
+                >
+                  新增菜品 <iconComponent :data="merchant.addDishData" :radius="15"></iconComponent>
+                </view>
+                <view
+                  v-if="merchant.editDishData > 0"
+                  class="msg-item"
+                  @click="showEditDish(merchant.id)"
+                >
+                  更改已有菜品信息
+                  <iconComponent :data="merchant.editDishData" :radius="15"></iconComponent>
+                </view>
+                <view class="msg-item" @click="showDeleteDish(merchant.id)"> 下架已有菜品 </view>
+              </view>
+            </view>
           </view>
-          <view class="msg-item" @click="showEditDish">
-            更改已有菜品信息 <iconComponent :data="3" :radius="15"></iconComponent>
-          </view>
-          <view class="msg-item" @click="showDeleteDish"> 下架已有菜品 </view>
         </view>
+      </scroll-view>
+
+      <!-- 根据currentView的值显示不同的子页面 -->
+      <view v-if="currentView === 'addDish'">
+        <DishAddComponent :merchantId="selectedMerchantId" />
       </view>
 
-      <!-- 新增菜品页面 -->
-      <view v-else-if="currentView === 'addDish'">
-        <view class="back-btn" @click="goBack()"><i class="iconfont icon-zuojiantou"></i></view>
-        <addComponent></addComponent>
-        <!-- 可以进一步添加表单等内容 -->
+      <view v-if="currentView === 'editDish'">
+        <DishEditComponent :merchantId="selectedMerchantId" />
       </view>
 
-      <!-- 更改菜品信息页面 -->
-      <view v-else-if="currentView === 'editDish'">
-        <view class="back-btn" @click="goBack()"><i class="iconfont icon-zuojiantou"></i></view>
-        <changeComponent></changeComponent>
-        <!-- 也可以添加表单或其他组件 -->
+      <view v-if="currentView === 'deleteDish'">
+        <DishDeleteComponent :merchantId="selectedMerchantId" />
       </view>
 
-      <!-- 下架菜品页面 -->
-      <view v-else-if="currentView === 'deleteDish'">
-        <view class="back-btn" @click="goBack()"><i class="iconfont icon-zuojiantou"></i></view>
-        <deleteComponent></deleteComponent>
-        <!-- 也可以添加表单或其他组件 -->
+      <view v-if="currentView !== 'main'">
+        <button class="back-btn" @click="goBack"><i class="zuojiantou"></i></button>
       </view>
     </view>
   </view>
@@ -94,80 +105,30 @@ const goBack = () => {
   height: 100%;
   .box {
     margin: 20rpx;
-    height: auto; /* 根据内容自适应高度 */
-    .card {
-      background-color: #ccc;
-      .info {
-        display: flex;
-        position: relative;
-        .logo {
-          margin: 20rpx;
-          height: 130rpx;
-          width: 130rpx;
-          border-radius: 50%;
-          background-color: #fff;
-        }
-        .merchant {
-          margin-left: 15rpx;
-          margin-top: 20rpx;
-          display: flex;
-          flex-direction: column;
-          .name {
-            display: flex;
-            font-size: 35rpx;
-            .nav {
-              font-size: 25rpx;
-              color: #f5f5f5;
-              text-decoration: underline;
-            }
-          }
-          .content {
-            display: flex;
-            margin-top: 30rpx;
-            text {
-              font-size: 32rpx;
-              white-space: nowrap;
-            }
-            .time {
-              margin-left: 120rpx;
-            }
-          }
-        }
-      }
-    }
-
-    .divider {
-      width: 60%;
-      height: 4rpx;
-      background-color: #000;
-      margin-left: 20%;
-      margin-bottom: 30rpx;
-    }
+    height: auto;
 
     .msg {
       margin: 20rpx;
       .msg-item {
         display: flex;
-        cursor: pointer; /* 鼠标悬停时显示为可点击 */
         padding-bottom: 25rpx;
       }
     }
 
     button {
+      background-color: #fff;
       margin: 10rpx;
-      background-color: #007bff;
-      color: white;
       border: none;
       border-radius: 5px;
       padding: 10rpx;
-      cursor: pointer;
     }
 
     .dynamic-content {
-      margin-top: 20rpx; /* 动态内容与上方内容的间距 */
+      margin-top: 20rpx;
     }
   }
 }
+
 .back-btn {
   position: absolute;
   left: 160rpx;
@@ -177,8 +138,63 @@ const goBack = () => {
   border-radius: 16rpx;
   font-weight: 550;
   transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .zuojiantou {
+    margin-top: 20rpx;
+    width: 25rpx;
+    height: 25rpx;
+    border-top: 6rpx solid #b1caae;
+    border-left: 6rpx solid #b1caae;
+    transform: rotate(-45deg);
+    margin-right: 5rpx;
+  }
   &:active {
     scale: 0.9;
   }
+}
+
+.merchant-box {
+  width: 95%;
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+  background-color: $bg-color-light;
+  border-radius: 10rpx;
+  box-shadow: 0 4rpx 6rpx rgba(0, 0, 0, 0.1);
+}
+
+.merchant-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 32rpx;
+  margin-bottom: 15rpx;
+}
+
+.logo {
+  width: 100rpx;
+  height: 100rpx;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.name {
+  font-size: 32rpx;
+  margin-left: 20rpx;
+}
+
+.operations {
+  .msg-item {
+    margin-top: 10rpx;
+    cursor: pointer;
+    font-size: 30rpx;
+  }
+}
+
+.merchant-list {
+  max-height: 80vh;
+  overflow-y: scroll;
+  padding-right: 10rpx;
 }
 </style>

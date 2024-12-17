@@ -100,7 +100,7 @@ const hidePopup = () => {
     display: flex;
     flex-direction: column;
     padding: 15rpx;
-    background-color: #ccc;
+    background-color: $bg-color-light;
     .item {
       font-size: 26rpx;
       margin-bottom: 5rpx;
@@ -109,7 +109,7 @@ const hidePopup = () => {
       height: 60rpx;
       width: 140rpx;
       margin: auto;
-      border: 2rpx solid #000;
+      background-color: $bg-color-green;
       text-align: center;
       line-height: 60rpx;
     }
