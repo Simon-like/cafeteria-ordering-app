@@ -1,16 +1,58 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import type { AsideItem } from '@/types/aside'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onUnload } from '@dcloudio/uni-app'
 import Header from './components/Header.vue'
 import OderItemComponent from './components/OderItemComponent.vue'
+import WS from '@/utils/websocket'
+import { useMerchantOrderStore } from '@/stores'
+import {
+  getOrdersByStatus,
+  confirmTheOrder,
+  completeOrder,
+  resumeCancelOrder,
+  refundsCanceledOrders,
+  cancelOrder,
+} from '@/services/merchant/merchant_shop_order_api'
 /**
  * @description 订单管理主页面
  * @author 应东林
  * @date 2024-10-24
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-31
+ * @lastModifiedTime  2024-12-16
  */
+
+// 本地订单数据
+const OrderStore = useMerchantOrderStore()
+//console.log(OrderStore.localOrderData)
+
+// 进入订单页面初始化
+let ws = null
+onLoad(async () => {
+  //获取订单
+  await getOrdersByStatus(0, 2, '12-16', '', 0)
+
+  // //ws连接
+  // ws = new WS({
+  //   // 连接websocket所需参数
+  //   data: { userId: '' },
+  //   // 首次连接成功之后，断线重新连接后也会触发（防止断线期间对方发送消息未接收到）
+  //   onConnected: () => {
+  //     // toDo
+  //     // 一般用于请求历史消息列表 getHistoryList()
+  //   },
+  //   // 监听接收到服务器消息
+  //   onMessage: (data: string) => {
+  //     console.log(data)
+  //   },
+  // })
+})
+
+// 页面销毁，断开websocket
+onUnload(() => {
+  // 主动关闭websocket
+  ws.close()
+})
 
 const my_aside_list = ref<AsideItem[]>([
   { itemId: 0, itemName: '待处理', active: true, addNumber: 10 },

@@ -765,7 +765,7 @@ const onUpDish = async (id: number) => {
   .status-header {
     width: 100%;
     height: 115rpx;
-    padding: 0 30rpx;
+    padding: 0 80rpx 0 30rpx;
     display: flex;
     align-items: center;
     gap: 20rpx;

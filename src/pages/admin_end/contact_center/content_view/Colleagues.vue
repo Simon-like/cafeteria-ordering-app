@@ -29,8 +29,7 @@ const getColleagueInfo_loading = async () => {
 const onSearch = async (realName: string) => {
   const res = await queryColleagueInfo(realName)
   if (res.code === 1) {
-    colleague_res.value = []
-    colleague_res.value.push(res.data)
+    colleague_res.value = res.data
   } else {
     uni.showToast({
       icon: 'none',
