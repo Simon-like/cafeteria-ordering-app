@@ -47,7 +47,7 @@ export default class WS {
 
   initWS() {
     // this.options.data 连接websocket所需参数
-    const url = 'wss://后端url' + this.options.data.userId
+    const url = 'ws://114.55.108.97:8080/ws/5dhuluq0mj6' + this.options.data.userId
     this.socketTask = uni.connectSocket({ url, success() {} })
     // 监听WS
     this.watchWS()
@@ -56,7 +56,7 @@ export default class WS {
   watchWS() {
     // 监听 WebSocket 连接打开事件
     this.socketTask.onOpen(() => {
-      console('websocket连接成功！')
+      console.log('websocket连接成功！')
       this.status = 'connected'
       // 连接成功
       this.options.onConnected()
@@ -74,6 +74,7 @@ export default class WS {
     this.socketTask.onError(() => {
       // 关闭并重连
       this.socketTask.close()
+      console.log('websocket发生错误，正在进行关闭重连，请检查！')
     })
 
     // 监听 WebSocket 连接关闭事件
@@ -91,9 +92,9 @@ export default class WS {
     this.socketTask.onMessage((res) => {
       //收到消息
       if (res.data) {
-        this.options.onMessage(JSON.parse(res.data))
+        this.options.onMessage(res.data)
       } else {
-        console('未监听到消息：原因：', JSON.stringify(res))
+        console.log('未监听到消息：原因：', JSON.stringify(res))
       }
     })
   }
@@ -101,7 +102,7 @@ export default class WS {
   // 断开连接
   onDisconnected(res) {
     this.status = 'notConnected'
-    console('websocket断开连接，原因：', JSON.stringify(res))
+    console.log('websocket断开连接，原因：', JSON.stringify(res))
     // 关闭心跳
     clearInterval(this.heartTimer)
     // 全局Toast提示，防止用户继续发送
@@ -122,7 +123,7 @@ export default class WS {
     } else {
       uni.showModal({
         title: '温馨提示',
-        content: '服务器开小差啦~请返回聊天列表重试',
+        content: '服务器开小差啦~请返回订单列表重试',
         showCancel: false,
         confirmText: '我知道了',
         success: () => {

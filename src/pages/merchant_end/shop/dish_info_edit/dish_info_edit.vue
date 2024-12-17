@@ -245,6 +245,17 @@ const onSave = async () => {
     return
   }
 
+  console.log(specList.value)
+  //检查规格列表是否有不合法选项
+  if (specList.value.find((item) => !item.specTitle || item.specOptions.length === 0)) {
+    uni.showToast({
+      icon: 'none',
+      title: '存在信息不完善的规格！',
+      duration: 3500,
+    })
+    return
+  }
+
   dish_info_data.value.specList = specList.value
   const list = dish_info_data.value.categoryList.map((item) => item.categoryId)
   const res = await updateDishNot(
@@ -355,6 +366,7 @@ const onSpecOptionSave = () => {
     uni.showToast({
       icon: 'none',
       title: '不允许出现空的规格选项！\n请仔细检查',
+      duration: 3000,
     })
   } else {
     Object.assign(specList.value[specIndex.value], deepCopy(specValue.value))
@@ -407,6 +419,7 @@ const onConfirm = () => {
   uni.showToast({
     icon: 'none',
     title: '如果错误删除了，请不要点击保存！\n退出编辑页面再返回可刷新数据！',
+    duration: 3500,
   })
 }
 
@@ -611,9 +624,9 @@ const onUpDish = async () => {
           placeholder="请描述该菜品的特征,用后续商品的展示"
           :styles="{
             color: '#000',
-            borderColor: '#7e7e5e',
+            borderColor: 'rgba(25, 196, 126, 0.7)',
             borderRadius: '20px',
-            backgroundColor: 'rgba(255,255,255,0.4)',
+            backgroundColor: '#f4fff3',
           }"
           :placeholderStyle="'color:rgba(0, 0, 0, 0.5);font-size:14px'"
         ></uni-easyinput>
@@ -643,16 +656,16 @@ const onUpDish = async () => {
         </scroll-view>
       </uni-card>
     </uni-popup>
-
-    <uni-popup ref="specPopup" type="dialog" border-radius="10px 10px 0 0">
+    <!-- 详细规格信息弹窗 -->
+    <uni-popup ref="specPopup" type="dialog" border-radius="10px 10px 0 0" :mask-click="false">
       <view class="specWrapper">
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="headerTitle">
-            <view class="header-specName">规格</view>
-            <view class="close-spec-btn" @click="onDeleteSpec">删除这条规格</view>
+            <view class="header-specName">规格{{ specIndex + 1 }}</view>
+            <view class="close-spec-btn" @click="onClose"><i class="iconfont icon-x1"></i></view>
           </view>
           <view class="specTitle box">
-            <view class="title">名称：</view>
+            <view class="title">名称(必填)：</view>
             <view class="dishSpec-box">
               <input
                 type="text"
@@ -663,12 +676,15 @@ const onUpDish = async () => {
             </view>
           </view>
           <view class="specOptions box">
-            <view clas="specOptions-title"><text>选项列表:</text></view>
+            <view clas="specOptions-title">选项列表(必填):</view>
             <view
               class="line"
               v-for="(item, index) in specValue.specOptions"
               :key="item.optionsName"
             >
+              <view class="closeBtn" @click="onCloseSpec(index)"
+                ><i class="iconfont icon-jianhao"></i
+              ></view>
               <view style="display: flex; align-items: center; gap: 10rpx">
                 <h5>选项{{ index + 1 }}:</h5>
                 <input
@@ -687,11 +703,11 @@ const onUpDish = async () => {
                   @input="onCheck(index)"
                 />
               </view>
-              <view class="closeBtn" @click="onCloseSpec(index)"> 删除</view>
             </view>
             <view class="line">
               <view class="spec-add" @click="onAddSpecOptions"
-                ><i class="iconfont icon-jia"></i><text>新增选项</text></view
+                ><i class="iconfont icon-jia"></i
+                ><text>选项{{ specValue.specOptions.length + 1 }}</text></view
               >
             </view>
           </view>
@@ -714,8 +730,8 @@ const onUpDish = async () => {
             </view>
           </view>
           <view class="btn-line">
-            <view class="save-btn" @click="onSpecOptionSave">保存</view>
-            <view class="save-btn" @click="onClose">取消</view>
+            <view class="save-btn confirm" @click="onSpecOptionSave">保存</view>
+            <view class="save-btn delete" @click="onDeleteSpec">删除规格</view>
           </view>
         </scroll-view>
       </view>
@@ -764,19 +780,17 @@ const onUpDish = async () => {
 <style lang="scss" scoped>
 .edit-view {
   width: 750rpx;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 45rpx 20rpx 0rpx 20rpx;
+  padding: 0rpx 20rpx 20rpx 20rpx;
   gap: 60rpx;
-
   .specWrapper {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 45rpx 20rpx 0rpx 20rpx;
+    padding: 45rpx 20rpx 15rpx 20rpx;
     gap: 60rpx;
     background: #fff;
     border-top: 1px solid #000;
@@ -788,14 +802,14 @@ const onUpDish = async () => {
       justify-content: space-between;
       .header-specName {
         font-weight: 550;
+        color: $text-color-green;
       }
-      .close-spec-btn {
-        color: #f94204;
+      .close-spec-btn .iconfont {
         padding: 5rpx;
-        font-size: 30rpx;
+        font-size: 44rpx;
         text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.6);
         transition: 0.2s ease;
+        color: $text-color-green;
         &:active {
           scale: 0.95;
         }
@@ -805,25 +819,27 @@ const onUpDish = async () => {
       white-space: nowrap;
       width: 100%;
       padding: 14rpx 14rpx 20rpx 14rpx;
-      background: rgba(0, 0, 0, 0.2);
+      background: $bg-color-light;
       margin-bottom: 40rpx;
       display: flex;
       justify-content: space-between;
       &.specTitle {
         align-items: center;
       }
+
       .dishSpec-box {
         display: flex;
         align-items: center;
         height: 100%;
         .dishSpec-input {
-          border: 1px solid rgba(0, 0, 0, 0.6);
+          border: 1px solid $bg-color-dark;
           width: 300rpx;
-          padding: 5rpx;
+          padding: 8rpx;
           font-size: 30rpx;
           outline: none;
           height: 100%;
           background: transparent;
+          border-radius: 20rpx;
         }
       }
     }
@@ -841,22 +857,24 @@ const onUpDish = async () => {
           padding: 5rpx;
           text-align: center;
           border-radius: 16rpx;
-          background-color: #fff;
+          background-color: $bg-color-dark;
           transition: 0.2s ease;
+          color: #fff;
           &:active {
             scale: 0.95;
           }
           i {
-            color: rgba(0, 0, 0, 0.3);
+            color: #fff;
             margin-right: 5rpx;
           }
         }
         .dishSpec-input {
-          width: 150rpx;
-          border: 1px solid rgba(0, 0, 0, 0.6);
-          padding: 5rpx;
+          width: 200rpx;
+          border: 1px solid $bg-color-dark;
+          padding: 8rpx;
           font-size: 30rpx;
           outline: none;
+          border-radius: 10rpx;
           height: 100%;
           background: transparent;
         }
@@ -865,41 +883,26 @@ const onUpDish = async () => {
           justify-content: center;
           align-items: center;
           gap: 8rpx;
-          .minus,
-          .add {
-            width: 30rpx;
-            height: 30rpx;
-            font-size: 30rpx;
-            text-align: center;
-            line-height: 30rpx;
-            border-radius: 50%;
-            color: rgba(0, 0, 0, 0.3);
-            font-weight: blod;
-            background-color: #fff;
-            transition: 0.2s ease;
-            &:active {
-              scale: 0.95;
-            }
-          }
           .specNumber-input {
             outline: none;
             width: 80rpx;
             background: transparent;
-            border-bottom: 1px solid #fff;
+            border-bottom: 1px solid $bg-color-dark !important;
             text-align: center;
           }
         }
         .closeBtn {
-          border: 1px solid rgba(0, 0, 0, 0.6);
-          padding: 5rpx;
           transition: 0.2s ease;
           font-size: 30rpx;
-          height: 100%;
-
+          color: $bg-color-dark;
           &:active {
             scale: 0.9;
           }
         }
+      }
+      .specOptions-title {
+        color: $text-color-green !important;
+        font-size: 25rpx;
       }
     }
 
@@ -921,7 +924,7 @@ const onUpDish = async () => {
             scale: 0.9;
           }
           &.active {
-            background: #14f00b;
+            background: $common-color-green;
           }
         }
       }
@@ -935,11 +938,18 @@ const onUpDish = async () => {
         flex: 1;
         padding: 20rpx 0;
         border-radius: 24rpx;
-        background: rgba(0, 0, 0, 0.2);
-        color: #000;
         text-align: center;
         font-weight: 550;
         transition: 0.2s ease;
+        &.confirm {
+          background: $bg-color-green;
+          color: #000;
+        }
+        &.delete {
+          background: $bg-color-light;
+          border: 1px solid $bg-color-orange;
+          color: #000;
+        }
         &:active {
           scale: 0.9;
         }
@@ -1013,6 +1023,7 @@ const onUpDish = async () => {
   }
   .section {
     width: 100%;
+
     .section-title {
       margin-left: 20rpx;
       margin-bottom: 15rpx;
@@ -1021,7 +1032,7 @@ const onUpDish = async () => {
       width: 100%;
       display: flex;
       flex-direction: column;
-      background-color: rgba(0, 0, 0, 0.1);
+      background-color: $bg-color-light;
       gap: 40rpx;
       padding: 30rpx;
       .info-line {
@@ -1030,9 +1041,11 @@ const onUpDish = async () => {
         align-items: center;
 
         .dishName-input {
-          border: 1px solid rgba(0, 0, 0, 0.6);
+          border: 1px solid $bg-color-dark;
           width: 300rpx;
-          padding: 5rpx;
+          border-radius: 10rpx;
+          padding: 8rpx;
+          height: 100%;
           font-size: 30rpx;
           outline: none;
           background: transparent;
@@ -1040,7 +1053,7 @@ const onUpDish = async () => {
 
         .discountPrice {
           margin-left: auto;
-          color: rgba(0, 0, 0, 0.2);
+          color: $text-color-gray;
         }
 
         .spec {
@@ -1050,16 +1063,17 @@ const onUpDish = async () => {
           text-align: center;
         }
         .spec-add {
-          padding: 5rpx;
+          padding: 10rpx 15rpx;
           text-align: center;
-          border-radius: 16rpx;
+          border-radius: 30rpx;
+          border: 1px solid $text-color-active;
           background-color: #fff;
           transition: 0.2s ease;
           &:active {
             scale: 0.95;
           }
           i {
-            color: rgba(0, 0, 0, 0.3);
+            color: $text-color-active;
             margin-right: 5rpx;
           }
         }
@@ -1109,9 +1123,9 @@ const onUpDish = async () => {
             text-align: center;
             line-height: 30rpx;
             border-radius: 50%;
-            color: rgba(0, 0, 0, 0.3);
+            color: #fff;
             font-weight: blod;
-            background-color: #fff;
+            background-color: $bg-color-dark;
             transition: 0.2s ease;
             &:active {
               scale: 0.95;
@@ -1121,7 +1135,7 @@ const onUpDish = async () => {
             outline: none;
             width: 80rpx;
             background: transparent;
-            border-bottom: 1px solid #fff;
+            border-bottom: 1px solid $bg-color-dark;
             text-align: center;
           }
         }
@@ -1133,21 +1147,21 @@ const onUpDish = async () => {
         align-items: flex-start;
         gap: 10rpx;
         .wrapper {
-          border: 1px solid rgba(0, 0, 0, 0.8);
+          border: 1px solid $bg-color-dark;
           width: 100%;
           padding: 20rpx;
           display: flex;
           flex-wrap: wrap;
           gap: 20rpx;
           .value {
-            border: 1px solid rgb(0, 0, 0);
+            border: 1px solid $bg-color-dark;
             border-radius: 16rpx;
             padding: 5rpx;
             text-align: center;
             position: relative;
             i {
               position: absolute;
-              color: rgb(223, 0, 0);
+              color: $bg-color-orange;
               font-size: 30rpx;
               top: -10rpx;
               right: -10rpx;
@@ -1160,14 +1174,15 @@ const onUpDish = async () => {
           .add-category {
             padding: 5rpx;
             text-align: center;
-            border-radius: 16rpx;
+            border-radius: 30rpx;
+            border: 1px solid $text-color-active;
             background-color: #fff;
             transition: 0.2s ease;
             &:active {
               scale: 0.95;
             }
             i {
-              color: rgba(0, 0, 0, 0.3);
+              color: $text-color-active;
               margin-right: 5rpx;
             }
           }
@@ -1179,22 +1194,24 @@ const onUpDish = async () => {
       }
       .status {
         min-width: 200rpx;
-        background-color: #fff;
+        background-color: $bg-color-gray-light;
+        color: $bg-color-orange;
         border-radius: 16rpx;
         font-size: 25rpx;
         white-space: nowrap;
         text-align: center;
         padding: 5rpx;
         &.OK {
-          background-color: #14f00b;
+          background-color: $common-color-green;
+          color: #fff;
         }
       }
       .btn {
         width: 200rpx;
         text-align: center;
         padding: 5rpx;
-        color: #fff;
-        background-color: rgba(0, 0, 0, 0.2);
+        color: #000;
+        background-color: $bg-color-green;
         border-radius: 16rpx;
         transition: 0.2s ease;
         &:active {
@@ -1216,17 +1233,40 @@ const onUpDish = async () => {
       height: 80rpx;
       flex: 1;
       font-size: 45rpx;
-      color: #fff;
-      background-color: rgba(0, 0, 0, 0.3);
+      color: #000;
       border-radius: 16rpx;
       font-weight: 550;
       transition: 0.2s ease;
       text-align: center;
       line-height: 80rpx;
+      &.save {
+        background-color: $bg-color-green;
+      }
+      &.discontinued {
+        background: $bg-color-light;
+        border: 1px solid $bg-color-orange;
+      }
       &:active {
         scale: 0.9;
       }
     }
   }
+}
+
+// 样式穿透
+:deep(.uni-stat__select) {
+  background-color: $bg-color-light;
+  border: 2rpx solid $text-color-green;
+  border-radius: 10rpx;
+  color: $text-color-active;
+}
+:deep(.uni-select__input-text) {
+  color: $text-color-active;
+}
+:deep(.uni-select) {
+  border: none;
+}
+:deep(.uni-icons) {
+  color: $text-color-active !important;
 }
 </style>

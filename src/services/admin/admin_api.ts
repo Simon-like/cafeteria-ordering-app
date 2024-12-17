@@ -226,7 +226,7 @@ export const getColleagueInfo = () => {
 
 // 按姓名查询同事信息
 export const queryColleagueInfo = (realName: string) => {
-  return http<ColleagueItem>({
+  return http<ColleagueItem[]>({
     method: 'GET',
     url: `/administer/statistics/query_administer_info?realName=${realName}`,
   })

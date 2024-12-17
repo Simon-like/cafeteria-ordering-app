@@ -1,20 +1,19 @@
 import { defineStore } from 'pinia'
 import { ref, reactive } from 'vue'
+import type { OrderItem, MenuItem, specItem, dishData } from '@/types/merchant_return'
 /**
  * @description 商户端订单管理的仓库
  * @author 应东林
  * @date 2024-10-24
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-24
+ * @lastModifiedTime  2024-12-16
  */
 // 定义 Store
-export const useMerchantShopStore = defineStore(
-  'merchant_oder',
+export const useMerchantOrderStore = defineStore(
+  'merchant_order',
   () => {
-    //
-    const oderType = ref<number>() //订单类型
-
-    return {}
+    const localOrderData = ref<OrderItem[]>([])
+    return { localOrderData }
   },
   // TODO: 持久化
   {

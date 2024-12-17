@@ -321,12 +321,13 @@ const onAddDish = async () => {
       </view>
     </view>
 
-    <uni-popup ref="specPopup" type="dialog" border-radius="10px 10px 0 0">
+    <!-- 详细规格信息弹窗 -->
+    <uni-popup ref="specPopup" type="dialog" border-radius="10px 10px 0 0" :mask-click="false">
       <view class="specWrapper">
         <scroll-view scroll-y="true" class="scroll-Y">
           <view class="headerTitle">
-            <view class="header-specName">规格</view>
-            <view class="close-spec-btn" @click="onDeleteSpec">删除这条规格</view>
+            <view class="header-specName">规格{{ specIndex + 1 }}</view>
+            <view class="close-spec-btn" @click="onClose"><i class="iconfont icon-x1"></i></view>
           </view>
           <view class="specTitle box">
             <view class="title">名称：</view>
@@ -340,12 +341,15 @@ const onAddDish = async () => {
             </view>
           </view>
           <view class="specOptions box">
-            <view clas="specOptions-title"><text>选项列表:</text></view>
+            <view clas="specOptions-title">选项列表:</view>
             <view
               class="line"
               v-for="(item, index) in specValue.specOptions"
               :key="item.optionsName"
             >
+              <view class="closeBtn" @click="onCloseSpec(index)"
+                ><i class="iconfont icon-jianhao"></i
+              ></view>
               <view style="display: flex; align-items: center; gap: 10rpx">
                 <h5>选项{{ index + 1 }}:</h5>
                 <input
@@ -364,11 +368,11 @@ const onAddDish = async () => {
                   @input="onCheck(index)"
                 />
               </view>
-              <view class="closeBtn" @click="onCloseSpec(index)"> 删除</view>
             </view>
             <view class="line">
               <view class="spec-add" @click="onAddSpecOptions"
-                ><i class="iconfont icon-jia"></i><text>新增选项</text></view
+                ><i class="iconfont icon-jia"></i
+                ><text>选项{{ specValue.specOptions.length + 1 }}</text></view
               >
             </view>
           </view>
@@ -391,8 +395,8 @@ const onAddDish = async () => {
             </view>
           </view>
           <view class="btn-line">
-            <view class="save-btn" @click="onSpecOptionSave">保存</view>
-            <view class="save-btn" @click="onClose">取消</view>
+            <view class="save-btn confirm" @click="onSpecOptionSave">保存</view>
+            <view class="save-btn delete" @click="onDeleteSpec">删除规格</view>
           </view>
         </scroll-view>
       </view>
@@ -409,7 +413,7 @@ const onAddDish = async () => {
         </uni-section>
       </uni-card>
     </uni-popup>
-
+    <!-- 菜品封面设置 -->
     <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
       <uni-card class="form-card">
         <uni-section title="设置菜品封面" type="line">
@@ -437,11 +441,10 @@ const onAddDish = async () => {
 <style lang="scss" scoped>
 .add-view {
   width: 750rpx;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 45rpx 20rpx 0 20rpx;
+  padding: 0rpx 20rpx 20rpx 20rpx;
   gap: 60rpx;
 
   .specWrapper {
@@ -449,7 +452,7 @@ const onAddDish = async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 45rpx 20rpx 0rpx 20rpx;
+    padding: 45rpx 20rpx 15rpx 20rpx;
     gap: 60rpx;
     background: #fff;
     border-top: 1px solid #000;
@@ -461,14 +464,14 @@ const onAddDish = async () => {
       justify-content: space-between;
       .header-specName {
         font-weight: 550;
+        color: $text-color-green;
       }
-      .close-spec-btn {
-        color: #f94204;
+      .close-spec-btn .iconfont {
         padding: 5rpx;
-        font-size: 30rpx;
+        font-size: 44rpx;
         text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.6);
         transition: 0.2s ease;
+        color: $text-color-green;
         &:active {
           scale: 0.95;
         }
@@ -478,25 +481,27 @@ const onAddDish = async () => {
       white-space: nowrap;
       width: 100%;
       padding: 14rpx 14rpx 20rpx 14rpx;
-      background: rgba(0, 0, 0, 0.2);
+      background: $bg-color-light;
       margin-bottom: 40rpx;
       display: flex;
       justify-content: space-between;
       &.specTitle {
         align-items: center;
       }
+
       .dishSpec-box {
         display: flex;
         align-items: center;
         height: 100%;
         .dishSpec-input {
-          border: 1px solid rgba(0, 0, 0, 0.6);
+          border: 1px solid $bg-color-dark;
           width: 300rpx;
-          padding: 5rpx;
+          padding: 8rpx;
           font-size: 30rpx;
           outline: none;
           height: 100%;
           background: transparent;
+          border-radius: 20rpx;
         }
       }
     }
@@ -514,22 +519,24 @@ const onAddDish = async () => {
           padding: 5rpx;
           text-align: center;
           border-radius: 16rpx;
-          background-color: #fff;
+          background-color: $bg-color-dark;
           transition: 0.2s ease;
+          color: #fff;
           &:active {
             scale: 0.95;
           }
           i {
-            color: rgba(0, 0, 0, 0.3);
+            color: #fff;
             margin-right: 5rpx;
           }
         }
         .dishSpec-input {
-          width: 150rpx;
-          border: 1px solid rgba(0, 0, 0, 0.6);
-          padding: 5rpx;
+          width: 200rpx;
+          border: 1px solid $bg-color-dark;
+          padding: 8rpx;
           font-size: 30rpx;
           outline: none;
+          border-radius: 10rpx;
           height: 100%;
           background: transparent;
         }
@@ -538,41 +545,26 @@ const onAddDish = async () => {
           justify-content: center;
           align-items: center;
           gap: 8rpx;
-          .minus,
-          .add {
-            width: 30rpx;
-            height: 30rpx;
-            font-size: 30rpx;
-            text-align: center;
-            line-height: 30rpx;
-            border-radius: 50%;
-            color: rgba(0, 0, 0, 0.3);
-            font-weight: blod;
-            background-color: #fff;
-            transition: 0.2s ease;
-            &:active {
-              scale: 0.95;
-            }
-          }
           .specNumber-input {
             outline: none;
             width: 80rpx;
             background: transparent;
-            border-bottom: 1px solid #fff;
+            border-bottom: 1px solid $bg-color-dark !important;
             text-align: center;
           }
         }
         .closeBtn {
-          border: 1px solid rgba(0, 0, 0, 0.6);
-          padding: 5rpx;
           transition: 0.2s ease;
           font-size: 30rpx;
-          height: 100%;
-
+          color: $bg-color-dark;
           &:active {
             scale: 0.9;
           }
         }
+      }
+      .specOptions-title {
+        color: $text-color-green !important;
+        font-size: 25rpx;
       }
     }
 
@@ -594,7 +586,7 @@ const onAddDish = async () => {
             scale: 0.9;
           }
           &.active {
-            background: #14f00b;
+            background: $common-color-green;
           }
         }
       }
@@ -608,11 +600,18 @@ const onAddDish = async () => {
         flex: 1;
         padding: 20rpx 0;
         border-radius: 24rpx;
-        background: rgba(0, 0, 0, 0.2);
-        color: #000;
         text-align: center;
         font-weight: 550;
         transition: 0.2s ease;
+        &.confirm {
+          background: $bg-color-green;
+          color: #000;
+        }
+        &.delete {
+          background: $bg-color-light;
+          border: 1px solid $bg-color-orange;
+          color: #000;
+        }
         &:active {
           scale: 0.9;
         }
@@ -794,7 +793,7 @@ const onAddDish = async () => {
   }
 
   .button-box {
-    margin-top: 90rpx;
+    margin-top: 30rpx;
     width: 100%;
     display: flex;
     gap: 70rpx;
