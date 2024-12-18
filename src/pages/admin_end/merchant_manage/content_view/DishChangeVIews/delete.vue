@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-/**
- * @description 管理端商户管理子页面模块
- * @author 钟礼豪
- * @date 2024-10-27
- * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-10-27
- */
+
 interface Dish {
   id: number
   logo: string
@@ -15,6 +9,7 @@ interface Dish {
   description: string
 }
 
+// 菜品数据
 const dishes = ref<Dish>([
   {
     id: 1,
@@ -31,6 +26,31 @@ const dishes = ref<Dish>([
     description: '12',
   },
 ])
+
+// 控制 popup 显示状态
+const showPopup = ref(false)
+// 当前选中的菜品 id
+const currentDishId = ref<number | null>(null)
+
+// 显示删除确认框
+const showDeletePopup = (id: number) => {
+  currentDishId.value = id
+  showPopup.value = true
+}
+
+// 关闭删除确认框
+const closePopup = () => {
+  showPopup.value = false
+  currentDishId.value = null
+}
+
+// 确认删除菜品
+const confirmDelete = () => {
+  if (currentDishId.value !== null) {
+    dishes.value = dishes.value.filter((dish) => dish.id !== currentDishId.value)
+    closePopup()
+  }
+}
 </script>
 <template>
   <view class="dishes-container">
@@ -48,21 +68,33 @@ const dishes = ref<Dish>([
       </view>
 
       <view class="aside">
-        <view class="deleteIcon">
+        <view class="deleteIcon" @click="showDeletePopup(dish.id)">
           <image src="@/static/images/deleteIcon.png" mode="aspectFill"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 删除确认弹窗 -->
+    <view v-if="showPopup" class="popup">
+      <view class="popup-content">
+        <view class="popup-header">确认删除</view>
+        <view class="popup-body">您确定要删除这个菜品吗？</view>
+        <view class="popup-footer">
+          <button class="cancel-btn" @click="closePopup">取消</button>
+          <button class="confirm-btn" @click="confirmDelete">确认</button>
         </view>
       </view>
     </view>
   </view>
 </template>
-
 <style lang="scss" scoped>
 .dishes-container {
   display: flex;
   flex-direction: column;
+
   .header {
     display: flex;
-    justify-content: space-between; // 使标题居中，联系商家居右
+    justify-content: space-between;
     align-items: center;
     margin-left: 40%;
     padding: 10rpx;
@@ -84,6 +116,7 @@ const dishes = ref<Dish>([
     padding: 15rpx;
     background-color: $bg-color-light;
     margin-bottom: 10rpx;
+
     .logo {
       width: 150rpx;
       height: 150rpx;
@@ -98,6 +131,7 @@ const dishes = ref<Dish>([
       display: flex;
       flex-direction: column;
       margin-right: 15rpx;
+
       .info-item {
         margin-bottom: 5rpx;
       }
@@ -105,10 +139,68 @@ const dishes = ref<Dish>([
 
     .aside {
       width: 80rpx;
+
       .deleteIcon {
         width: 100%;
         height: 80rpx;
       }
+    }
+  }
+
+  /* 删除确认弹窗样式 */
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .popup-content {
+    background: white;
+    padding: 20rpx;
+    border-radius: 10rpx;
+    width: 80%;
+    max-width: 400rpx;
+    text-align: center;
+  }
+
+  .popup-header {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+  }
+
+  .popup-body {
+    font-size: 26rpx;
+    margin-bottom: 20rpx;
+  }
+
+  .popup-footer {
+    display: flex;
+    justify-content: space-around;
+
+    .cancel-btn,
+    .confirm-btn {
+      font-size: 28rpx;
+      padding: 10rpx 20rpx;
+      border: none;
+      border-radius: 5rpx;
+      cursor: pointer;
+    }
+
+    .cancel-btn {
+      background-color: #f1f1f1;
+      color: #333;
+    }
+
+    .confirm-btn {
+      background-color: #ff4d4f;
+      color: white;
     }
   }
 }
