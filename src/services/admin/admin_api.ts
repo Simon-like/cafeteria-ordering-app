@@ -174,7 +174,7 @@ export const getAllPlace = () => {
     }[]
   >({
     method: 'GET',
-    url: '/place/getPlace',
+    url: '/administer/place/getPlace',
   })
 }
 
@@ -182,7 +182,7 @@ export const getAllPlace = () => {
 export const updatePlace = (region: string, regionID: number) => {
   return http({
     method: 'PUT',
-    url: `/place/updatePlace`,
+    url: `/administer/place/updatePlace`,
     data: {
       region,
       regionID,
@@ -194,7 +194,7 @@ export const updatePlace = (region: string, regionID: number) => {
 export const addPlace = (region: string) => {
   return http({
     method: 'POST',
-    url: `/place/addPlace`,
+    url: `/administer/place/addPlace`,
     data: {
       region,
     },
@@ -205,7 +205,7 @@ export const addPlace = (region: string) => {
 export const deletePlace = (regionID: number) => {
   return http({
     method: 'DELETE',
-    url: `/place/deletePlace`,
+    url: `/administer/place/deletePlace`,
     data: {
       regionID,
     },

@@ -205,6 +205,15 @@ const onAddDish = async () => {
     })
     return
   }
+  //检查规格列表是否有不合法选项
+  if (specList.value.find((item) => !item.specTitle || item.specOptions.length === 0)) {
+    uni.showToast({
+      icon: 'none',
+      title: '存在信息不完善的规格！',
+      duration: 3500,
+    })
+    return
+  }
 
   MerchantShopStore.specifications = specList.value
   const res = await addDish(

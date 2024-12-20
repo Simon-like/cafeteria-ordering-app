@@ -1,16 +1,16 @@
+import { useDoubleTokenStore } from '@/stores'
 /**
  * @description websocket封装类
  * @author 应东林
  * @date 2024-10-31
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-10-31
+ * @lastModifiedTime  2024-12-19
  */
 
 // 心跳间隔、重连websocket间隔，5秒
 const interval = 5000
 // 重连最大次数
 const maxReconnectMaxTime = 5
-
 export default class WS {
   constructor(options) {
     // 状态
@@ -42,13 +42,25 @@ export default class WS {
       clearInterval(this.heartTimer)
       // 关闭重连定时器
       clearTimeout(this.reconnectTimer)
+      console.log('websocket已经断开连接！')
     }
   }
 
   initWS() {
+    const DoubleTokenStore = useDoubleTokenStore()
+    const actoken = DoubleTokenStore.accessToken
     // this.options.data 连接websocket所需参数
     const url = 'ws://114.55.108.97:8080/ws/5dhuluq0mj6' + this.options.data.userId
-    this.socketTask = uni.connectSocket({ url, success() {} })
+    this.socketTask = uni.connectSocket({
+      url,
+      header: {
+        'content-type': 'application/json',
+        token: actoken,
+      },
+      protocols: ['protocol1'],
+      method: 'GET',
+      success() {},
+    })
     // 监听WS
     this.watchWS()
   }

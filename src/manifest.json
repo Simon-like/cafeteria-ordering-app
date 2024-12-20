@@ -10,9 +10,9 @@
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
-		"compatible":{
-			"ignoreVersion":true
-		},
+        "compatible" : {
+            "ignoreVersion" : true
+        },
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
             "waiting" : true,
@@ -21,7 +21,10 @@
         },
         /* 模块配置 */
         "modules" : {
-            "OAuth" : {}
+            "OAuth" : {},
+            "Bluetooth" : {},
+            "Camera" : {},
+            "Contacts" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -42,7 +45,13 @@
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
+                    "<uses-feature android:name=\"android.permission.BlUETOOTH_ADVERTISE\"/>",
+                    "<uses-feature android:name=\"android.permission.BLUETOOTH_CONNECT\"/>",
+                    "<uses-feature android:name=\"android.permission.BLUETOOTH_SCAN\"/>",
+                    "<uses-feature android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+                    "<uses-feature android:name=\"android.permission.BLUETOOTH_ADMIN\"/>",
+                    "<uses-feature android:name=\"android.permission.BLUETOOTH\"/>"
                 ]
             },
             /* ios打包配置 */
@@ -82,5 +91,6 @@
         "devServer" : {
             "https" : false
         }
-    }
+    },
+    "locale" : "zh-Hans"
 }

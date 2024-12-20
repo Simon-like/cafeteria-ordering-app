@@ -2,7 +2,7 @@
 import StatisticsItem from '@/components/chart/StatisticsItem.vue'
 import LineChart from '@/components/chart/LineChart.vue'
 import PieChart from '@/components/chart/PieChart.vue'
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import {
   getTopSellingDish,
   getSalesTrends,
@@ -42,6 +42,32 @@ const SellingDishData = ref<
     value: number
   }[]
 >([])
+/**
+ * 将日期字符串 "YYYY-MM-DD" 分割成 "MM-DD" 格式
+ * @param {string} dateStr - 输入的日期字符串，例如 "2024-12-08"
+ * @returns {string} - 返回的月日字符串，例如 "12-08"
+ */
+function extractMonthAndDay(dateStr: string): string {
+  // 检查输入是否合法
+  if (!dateStr || typeof dateStr !== 'string') {
+    throw new Error('输入必须是有效的字符串')
+  }
+
+  // 使用 split() 方法分割字符串
+  const parts: string[] = dateStr.split('-')
+
+  // 确保分割后的数组有三个部分 (年、月、日)
+  if (parts.length !== 3) {
+    throw new Error('输入字符串格式不正确，必须是 YYYY-MM-DD')
+  }
+
+  // 提取月和日
+  const month = parts[1]
+  const day = parts[2]
+
+  // 返回组合后的字符串
+  return `${month}.${day}`
+}
 
 onLoad(async () => {
   const resStatistics = await getStatistics() //数据看板
@@ -61,6 +87,7 @@ onLoad(async () => {
       if (typeof resTrends.data.orderCountList !== 'object') resTrends.data.orderCountList = []
       SalesTrends_series.value = [{ name: '销量趋势统计', data: resTrends.data.orderCountList }]
       SalesTrends_categories.value = resTrends.data.dateList
+      SalesTrends_categories.value = SalesTrends_categories.value.map(extractMonthAndDay)
     })
   } else {
     uni.showToast({

@@ -21,7 +21,12 @@ const onSearch = () => {
 
 <template>
   <view class="search-box">
-    <input type="text" v-model="input_content" :placeholder="props.placeholder" />
+    <input
+      type="text"
+      v-model="input_content"
+      :placeholder="props.placeholder"
+      @confirm="onSearch"
+    />
     <view class="icon" @click="onSearch">
       <i class="iconfont icon-sousuo"></i>
     </view>

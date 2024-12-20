@@ -245,7 +245,6 @@ const onSave = async () => {
     return
   }
 
-  console.log(specList.value)
   //检查规格列表是否有不合法选项
   if (specList.value.find((item) => !item.specTitle || item.specOptions.length === 0)) {
     uni.showToast({

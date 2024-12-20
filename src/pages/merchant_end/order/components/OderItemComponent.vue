@@ -3,6 +3,11 @@ import { ref, reactive } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { debounce, splitContent } from '@/composables/tools'
 import type { OrderItem, MenuItem, specItem, dishData } from '@/types/merchant_return'
+import {
+  confirmTheOrder,
+  completeOrder,
+  refundsConfirmedOrders,
+} from '@/services/merchant/merchant_shop_order_api'
 
 /**
  * @description 订单管理模块-订单组件
@@ -18,11 +23,85 @@ const props = defineProps<{
 }>()
 
 const orderData = props.orderItem
+//处理后端奇怪的空数组！
+orderData.menu = orderData.menu.map((item) => {
+  if (!item.dishSpecList[0]) {
+    item.dishSpecList = []
+    return item
+  } else return item
+})
 
 const show = ref<boolean>(false)
 const onDescShow = () => {
   show.value = !show.value
 }
+
+/**
+ * 订单操作
+ */
+//接单2->3
+const onConfirm = async () => {
+  if (orderData.orderStatus !== 2) {
+    uni.showToast({
+      icon: 'none',
+      title: '订单状态异常！',
+    })
+    return
+  }
+  const res = await confirmTheOrder(orderData.orderID)
+  if (res.code === 1) {
+    console.log(res.data)
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '接单失败！',
+    })
+  }
+}
+const onConfirm_debounce = debounce(onConfirm, 1000, true)
+
+//完成3->4//6
+const onComplete = async () => {
+  if (orderData.orderStatus !== 3) {
+    uni.showToast({
+      icon: 'none',
+      title: '订单状态异常！',
+    })
+    return
+  }
+  const res = await completeOrder(orderData.orderID)
+  if (res.code === 1) {
+    console.log(res.data)
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '操作失败！',
+    })
+  }
+}
+
+const onComplete_debounce = debounce(onComplete, 1000, true)
+//退款3->8
+const onRefundsConfirmed = async () => {
+  if (orderData.orderStatus !== 3) {
+    uni.showToast({
+      icon: 'none',
+      title: '订单状态异常！',
+    })
+    return
+  }
+  const res = await refundsConfirmedOrders(orderData.orderID)
+  if (res.code === 1) {
+    console.log(res.data)
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '退款失败！',
+    })
+  }
+}
+
+const onRefundsConfirmed_debounce = debounce(onRefundsConfirmed, 1000, true)
 </script>
 
 <template>
@@ -33,13 +112,25 @@ const onDescShow = () => {
         <view class="oder-type">{{ orderData.orderType ? '堂食' : '外卖' }}</view>
       </view>
       <view class="x-wrapper">
-        <view class="btn" v-if="orderData.orderStatus === 0">接单</view>
-        <view class="btn" v-if="orderData.orderStatus === 1">完成</view>
-        <view class="btn warning-btn" v-if="orderData.orderStatus === 1">取消</view>
-        <view class="btn" v-if="orderData.orderStatus === 3">恢复</view>
-        <view class="btn warning-btn" v-if="orderData.orderStatus === 3">确认退款</view>
-        <view v-if="orderData.orderStatus === 2">已完成</view>
-        <view v-if="orderData.orderStatus === 4">已退款</view>
+        <view class="btn" v-if="orderData.orderStatus === 2" @click="onConfirm_debounce">接单</view>
+        <view class="btn" v-if="orderData.orderStatus === 3" @click="onComplete_debounce"
+          >完成</view
+        >
+        <view
+          class="btn warning-btn"
+          v-if="orderData.orderStatus === 3"
+          @click="onRefundsConfirmed_debounce"
+          >退款</view
+        >
+        <view v-if="orderData.orderStatus === 8">已退款</view>
+        <view
+          v-if="
+            orderData.orderStatus === 4 ||
+            orderData.orderStatus === 5 ||
+            orderData.orderStatus === 6
+          "
+          >已完成</view
+        >
       </view>
     </view>
     <view class="line oder-customer">
@@ -101,7 +192,11 @@ const onDescShow = () => {
           </view>
           <view class="remaining-info">
             <view class="phoneNumber">顾客电话：{{ orderData.phoneNumber }}</view>
-            <view class="orderTime">下单时间：{{ orderData.orderTime }}</view>
+            <view class="orderTime"
+              >下单时间：{{
+                orderData.orderTime.split('T').reduce((arr, index) => arr + '  ' + index)
+              }}</view
+            >
             <view class="payMethod"
               >支付方式：{{ orderData.payMethod ? '支付宝支付' : '微信支付' }}</view
             >
@@ -243,6 +338,10 @@ const onDescShow = () => {
       align-items: flex-start;
       flex-direction: column;
       gap: 15rpx;
+      .orderCode,
+      .phoneNumber {
+        user-select: text;
+      }
     }
   }
 
