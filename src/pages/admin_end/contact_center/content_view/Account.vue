@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
 import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
-
+import { getInviteCode } from '@/services/admin/admin_api'
 /**
  * @description 管理端联络中心页面账号管理模块
  * @author 应东林 钟礼豪
@@ -49,6 +49,12 @@ const uploadImg = async () => {
     logoPickerPopup.value.close()
   }
 }
+
+const handleGetInviteCode = async (name: string) => {
+  getInviteCode(name).then((response) => {
+    console.log(response.data)
+  })
+}
 </script>
 
 <template>
@@ -61,7 +67,9 @@ const uploadImg = async () => {
       <view class="content-items">联系电话:{{ adminStore.phoneNumber }}</view>
     </view>
     <view class="outlogin"><button>修改资料</button></view>
-    <view class="outlogin"><button>生成个人邀请码</button></view>
+    <view class="outlogin"
+      ><button @click="handleGetInviteCode(adminStore.realName)">生成个人邀请码</button></view
+    >
     <view class="outlogin" @click="gotoLoginAndRegister"><button>退出登录</button></view>
   </view>
 </template>

@@ -115,6 +115,23 @@ export const deleteNoticeById = (noticeId: number) => {
  * 系统设置
  */
 
+//====邀请码码获取与校验
+//获取邀请码
+export const getInviteCode = (name: string) => {
+  return http({
+    method: 'GET',
+    url: `/administer/statistics/get-invite-code?name=${name}`,
+  })
+}
+
+//验证邀请码
+export const verifyInviteCode = (inviteCode: string) => {
+  return http({
+    method: 'GET',
+    url: `/administer/statistics/verify-invite-code?inviteCode=${inviteCode}`,
+  })
+}
+
 //====外送地址配置
 // 新增地址信息
 export const addAddress = (address: string, addressNumber: string, deliveryPrice: number) => {

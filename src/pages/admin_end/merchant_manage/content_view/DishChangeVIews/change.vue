@@ -59,9 +59,9 @@ const disagree = (id: number) => {
         <view class="info-item">{{ dish.name }} 定价:{{ dish.price }} -> {{ dish.newprice }}</view>
       </view>
       <view class="footer">
-        <view class="agreement">
-          <button @click="agree(dish.id)">同意</button>
-          <button @click="disagree(dish.id)">不同意</button>
+        <view class="btns">
+          <button @click="agree(dish.id)" class="agree">同意</button>
+          <button @click="disagree(dish.id)" class="disagree">不同意</button>
         </view>
       </view>
     </view>
@@ -81,10 +81,11 @@ const disagree = (id: number) => {
     .title {
       font-size: 35rpx;
       font-weight: bold;
+      color: $text-color-green;
     }
     .nav {
       font-size: 25rpx;
-      color: #ccc;
+      color: $text-color-green;
       text-decoration: underline;
     }
   }
@@ -95,7 +96,7 @@ const disagree = (id: number) => {
     flex-direction: column;
     border-radius: 8rpx; // 根据需要调整圆角大小
     padding: 15rpx;
-    background-color: #ccc; // 根据需要调整背景颜色
+    background-color: $bg-color-light; // 根据需要调整背景颜色
     .id {
       margin-bottom: 10rpx; // 根据需要调整ID与内容之间的间距
       white-space: nowrap;
@@ -113,23 +114,23 @@ const disagree = (id: number) => {
       }
     }
 
-    .footer {
+    .btns {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      .agreement {
-        display: flex;
-        gap: 10px; // 根据需要调整按钮之间的间距
-        button {
-          font-size: 25rpx;
-          padding: 5rpx 10rpx; // 根据需要调整按钮内边距
-          border: none;
-          border-radius: 4rpx; // 根据需要调整按钮圆角
-          cursor: pointer;
-          background-color: #000; // 根据需要调整按钮背景颜色
-          color: white;
-          transition: background-color 0.3s;
-        }
+      width: 80%; /* 按钮容器宽度为80% */
+
+      button {
+        width: 40%; /* 每个按钮占40%的宽度 */
+        padding: 0; /* 按钮的上下内边距 */
+        font-size: 25rpx;
+        border-radius: 25rpx;
+      }
+      .agree {
+        background-color: $bg-color-green;
+      }
+      .disagree {
+        background-color: $bg-color-light;
+        border: 1rpx solid rgba(25, 196, 126, 0.7);
       }
     }
   }
