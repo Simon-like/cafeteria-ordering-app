@@ -32,7 +32,7 @@ export const diliver_auditResult = (msg: string) => {
 }
 //获取外卖员信息
 export const diliver_info = () => {
-  return http<CourierInfo>({
+  return http<CourierInfo[]>({
     method: 'GET',
     url: '/administer/statistics/getCourierInfo',
   })

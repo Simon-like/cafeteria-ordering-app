@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { getUpdateDishInfo, auditUpdateDish } from '@/services/admin/merchant_manage'
 /**
  * @description 管理端商户管理子页面模块
  * @author 钟礼豪
@@ -7,6 +8,30 @@ import { ref } from 'vue'
  * @lastModifiedBy 钟礼豪
  * @lastModifiedTime  2024-10-27
  */
+
+const props = defineProps({
+  merchantId: {
+    type: Number,
+    required: true,
+  },
+})
+
+//获取商家修改菜品价格审核信息
+const handleGetInfo = async () => {
+  const res = await getUpdateDishInfo(props.merchantId)
+  console.log('获取菜品更改价格信息:', res.data)
+}
+//修改菜品价格审核
+const handleAudit = async (dishId: number, result: boolean) => {
+  const res = await auditUpdateDish(dishId, result)
+  console.log('上传菜品价格审核结果:', res.data)
+}
+
+// 组件挂载时获取数据
+onMounted(() => {
+  handleGetInfo()
+})
+
 interface Dish {
   id: number
   name: string
@@ -31,20 +56,6 @@ const dishes = ref<Dish[]>([
     agreed: false,
   },
 ])
-
-const agree = (id: number) => {
-  const dish = dishes.value.find((dish) => dish.id === id)
-  if (dish) {
-    dish.agreed = true
-  }
-}
-
-const disagree = (id: number) => {
-  const dish = dishes.value.find((dish) => dish.id === id)
-  if (dish) {
-    dish.agreed = false
-  }
-}
 </script>
 <template>
   <view class="dishes-container">
@@ -60,8 +71,8 @@ const disagree = (id: number) => {
       </view>
       <view class="footer">
         <view class="btns">
-          <button @click="agree(dish.id)" class="agree">同意</button>
-          <button @click="disagree(dish.id)" class="disagree">不同意</button>
+          <button @click="handleAudit(dish.id, true)" class="agree">同意</button>
+          <button @click="handleAudit(dish.id, false)" class="disagree">不同意</button>
         </view>
       </view>
     </view>

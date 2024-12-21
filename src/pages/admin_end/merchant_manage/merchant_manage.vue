@@ -22,7 +22,6 @@ const my_aside_list = ref<AsideItem[]>([
   { itemId: 0, itemName: '区域商家详细信息', active: true },
   { itemId: 1, itemName: '商家菜单管理', active: false },
   { itemId: 2, itemName: '商家资质审核', active: false },
-  { itemId: 3, itemName: '商家信息反馈', active: false },
 ])
 
 onLoad(() => {

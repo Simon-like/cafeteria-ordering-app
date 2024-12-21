@@ -1,19 +1,42 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { getAddDishInfo, auditAddDish } from '@/services/admin/merchant_manage'
 /**
  * @description 管理端商户管理子页面模块
  * @author 钟礼豪
  * @date 2024-10-27
  * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-10-27
+ * @lastModifiedTime  2024-12-19
  */
+
+const props = defineProps({
+  merchantId: {
+    type: Number,
+    required: true,
+  },
+})
+
+//获取商家新增菜品审核信息
+const handleGetInfo = async () => {
+  const res = await getAddDishInfo(props.merchantId)
+  console.log('新增菜品信息:', res.data)
+}
+//上传审核结果
+const handleAudit = async (dishId: number, result: boolean) => {
+  const dish = dishes.value.find((dish) => dish.id === id)
+  const res = await auditAddDish(dishId, result)
+  console.log('新增菜品审核结果:', res.data)
+}
+// 组件挂载时获取数据
+onMounted(() => {
+  handleGetInfo()
+})
 interface Dish {
   id: number
   name: string
   price: string
   description: string
   more?: string // 添加 optional 属性 more
-  agreed: boolean
 }
 
 const dishes = ref<Dish[]>([
@@ -24,7 +47,6 @@ const dishes = ref<Dish[]>([
     name: '斤斤计较急急急急急急急急急急急急急急急斤斤计较斤斤计较',
     price: 'xxxx',
     more: 'xxx',
-    agreed: false,
   },
   {
     id: 2,
@@ -32,23 +54,8 @@ const dishes = ref<Dish[]>([
     price: 'xxxx',
     description: 'XXXXXXXXXXXXXXXXXXXXX',
     more: 'xxx', // 确保每个 dish 都有 more 属性
-    agreed: false,
   },
 ])
-
-const agree = (id: number) => {
-  const dish = dishes.value.find((dish) => dish.id === id)
-  if (dish) {
-    dish.agreed = true
-  }
-}
-
-const disagree = (id: number) => {
-  const dish = dishes.value.find((dish) => dish.id === id)
-  if (dish) {
-    dish.agreed = false
-  }
-}
 </script>
 
 <template>
@@ -84,8 +91,8 @@ const disagree = (id: number) => {
       </view>
       <view class="footer">
         <view class="btns">
-          <button @click="agree(dish.id)" class="agree">同意</button>
-          <button @click="disagree(dish.id)" class="disagree">不同意</button>
+          <button @click="handleGetInfo(dish.id, true)" class="agree">同意</button>
+          <button @click="handleGetInfo(dish.id, false)" class="disagree">不同意</button>
         </view>
       </view>
     </view>
