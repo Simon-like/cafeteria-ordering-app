@@ -1,5 +1,6 @@
 export type MerchantInfo = {
-  address: string //店铺详细地址
+  address: string //店铺区域
+  detailedAddress: string // 店铺详细地址
   businessHours: string //营业时间，用于显示
   contactPhone: string //店铺的联系电话
   discription: string //店铺详细信息
