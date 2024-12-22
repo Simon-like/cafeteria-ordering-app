@@ -44,7 +44,7 @@ const valiForm = ref<UniHelper.FormInstance>()
 const onEdit = () => {
   valiFormData.name = Merchant.name
   valiFormData.address = Merchant.address
-  valiFormData.detailedAddress = Merchant.detailedAddress
+  valiFormData.detailAddress = Merchant.detailAddress
   valiFormData.contactPhone = Merchant.contactPhone
   valiFormData.businessHours = Merchant.businessHours
   valiFormData.realName = Merchant.realName
@@ -96,7 +96,7 @@ const rules = {
       },
     ],
   },
-  detailedAddress: {
+  detailAddress: {
     rules: [
       {
         required: true,
@@ -134,7 +134,7 @@ const rules = {
 const valiFormData = reactive({
   name: '',
   address: '',
-  detailedAddress: '',
+  detailAddress: '',
   contactPhone: '',
   businessHours: '',
   realName: '',
@@ -153,20 +153,18 @@ const submit = () => {
       } else {
         // 更新商户信息
         let changeData: MerchantInfo = reactive({
-          name: valiFormData.name,
           address: valiFormData.address,
-          detailedAddress: valiFormData.detailedAddress,
-          contactPhone: valiFormData.contactPhone,
-          realName: valiFormData.realName,
-          discription: valiFormData.discription,
-          logo: Merchant.logo,
           businessHours: Merchant.businessHours,
-          operationStatus: Merchant.operationStatus,
+          contactPhone: valiFormData.contactPhone,
+          detailAddress: valiFormData.detailAddress,
+          discription: valiFormData.discription,
           id: Merchant.id,
+          logo: Merchant.logo,
+          name: valiFormData.name,
+          realName: valiFormData.realName,
         })
         ChangeMerchantInfo(changeData)
           .then((res) => {
-            console.log(changeData.detailedAddress)
             uni.showToast({
               title: `修改成功`,
             })
@@ -245,9 +243,8 @@ const onAddressChange = (e: any) => {
     <view class="content">
       <view class="content-items">店铺名称: {{ Merchant.name }}</view>
       <view class="content-items"
-        >店铺地址: {{ Merchant.address }}{{ Merchant.detailedAddress }}</view
+        >店铺地址: {{ Merchant.address }}{{ Merchant.detailAddress }}</view
       >
-      <view class="content-items">店铺地址:{{ Merchant.detailedAddress }}</view>
       <view class="content-items">联系电话: {{ Merchant.contactPhone }}</view>
       <view class="content-items">营业时间:{{ Merchant.businessHours }}</view>
       <view class="content-items">所有人: {{ Merchant.realName }}</view>
@@ -321,7 +318,7 @@ const onAddressChange = (e: any) => {
                 <uni-forms-item required name="number">
                   <template #label><text>店铺详细地址</text></template>
                   <uni-easyinput
-                    v-model="valiFormData.detailedAddress"
+                    v-model="valiFormData.detailAddress"
                     placeholder="请输入店铺详细地址"
                   />
                 </uni-forms-item>
