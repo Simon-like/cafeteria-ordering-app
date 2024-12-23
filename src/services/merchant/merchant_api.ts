@@ -37,17 +37,19 @@ export const merchant_register = (
   address: string,
   password: string,
   collegeId: string,
+  detailedAddress: string,
 ) => {
   return http({
     method: 'POST',
     url: '/merchant/register',
     data: {
+      address,
+      collegeId,
+      detailedAddress,
+      name,
+      password,
       phoneNumber,
       realName,
-      name,
-      address,
-      password,
-      collegeId,
     },
   })
 }

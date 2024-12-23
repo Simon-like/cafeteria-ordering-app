@@ -12,6 +12,7 @@ const handleRegister = async () => {
     merchantStore.address,
     merchantStore.password,
     merchantStore.collegeId,
+    merchantStore.detailedAddress,
   ).then((response) => {
     gotoLogin()
   })
@@ -38,7 +39,7 @@ const handleRegister = async () => {
         <text>手机号：{{ merchantStore.phoneNumber }}</text>
         <text>所有人姓名：{{ merchantStore.realName }}</text>
         <text>店铺名称：{{ merchantStore.name }}</text>
-        <text>店铺地址：{{ merchantStore.address }}</text>
+        <text>店铺地址：{{ merchantStore.address }}{{ merchantStore.detailedAddressa }}</text>
       </view>
     </view>
     <button @click="handleRegister">提交审核</button>

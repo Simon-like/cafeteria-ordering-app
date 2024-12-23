@@ -10,6 +10,7 @@ export const useMerchantStore = defineStore(
     const realName = ref<string>('') //所有人名称
     const name = ref<string>('') //店铺名称
     const address = ref<string>('')
+    const detailedAddress = ref<string>('')
     const password = ref<string>('')
     const collegeId = ref<string>('')
     const collegeName = ref<string>('')
@@ -30,6 +31,7 @@ export const useMerchantStore = defineStore(
       realName,
       name,
       address,
+      detailedAddress,
       password,
       collegeId,
       collegeName,

@@ -7,12 +7,14 @@ import type { University } from '@/types/merchant_return'
 const realName = ref<string>('')
 const name = ref<string>('')
 const address = ref<string>('')
+const detailedAddress = ref<string>('')
 const college = ref<string>('')
 const merchantStore = useMerchantStore()
 
 const gotoNext = () => {
   merchantStore.realName = realName.value
   merchantStore.name = name.value
+  merchantStore.detailedAddress = detailedAddress.value
   uni.navigateTo({
     url: '/pages/login_register/merchant/register/register_3',
   })
@@ -41,10 +43,11 @@ const universityNames = computed(() => {
 onLoad(() => {
   fetchUniversities()
 })
-
+const flag = ref(null)
 // 当选择大学时触发的函数
 const onUniversityChange = (e) => {
   const index = e.detail.value
+  flag.value = 1
   if (universities.value[index]) {
     const selectedUniversity = universities.value[index]
     // 存储选中的大学 ID 和名称到 Pinia 仓库
@@ -55,12 +58,17 @@ const onUniversityChange = (e) => {
   }
 }
 const fetchRegion = async () => {
-  if (merchantStore.collegeName) {
+  console.log('大学信息:', flag)
+  if (flag.value != null) {
     const res = await GetRegion(merchantStore.collegeName)
     console.log('1')
     console.log(res.data)
   } else {
-    console.log('未选择大学')
+    uni.showToast({
+      icon: 'none',
+      title: '未选择大学！',
+    })
+    return
   }
 }
 const resRegion = ref([
@@ -115,7 +123,7 @@ const onRegionChange = (e) => {
         >
       </view>
       <view class="input-item">
-        <text>选择店铺地址</text>
+        <text>选择店铺区域</text>
         <picker
           class="uni"
           mode="selector"
@@ -123,9 +131,14 @@ const onRegionChange = (e) => {
           @change="onRegionChange"
           @click="fetchRegion"
         >
-          <view class="uni-text">{{ selectedRegion || '请选择店铺地址' }}</view>
-          <!-- 显示选择的店铺地址 -->
+          <view class="uni-text">{{ selectedRegion || '请选择店铺区域' }}</view>
+          <!-- 显示选择的店铺区域 -->
         </picker>
+      </view>
+
+      <view class="input-item">
+        <text>店铺详细地址</text>
+        <input type="text" v-model="detailedAddress" />
       </view>
     </view>
 
