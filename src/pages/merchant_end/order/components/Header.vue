@@ -3,7 +3,11 @@ import { ref, reactive } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { getLastDays } from '@/composables/tools'
 import { useMerchantOrderStore } from '@/stores'
-import { getOrdersByStatus, getOrdersByNumbers } from '@/services/merchant/merchant_shop_order_api'
+import {
+  getOrdersByStatus,
+  getOrdersByNumbers,
+  countTwoStatus,
+} from '@/services/merchant/merchant_shop_order_api'
 /**
  * @description 订单管理模块-头部栏
  * @author 应东林
@@ -11,6 +15,20 @@ import { getOrdersByStatus, getOrdersByNumbers } from '@/services/merchant/merch
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-12-27
  */
+
+// 主动获取订单数量
+const getCount = async () => {
+  const res = await countTwoStatus()
+  if (res.code === 1) {
+    OrderStore.confirmed = res.data.CONFIRMED
+    OrderStore.to_be_confirmed = res.data.TO_BE_CONFIRMED
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取数量失败！',
+    })
+  }
+}
 
 // 本地订单数据
 const OrderStore = useMerchantOrderStore()
@@ -24,7 +42,14 @@ const getOrder_loading = async () => {
     0,
   )
   if (res.code === 1) {
+    OrderStore.localOrderData = []
     OrderStore.localOrderData = res.data.list
+    OrderStore.localOrderData.forEach((value, index, arr) => {
+      arr[index].menu.forEach((item, i, a) => {
+        a[i].dishPrice = +a[i].dishPrice.toFixed(2)
+      })
+    })
+    await getCount()
   } else {
     uni.showToast({
       icon: 'none',
@@ -80,6 +105,11 @@ const onQuery = async (text: string) => {
     if (res.data) {
       OrderStore.localOrderData = []
       OrderStore.localOrderData.push(res.data)
+      OrderStore.localOrderData.forEach((value, index, arr) => {
+        arr[index].menu.forEach((item, i, a) => {
+          a[i].dishPrice = +a[i].dishPrice.toFixed(2)
+        })
+      })
     } else {
       uni.showToast({
         icon: 'none',

@@ -14,28 +14,33 @@ type deviceType = {
   advertisServiceUUIDs: string[]
   advertisData: Object
 }
-type serviceType = {
-  uuid: string
-  isPrimary: boolean
-}
 
 type RWType = {
   deviceId: string ///蓝牙设备的 ID
   serviceId: string //蓝牙服务的 ID
   characteristicId: string //蓝牙特征值的 ID
+  name: string //设备名称
 }
 
-let timer = null //用于保存获取蓝牙设备的定时器
-let timer_services = null //用于保存获取蓝牙设备服务的定时器
-
-let deviceInfo: deviceType = {} //设备基础信息
-let serviceInfo: serviceType[] = [] //设备服务信息
-let RWInfo: RWType = {} //可读写参数信息
+let deviceInfo: deviceType = {
+  deviceId: '',
+  name: '',
+  RSSI: 0,
+  localName: '',
+  advertisServiceUUIDs: [],
+  advertisData: {},
+} //设备基础信息
+let RWInfo: RWType = {
+  deviceId: '',
+  serviceId: '',
+  characteristicId: '',
+  name: '',
+} //可读写参数信息
 /**
- * @初始化并寻找蓝牙设备
+ * @初始化蓝牙设备
  */
-function findBluetooth() {
-  return new Promise((resolve) => {
+export function openBluetooth() {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       /**
        * 初始化蓝牙适配器
@@ -44,6 +49,7 @@ function findBluetooth() {
       uni.openBluetoothAdapter({
         success(res) {
           console.log('蓝牙适配器打开成功', res)
+          resolve(res)
         },
         fail(err) {
           console.error('蓝牙适配器打开失败', err)
@@ -51,14 +57,38 @@ function findBluetooth() {
             icon: 'none',
             title: '蓝牙适配器打开失败！',
           })
+          reject(new Error('蓝牙适配器打开失败'))
         },
       })
+    }, 0)
+  })
+}
+//停止寻找蓝牙
+function stopFindBluetooth() {
+  //停止
+  uni.stopBluetoothDevicesDiscovery({
+    success: function (res) {
+      console.log('停止搜索蓝牙设备', res)
+    },
+    fail: function (err) {
+      console.error('停止搜索蓝牙设备失败', err)
+    },
+  })
+}
+/**
+ * @寻找蓝牙打印机
+ */
+export function findBluetooth(duration: number = 1000) {
+  console.log('simon2')
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
       /**
        * 开始搜索蓝牙设备
        * 初始化成功后，就可以通过调用 startBluetoothDevicesDiscovery 方法开始搜索附近的蓝牙设备：
        * 注意：此操作比较耗费系统资源，请在搜索并连接到设备后调用
        * uni.stopBluetoothDevicesDiscovery  方法停止搜索。
        */
+      console.log('simon1')
       uni.startBluetoothDevicesDiscovery({
         success: function (res) {
           console.log('开始搜索蓝牙设备', res)
@@ -71,39 +101,30 @@ function findBluetooth() {
             console.dir(devices)
           })
 
-          //轮询获取目前已发现的设备，当找到对应设备应该及时停止
-          timer = setInterval(() => {
+          setTimeout(() => {
+            //延迟三秒获取目前已发现的设备
             uni.getBluetoothDevices({
               success: function (res) {
                 console.log('已发现的蓝牙设备', res.devices)
-                deviceInfo = res.devices.find((item) => item.deviceId === '86:67:7A:B9:85:81')
-                if (!!deviceInfo) {
-                  resolve()
-                  clearInterval(timer)
-                  timer = null
-                  //停止
-                  uni.stopBluetoothDevicesDiscovery({
-                    success: function (res) {
-                      console.log('停止搜索蓝牙设备', res)
-                    },
-                    fail: function (err) {
-                      console.error('停止搜索蓝牙设备失败', err)
-                    },
-                  })
-                }
+                resolve(res.devices)
+                stopFindBluetooth()
               },
               fail: function (err) {
                 console.error('获取已发现的蓝牙设备列表失败', err)
+                stopFindBluetooth()
+                reject(new Error('获取已发现的蓝牙设备列表失败'))
               },
             })
-          }, 500)
+          }, duration)
         },
         fail: function (err) {
           console.error('开始搜索蓝牙设备失败', err)
           uni.showToast({
             icon: 'none',
-            title: '开始搜索蓝牙设备失败！',
+            title: '搜索蓝牙设备失败！',
           })
+          reject(new Error('搜索蓝牙设备失败'))
+          stopFindBluetooth()
         },
       })
     }, 0)
@@ -113,19 +134,19 @@ function findBluetooth() {
 /**
  * @连接寻找到的蓝牙设备
  */
-function connectionBluetooth() {
+export function connectionBluetooth(deviceId: string) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       //可以通过设备 ID 调用 createBLEConnection 方法建立与该设备的连接
       uni.createBLEConnection({
-        deviceId: deviceInfo.deviceId, //'目标设备ID'
+        deviceId, //'目标设备ID'
         success: function (res) {
           console.log('连接蓝牙设备成功', res)
           resolve(res)
         },
         fail: function (err) {
           console.error('连接蓝牙设备失败', err)
-          reject(err)
+          reject(new Error('连接蓝牙设备失败'))
         },
       })
     }, 0)
@@ -141,39 +162,42 @@ function connectionBluetooth() {
  * 一般的，我们根据 deviceId 获取服务，再根据服务 Service 获取特征值 Characteristic，
  * 特征值的 properties 中包含了 read、write、notify、indicate 四个属性，
  * 其中 read 和 write 表示该特征值是否支持读和写操作。
- * {"services":[{"uuid":"00001800-0000-1000-8000-00805F9B34FB","isPrimary":true},
- * {"uuid":"000018F0-0000-1000-8000-00805F9B34FB","isPrimary":true},
- * {"uuid":"0000FEE7-0000-1000-8000-00805F9B34FB","isPrimary":true},{"uuid":"0000FF00-0000-1000-8000-00805F9B34FB","isPrimary":true},
- * {"uuid":"E7810A71-73AE-499D-8C15-FAA9AEF0C3F2","isPrimary":true},
- * {"uuid":"49535343-FE7D-4AE5-8FA9-9FAFD205E455","isPrimary":true}],"errMsg":"getBLEDeviceServices:ok"}
  */
 
 /**
  * @获取蓝牙设备提供的服务
  */
-function getBluetoothServices() {
+function getBluetoothServices(deviceId: string) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      //连接成功后，可以通过设备 ID 调用 getBLEDeviceServices 方法获取该设备提供的服务：
-      console.log('蓝牙设备', deviceInfo)
-      //轮询获取，直到真的获取
-      timer_services = setInterval(() => {
+      let timer = null
+      let flag = 0 //设置阈值，不能超时
+      timer = setInterval(() => {
+        //连接成功后，可以通过设备 ID 调用 getBLEDeviceServices 方法获取该设备提供的服务：
         uni.getBLEDeviceServices({
-          deviceId: deviceInfo.deviceId, //'目标设备ID'
+          deviceId, //'目标设备ID'
           success: function (res) {
-            serviceInfo = res
             console.log('获取蓝牙设备服务成功', res)
-            if (!!serviceInfo) {
-              resolve(serviceInfo)
-              clearInterval(timer_services)
-              timer_services = null
+            if (!!res) {
+              clearInterval(timer)
+              timer = null
+              resolve(res)
             }
           },
           fail: function (err) {
+            clearInterval(timer)
+            timer = null
             console.error('获取蓝牙设备服务失败', err)
-            reject(err)
+            reject(new Error('获取蓝牙设备服务失败'))
           },
         })
+        flag++
+        if (flag >= 5) {
+          clearInterval(timer)
+          timer = null
+          console.error('获取蓝牙设备服务失败', err)
+          reject(new Error('获取蓝牙设备服务失败'))
+        }
       }, 500)
     }, 0)
   })
@@ -191,7 +215,7 @@ function getBLEDeviceCharacteristicsById(deviceId: string, serviceId: string) {
         resolve(res)
       },
       fail: (e) => {
-        reject(e)
+        reject(new Error('获取蓝牙设备服务失败'))
       },
     })
   })
@@ -200,16 +224,17 @@ function getBLEDeviceCharacteristicsById(deviceId: string, serviceId: string) {
 /**
  * 获取某服务下的支持读写的特征值
  */
-const getReadWriteBLEValue = async () => {
+export const getReadWriteBLEValue = async (deviceInfo: deviceType) => {
   return new Promise(async (resolve, reject) => {
     try {
       const { deviceId } = deviceInfo
-      let res = await getBluetoothServices() // 获取所有服务
+      console.log(deviceId)
+      let res = await getBluetoothServices(deviceId) // 获取所有服务
       for (const service of res.services) {
         const serviceId = service.uuid
         const characteristicsRes = await getBLEDeviceCharacteristicsById(deviceId, serviceId)
         if (!!characteristicsRes) {
-          console.log(serviceId, characteristicsRes)
+          //console.log(serviceId, characteristicsRes)
           // 过滤出可以读写的特征值
           const findList = characteristicsRes?.characteristics.filter(
             (item) =>
@@ -220,40 +245,36 @@ const getReadWriteBLEValue = async () => {
           )
           if (findList.length > 0) {
             Object.assign(RWInfo, {
+              deviceId,
               serviceId,
               characteristicId: findList[0].uuid,
-              characteristic: findList[0],
+              name: deviceInfo.name,
             })
             console.log(`寻找到可以读写的特性`, serviceId, findList[0].uuid)
             return resolve({
               status: 1,
               msg: '成功找到可以读写的特征值',
               data: { serviceId, characteristicId: findList[0].uuid, characteristic: findList[0] },
+              RWInfo,
             })
           }
         }
       }
-      return reject('未找到可以读写的特征值')
+      return reject(new Error('未找到可以读写的特征值'))
     } catch (e) {
-      reject(e)
+      reject(new Error('未找到可以读写的特征值'))
     }
   })
 }
 
-// 初始化操作
-export const initBluetooth = async () => {
-  await findBluetooth()
-  await connectionBluetooth()
-  await getReadWriteBLEValue()
-}
 // 发送数据
-export const writeBLECharacteristicValue = (buffer) => {
+export const writeBLECharacteristicValue = (buffer, RWInfo: RWType) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       // 写入蓝牙打印机
-      console.log('RWInfo', RWInfo)
+
       uni.writeBLECharacteristicValue({
-        deviceId: deviceInfo.deviceId,
+        deviceId: RWInfo.deviceId,
         serviceId: RWInfo.serviceId,
         characteristicId: RWInfo.characteristicId,
         value: buffer,
@@ -263,6 +284,10 @@ export const writeBLECharacteristicValue = (buffer) => {
         },
         fail: (e) => {
           console.log('写入失败', JSON.stringify(e))
+          uni.showToast({
+            icon: 'none',
+            title: '蓝牙打印机写入异常',
+          })
         },
       })
     }, 0)
@@ -296,7 +321,7 @@ function getSliceBufferList(buffer) {
 /**
  * 向低功耗蓝牙设备特征值中写入二进制数据
  */
-export const writeBLEValueLoop = async (buffer) => {
+export const writeBLEValueLoop = async (buffer, RWInfo: RWType) => {
   return new Promise(async (resolve, reject) => {
     const maxRetries = 3 // 最大重试次数
 
@@ -305,7 +330,7 @@ export const writeBLEValueLoop = async (buffer) => {
       let retries = 0
       while (retries <= maxRetries) {
         try {
-          const response = await writeBLECharacteristicValue(item)
+          const response = await writeBLECharacteristicValue(item, RWInfo)
           if (response) {
             console.log(`Successfully sent ${item}`)
             break // 请求成功后跳出while循环，进行下一项
@@ -329,11 +354,11 @@ export const writeBLEValueLoop = async (buffer) => {
 
 // 断开链接并关闭蓝牙
 
-export const closeBluetooth = () => {
+export const closeBluetooth = (deviceId: string) => {
   //断开连接
   if (!!deviceInfo.deviceId) {
     uni.closeBLEConnection({
-      deviceId: deviceInfo.deviceId,
+      deviceId,
       success(res) {
         console.log(res)
       },

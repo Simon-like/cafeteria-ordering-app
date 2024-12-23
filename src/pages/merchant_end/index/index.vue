@@ -3,6 +3,7 @@ import StatisticsItem from '@/components/chart/StatisticsItem.vue'
 import LineChart from '@/components/chart/LineChart.vue'
 import PieChart from '@/components/chart/PieChart.vue'
 import { ref, nextTick } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import {
   getTopSellingDish,
   getSalesTrends,
@@ -73,6 +74,10 @@ onLoad(async () => {
   const resStatistics = await getStatistics() //数据看板
   if (resStatistics.code === 1) {
     statistics_list.value = resStatistics.data.digiSignageInfoList
+    statistics_list.value.forEach((value, index, arr) => {
+      arr[index].value = +value.value.toFixed(2)
+      arr[index].changeValue = +value.changeValue.toFixed(2)
+    })
   } else {
     uni.showToast({
       icon: 'none',

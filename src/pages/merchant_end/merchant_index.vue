@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { componentList } from './index'
 import { useMerchantPagesStore } from '@/stores'
-import { ref } from 'vue'
+import { onLoad, onUnload } from '@dcloudio/uni-app'
+import { closeBluetooth } from '@/utils/BluetoothAdapter'
+import { ref, nextTick } from 'vue'
+import { useMerchantOrderStore } from '@/stores'
+import WS from '@/utils/websocket'
 
 /**
  * @description 商户端入口页面
@@ -12,6 +16,52 @@ import { ref } from 'vue'
  */
 
 const MerchantPages = useMerchantPagesStore()
+// 本地订单数据
+const OrderStore = useMerchantOrderStore()
+
+type socketInfo = {
+  orderId: number
+  OrderNumber: number
+  type: number
+  TO_BE_CONFIRMED: number
+}
+onLoad(() => {
+  //检查websocket是否连接成功
+  if (!MerchantPages.ws) {
+    MerchantPages.ws = new WS({
+      // 连接websocket所需参数
+      data: { userId: '' },
+      // 首次连接成功之后，断线重新连接后也会触发（防止断线期间对方发送消息未接收到）
+      onConnected: (data: string) => {
+        console.log('历史消息', data)
+      },
+      // 监听接收到服务器消息
+      onMessage: (data: string) => {
+        // 使用正则提取 JSON 字符串部分
+        const jsonString = data.match(/{.*}/)[0] // 匹配第一个大括号之间的内容
+        const socketData = JSON.parse(jsonString) as socketInfo
+        console.log(socketData)
+        nextTick(() => {
+          OrderStore.to_be_confirmed = socketData.TO_BE_CONFIRMED
+          OrderStore.order_notice = !OrderStore.order_notice
+        })
+        uni.showToast({
+          icon: 'none',
+          title: '来订单了！请注意查看！',
+        })
+      },
+    })
+  }
+})
+
+// 页面销毁，断开websocket
+onUnload(() => {
+  // 主动关闭websocket
+  if (MerchantPages.ws) MerchantPages.ws.close()
+  //断开蓝牙
+  closeBluetooth(MerchantPages.RWInfo.deviceId)
+  MerchantPages.initRWInfo()
+})
 </script>
 
 <template>

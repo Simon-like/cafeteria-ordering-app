@@ -1,14 +1,20 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { debounce, splitContent } from '@/composables/tools'
+import { debounce, splitContent, getLastDays, throttle, formatDate } from '@/composables/tools'
 import type { OrderItem, MenuItem, specItem, dishData } from '@/types/merchant_return'
 import {
   confirmTheOrder,
   completeOrder,
   refundsConfirmedOrders,
 } from '@/services/merchant/merchant_shop_order_api'
+import { writeBLEValueLoop, closeBluetooth } from '@/utils/BluetoothAdapter'
+import { Printer } from '@/utils/ble/Printer'
+import { useMerchantOrderStore, useMerchantPagesStore } from '@/stores'
+// 本地订单数据
+const OrderStore = useMerchantOrderStore()
 
+const MerchantPages = useMerchantPagesStore()
 /**
  * @description 订单管理模块-订单组件
  * @author 应东林
@@ -21,7 +27,6 @@ import {
 const props = defineProps<{
   orderItem: OrderItem
 }>()
-
 const orderData = props.orderItem
 //处理后端奇怪的空数组！
 orderData.menu = orderData.menu.map((item) => {
@@ -30,32 +35,112 @@ orderData.menu = orderData.menu.map((item) => {
     return item
   } else return item
 })
-
+orderData.orderTime = orderData.orderTime.split('T').reduce((arr, index) => arr + '  ' + index)
+orderData.menu.forEach((item, index, arr) => {
+  let arr_temp = []
+  arr_temp = item.dishSpecList.filter((value) => !!value && value !== 'null')
+  arr[index].dishSpecList = arr_temp
+})
 const show = ref<boolean>(false)
 const onDescShow = () => {
   show.value = !show.value
+}
+
+// 打印
+const BLEPrint = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const menu = orderData.menu.map((item) => [
+        item.dishName +
+          (item.dishSpecList.length !== 0
+            ? '(' + item.dishSpecList.reduce((res, index) => res + ',' + index) + ')'
+            : ''),
+        'x' + item.dishNumber,
+        item.dishPrice + '元',
+      ])
+
+      const buffer = new Printer()
+        .setAlign('ct') // 设置居中打印标题
+        .setSize(1, 2)
+        .print('订单详情')
+
+        // 打印分割线
+        .setAlign('lt')
+        .setSize(1, 1)
+        .printFill()
+
+        // 打印订单号
+        .setSize(1, 1)
+        .printLR('订单号:', orderData.orderCode)
+        // 打印顾客信息
+        .printLR('顾客:', orderData.customer)
+        .printLR('电话:', orderData.phoneNumber)
+        .printLR('下单时间:', orderData.orderTime)
+        .setSize(2, 2)
+        // 打印备注
+        .print('备注:' + orderData.orderNotes)
+        .setSize(1, 1)
+        .printFill()
+        .setSize(1, 2)
+        // 打印菜品信息
+        .setAlign('lt')
+        .printLoop(menu)
+        .setSize(1, 1)
+        // 打印总价、优惠、实际支付金额
+        .printLR('总价:', orderData.totalPrice + '元')
+        .printLR('优惠:', orderData.coupon + '元')
+        .printLR('实付:', orderData.actualPrice + '元')
+        .printLR('可提现金额:', orderData.withDrawableAmount + '元')
+
+        // 打印送餐地址信息
+        .printFill()
+        .printLR(
+          '送餐地址:',
+          orderData.address ? orderData.address + `  ${orderData.addressNumber}` : '堂食订单',
+        )
+
+        // 打印支付方式（假设 0 是现金支付）
+        .printLR('支付方式:', orderData.payMethod === 0 ? '微信支付' : '支付宝支付')
+
+        // 打印时间
+        .printFill()
+        .printLR('打印时间：', formatDate('yyyy-MM-dd hh:mm:ss'))
+        // 打印空行
+        .println()
+        // 结束打印
+        .end()
+
+      writeBLEValueLoop(buffer, MerchantPages.RWInfo).then((res) => {
+        setTimeout(() => {
+          console.log('加载-----')
+        }, 1000)
+      })
+    }, 0)
+  })
 }
 
 /**
  * 订单操作
  */
 //接单2->3
+let flag = ref<number>(20)
 const onConfirm = async () => {
   if (orderData.orderStatus !== 2) {
-    uni.showToast({
-      icon: 'none',
-      title: '订单状态异常！',
-    })
+    showToast('订单状态异常！', 'error')
     return
   }
   const res = await confirmTheOrder(orderData.orderID)
-  if (res.code === 1) {
-    console.log(res.data)
-  } else {
-    uni.showToast({
-      icon: 'none',
-      title: '接单失败！',
+  if (res.code === 20001) {
+    nextTick(() => {
+      OrderStore.confirmed = res.data.CONFIRMED
+      OrderStore.to_be_confirmed = res.data.TO_BE_CONFIRMED
+      let index = OrderStore.localOrderData.findIndex((item) => item.orderID === orderData.orderID)
+      OrderStore.localOrderData.splice(index, 1)
+      showToast('接单成功！', 'success')
     })
+    !!MerchantPages.RWInfo.deviceId && (await BLEPrint()) //打印
+  } else {
+    showToast('接单失败', 'error')
   }
 }
 const onConfirm_debounce = debounce(onConfirm, 1000, true)
@@ -63,20 +148,20 @@ const onConfirm_debounce = debounce(onConfirm, 1000, true)
 //完成3->4//6
 const onComplete = async () => {
   if (orderData.orderStatus !== 3) {
-    uni.showToast({
-      icon: 'none',
-      title: '订单状态异常！',
-    })
+    showToast('订单状态异常', 'error')
     return
   }
   const res = await completeOrder(orderData.orderID)
-  if (res.code === 1) {
-    console.log(res.data)
-  } else {
-    uni.showToast({
-      icon: 'none',
-      title: '操作失败！',
+  if (res.code === 20001) {
+    nextTick(() => {
+      OrderStore.confirmed = res.data.CONFIRMED
+      OrderStore.to_be_confirmed = res.data.TO_BE_CONFIRMED
+      let index = OrderStore.localOrderData.findIndex((item) => item.orderID === orderData.orderID)
+      OrderStore.localOrderData.splice(index, 1)
+      showToast('完成订单！', 'success')
     })
+  } else {
+    showToast('操作失败', 'error')
   }
 }
 
@@ -84,24 +169,32 @@ const onComplete_debounce = debounce(onComplete, 1000, true)
 //退款3->8
 const onRefundsConfirmed = async () => {
   if (orderData.orderStatus !== 3) {
-    uni.showToast({
-      icon: 'none',
-      title: '订单状态异常！',
-    })
+    showToast('订单状态异常', 'error')
     return
   }
+
   const res = await refundsConfirmedOrders(orderData.orderID)
-  if (res.code === 1) {
-    console.log(res.data)
-  } else {
-    uni.showToast({
-      icon: 'none',
-      title: '退款失败！',
+  if (res.code === 20001) {
+    let index = OrderStore.localOrderData.findIndex((item) => item.orderID === orderData.orderID)
+    OrderStore.localOrderData.splice(index, 1)
+    nextTick(() => {
+      OrderStore.confirmed = res.data.CONFIRMED
+      OrderStore.to_be_confirmed = res.data.TO_BE_CONFIRMED
     })
+    showToast('退单成功！', 'success')
+  } else {
+    showToast('退款失败', 'error')
   }
 }
-
 const onRefundsConfirmed_debounce = debounce(onRefundsConfirmed, 1000, true)
+
+const showToast = (message: string, type: string) => {
+  uni.showToast({
+    title: message,
+    icon: 'none',
+    position: 'top',
+  })
+}
 </script>
 
 <template>
@@ -120,9 +213,8 @@ const onRefundsConfirmed_debounce = debounce(onRefundsConfirmed, 1000, true)
           class="btn warning-btn"
           v-if="orderData.orderStatus === 3"
           @click="onRefundsConfirmed_debounce"
-          >退款</view
+          >退单</view
         >
-        <view v-if="orderData.orderStatus === 8">已退款</view>
         <view
           v-if="
             orderData.orderStatus === 4 ||
@@ -184,19 +276,20 @@ const onRefundsConfirmed_debounce = debounce(onRefundsConfirmed, 1000, true)
             <view class="totalPrice">菜品总价：{{ orderData.totalPrice }}元</view>
             <view class="coupon">-优惠券：{{ orderData.coupon }}元</view>
             <view class="actualPrice"
-              >共计支付：<text style="font-weight: 550; font-size: 40rpx">{{
-                orderData.actualPrice
-              }}</text
+              >共计支付：
+              <text style="font-weight: 550; font-size: 40rpx"> {{ orderData.actualPrice }}</text
+              >元</view
+            >
+            <view class="actualPrice"
+              >可提现金额：
+              <text style="font-weight: 550; font-size: 40rpx">
+                {{ orderData.withDrawableAmount }}</text
               >元</view
             >
           </view>
           <view class="remaining-info">
             <view class="phoneNumber">顾客电话：{{ orderData.phoneNumber }}</view>
-            <view class="orderTime"
-              >下单时间：{{
-                orderData.orderTime.split('T').reduce((arr, index) => arr + '  ' + index)
-              }}</view
-            >
+            <view class="orderTime">下单时间：{{ orderData.orderTime }}</view>
             <view class="payMethod"
               >支付方式：{{ orderData.payMethod ? '支付宝支付' : '微信支付' }}</view
             >

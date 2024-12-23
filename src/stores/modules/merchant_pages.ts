@@ -5,7 +5,7 @@ import { ref, reactive } from 'vue'
  * @author 应东林
  * @date 2024-09-23
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-23
+ * @lastModifiedTime  2024-12-21
  */
 // 定义 Store
 export const useMerchantPagesStore = defineStore(
@@ -14,6 +14,27 @@ export const useMerchantPagesStore = defineStore(
     const tabbarIndex = ref<number>(0)
     const shopIndex = ref<number>(0)
     const myIndex = ref<number>(0)
+    const ws = null //websocket对象
+    const RWInfo = ref<{
+      deviceId: string ///蓝牙设备的 ID
+      serviceId: string //蓝牙服务的 ID
+      characteristicId: string //蓝牙特征值的 ID
+      name: string //连接的蓝牙设备名称
+    }>({
+      deviceId: '',
+      serviceId: '',
+      characteristicId: '',
+      name: '',
+    })
+
+    const initRWInfo = () => {
+      RWInfo.value = {
+        deviceId: '',
+        serviceId: '',
+        characteristicId: '',
+        name: '',
+      }
+    }
 
     const initialize = () => {
       tabbarIndex.value = 0
@@ -26,6 +47,9 @@ export const useMerchantPagesStore = defineStore(
       shopIndex,
       myIndex,
       initialize,
+      ws,
+      RWInfo,
+      initRWInfo,
     }
   },
   // TODO: 持久化

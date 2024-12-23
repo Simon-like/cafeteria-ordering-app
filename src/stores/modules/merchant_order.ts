@@ -28,12 +28,19 @@ export const useMerchantOrderStore = defineStore(
 
     const queryFlag = ref<boolean>(false) //是否处于查询状态
 
+    const confirmed = ref<number>(0)
+    const to_be_confirmed = ref<number>(0) //待接单数量
+    const order_notice = ref<boolean>(false) //来单状态变更，用于触发watch监听器
+
     return {
       localOrderData,
       date,
       oderType,
       status,
       queryFlag,
+      confirmed,
+      to_be_confirmed,
+      order_notice,
     }
   },
   // TODO: 持久化

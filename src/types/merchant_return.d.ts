@@ -86,4 +86,16 @@ export type OrderItem = {
   addressID: number // 配送地址ID，当oderType=0时有此字段内容,否则为-1
   address: string // 配送地址，当oderType=0时有此字段内容,否则为空字符''
   addressNumber: string //配送地址编号，当oderType=0时有此字段内容,否则为空字符''
+  withDrawableAmount: string //可提现金额
+}
+
+//对商户的评价信息
+export type ReviewsType = {
+  avater: string //用户头像
+  customer: string //用户名称
+  content: string //评价内容
+  date: string //日期
+  orderCode: string //订单编号
+  Scoring: number //评分
+  phoneNumber: string //用户电话
 }

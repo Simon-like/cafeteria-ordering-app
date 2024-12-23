@@ -1,6 +1,6 @@
 import { http } from '@/utils/http'
 import type { TokenType } from '@/types/login_register'
-import type { MerchantInfo, University } from '@/types/merchant_return'
+import type { MerchantInfo, University, ReviewsType } from '@/types/merchant_return'
 export const merchant_Login_pp = (phoneNumber: string, password: string) => {
   return http<TokenType>({
     method: 'POST',
@@ -114,5 +114,46 @@ export const GetRegion = (college: string) => {
   return http<{ region: string; regionId: string }[]>({
     method: 'GET',
     url: `/administer/getplace?college=${college}`,
+  })
+}
+
+/**
+ * @店铺评价与通知
+ */
+
+//获取所有顾客评级
+export const getAllReviews = () => {
+  return http<ReviewsType[]>({
+    method: 'GET',
+    url: `/merchant/statistics/getAllReviews`,
+  })
+}
+
+//获取所有通知
+export const getNoticeByTimeAndType = (date: string, type: number) => {
+  return http<
+    {
+      type: number //通知类型，系统公告1，管理员公告2
+      content: string
+      time: string
+    }[]
+  >({
+    method: 'GET',
+    url: `/merchant/statistics/getNoticeByTimeAndType`,
+    data: {
+      date, //查询公告类型，全部0，系统公告1，管理员公告2
+      type,
+    },
+  })
+}
+
+//联系客服
+export const contactService = (content: string) => {
+  return http({
+    method: 'POST',
+    url: `/merchant/statistics/content`,
+    data: {
+      content,
+    },
   })
 }

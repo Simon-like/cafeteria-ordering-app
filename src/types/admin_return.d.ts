@@ -54,3 +54,16 @@ export type CourierInfo = {
   phoneNumber: string
   realName: string
 }
+
+/**
+ * 各端信息反馈
+ */
+// 反馈信息
+export type feedbackType = {
+  avater: string
+  nikename: string
+  content: string
+  date: string
+  targetGroup: number //反馈人所在群体，0外卖员,1商家,2用户,3全部
+  phoneNumber: string
+}

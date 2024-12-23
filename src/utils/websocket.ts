@@ -19,7 +19,6 @@ export default class WS {
     this.options = options
     // WS实例
     this.socketTask = null
-
     // 正常关闭
     this.normalCloseFlag = false
     // 重新连接次数
@@ -50,7 +49,7 @@ export default class WS {
     const DoubleTokenStore = useDoubleTokenStore()
     const actoken = DoubleTokenStore.accessToken
     // this.options.data 连接websocket所需参数
-    const url = 'ws://114.55.108.97:8080/ws/5dhuluq0mj6' + this.options.data.userId
+    const url = `ws://114.55.108.97:8080/ws/${actoken}` + this.options.data.userId
     this.socketTask = uni.connectSocket({
       url,
       header: {
@@ -107,6 +106,10 @@ export default class WS {
         this.options.onMessage(res.data)
       } else {
         console.log('未监听到消息：原因：', JSON.stringify(res))
+        uni.showToast({
+          icon: 'none',
+          title: '消息接受失败！',
+        })
       }
     })
   }

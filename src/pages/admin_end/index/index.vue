@@ -44,6 +44,10 @@ onLoad(async () => {
   const resStatistics = await getStatistics() //数据看板
   if (resStatistics.code === 1) {
     statistics_list.value = resStatistics.data.digiSignageInfoList
+    statistics_list.value.forEach((value, index, arr) => {
+      arr[index].value = +value.value.toFixed(2)
+      arr[index].changeValue = +value.changeValue.toFixed(2)
+    })
   } else {
     uni.showToast({
       icon: 'none',

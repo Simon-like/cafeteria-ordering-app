@@ -43,7 +43,10 @@ export const getOrdersByNumbers = (orderNumber: string) => {
 
 // 确认接单
 export const confirmTheOrder = (orderId: number) => {
-  return http({
+  return http<{
+    CONFIRMED: number
+    TO_BE_CONFIRMED: number
+  }>({
     method: 'POST',
     url: '/orders/merchant/ConfirmTheOrder',
     data: {
@@ -54,7 +57,10 @@ export const confirmTheOrder = (orderId: number) => {
 
 // 完成已确认订单
 export const completeOrder = (orderId: number) => {
-  return http({
+  return http<{
+    CONFIRMED: number
+    TO_BE_CONFIRMED: number
+  }>({
     method: 'POST',
     url: '/orders/merchant/CompleteOrder',
     data: {
@@ -65,12 +71,25 @@ export const completeOrder = (orderId: number) => {
 
 // 退款已确认订单
 export const refundsConfirmedOrders = (orderId: number) => {
-  return http({
+  return http<{
+    CONFIRMED: number
+    TO_BE_CONFIRMED: number
+  }>({
     method: 'POST',
     url: '/orders/merchant/RefundsConfirmedOrders',
     data: {
       orderId,
     },
+  })
+}
+// 主动获取状态数量
+export const countTwoStatus = () => {
+  return http<{
+    CONFIRMED: number
+    TO_BE_CONFIRMED: number
+  }>({
+    method: 'GET',
+    url: '/orders/merchant/CountTwoStatus',
   })
 }
 

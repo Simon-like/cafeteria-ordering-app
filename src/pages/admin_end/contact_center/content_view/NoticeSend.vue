@@ -37,6 +37,7 @@ const notice_list = ref<
   }[]
 >([])
 
+const Group_label = ['外卖员', '商家', '用户']
 // 展开/关闭一个公告
 const onDescShow = (index: number) => {
   notice_list.value.forEach((item) => {
@@ -176,6 +177,7 @@ onLoad(async () => {
       </view>
       <view class="wrapper">
         <scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-wrapper">
+          <view class="null-content" v-show="notice_list.length === 0">没有发布公告</view>
           <view class="notice-box" v-for="item in notice_list" :key="item.index">
             <view class="notice-line">
               <view class="title">发布时间：</view>
@@ -183,7 +185,7 @@ onLoad(async () => {
             </view>
             <view class="notice-line">
               <view class="title">面向对象：</view>
-              <view class="value">{{ item.targetGroup === 1 ? '商家' : '外卖员' }}</view>
+              <view class="value">{{ Group_label[item.targetGroup] }}</view>
             </view>
             <view class="notice-line">
               <view class="title">公告内容：</view>
@@ -222,6 +224,7 @@ onLoad(async () => {
                         :localdata="[
                           { value: 0, text: '外卖员' },
                           { value: 1, text: '商家' },
+                          { value: 2, text: '用户' },
                         ]"
                         placeholder="请选择发布群体"
                       ></uni-data-select>
@@ -310,6 +313,16 @@ onLoad(async () => {
     .wrapper {
       width: 100%;
       height: 100%;
+      position: relative;
+      .null-content {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+        font-size: 36rpx;
+        font-weight: 600;
+      }
     }
   }
 
@@ -415,6 +428,7 @@ onLoad(async () => {
       align-items: center;
       flex-direction: column;
       gap: 20rpx;
+
       .button-box {
         display: flex;
         justify-content: space-between;

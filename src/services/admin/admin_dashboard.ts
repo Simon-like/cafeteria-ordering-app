@@ -44,6 +44,6 @@ export const getStatistics = () => {
     platformFees: number
   }>({
     method: 'GET',
-    url: '/administer/statistics',
+    url: '/administer/statistics/',
   })
 }

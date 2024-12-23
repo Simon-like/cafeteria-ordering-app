@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, nextTick } from 'vue'
-import { componentList } from '@/pages/merchant_end/shop/content_view/RAA_view/index.ts'
+import { componentList } from '@/pages/merchant_end/shop/content_view/RAA_view/index'
 /**
  * @description 店铺管理评价与活动
  * @author 应东林

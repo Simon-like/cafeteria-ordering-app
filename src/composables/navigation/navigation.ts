@@ -1,17 +1,18 @@
 import { useAdminPagesStore } from '@/stores'
 import { useMerchantPagesStore } from '@/stores'
 import { useDoubleTokenStore } from '@/stores'
-
+import { closeBluetooth } from '@/utils/BluetoothAdapter'
+//测试用
 /**
- * @description 页面跳转函数大全
+ * @description 页面跳转函数大全,附带跳转逻辑
  * @author 应东林
  * @date 2024-09-19
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-09-19
+ * @lastModifiedTime  2024-12-21
  */
 
 // 进入商户端首页
-export const gotoMerchantHome = () => {
+export const gotoMerchantHome = async () => {
   uni.reLaunch({
     url: '/pages/merchant_end/merchant_index',
   })
@@ -40,4 +41,10 @@ export const gotoLoginAndRegister = () => {
   DoubleTokenStore.removeToken(2)
   MerchantPagesStore.initialize()
   AdminPagesStore.initialize()
+  // 主动关闭websocket
+  if (!!MerchantPagesStore.ws) MerchantPagesStore.ws.close()
+  //断开蓝牙
+  console.log(MerchantPagesStore.RWInfo)
+  closeBluetooth(MerchantPagesStore.RWInfo.deviceId)
+  MerchantPagesStore.initRWInfo()
 }

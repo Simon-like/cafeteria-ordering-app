@@ -35,6 +35,7 @@ const date_confirm = async (e: any) => {
 const Amount = reactive({
   totalPrice: 114514.0,
   difference: 0.0,
+  GrossIncomePrice: 0, //毛收入
 })
 
 // 每日金额流水
@@ -42,6 +43,9 @@ const getAmount = async (date: string) => {
   const res = await getTotalAmountRollover(date)
   if (res.code === 1) {
     Object.assign(Amount, res.data)
+    Amount.totalPrice = +Amount.totalPrice.toFixed(2)
+    Amount.difference = +Amount.difference.toFixed(2)
+    Amount.GrossIncomePrice = +Amount.GrossIncomePrice.toFixed(2)
   } else {
     uni.showToast({
       icon: 'error',
@@ -63,12 +67,12 @@ onLoad(async () => {
       <view class="date-picker" @click="date_show = true">
         {{ date_list_label[date_index] }}<i class="iconfont icon-jiantou_xia"></i>
       </view>
-      <view class="">总金额流水(/￥):</view>
+      <view class="">总金额流水(净收入):</view>
     </view>
     <view class="line">
-      <view class="total-price">{{ Amount.totalPrice }}</view>
+      <view class="total-price">{{ Amount.totalPrice + '￥' }}</view>
       <view class="difference"
-        >与前一日的差值:<text>{{ Amount.difference }}</text
+        >前日差:<text>{{ Amount.difference + '￥' }}</text
         ><i
           class="iconfont"
           :class="{
@@ -77,6 +81,11 @@ onLoad(async () => {
           }"
         ></i
       ></view>
+    </view>
+    <view class="line">
+      <view
+        >总营收额(未抽成):<text style="font-weight: 550">{{ Amount.GrossIncomePrice + '￥' }}</text>
+      </view>
     </view>
 
     <up-picker
@@ -95,7 +104,7 @@ onLoad(async () => {
   display: flex;
   font-size: 30rpx;
   flex-direction: column;
-  gap: 50rpx;
+  gap: 20rpx;
   background: $bg-color-light;
   padding: 20rpx;
   .line {
@@ -105,7 +114,7 @@ onLoad(async () => {
     gap: 20rpx;
   }
   .total-price {
-    font-size: 45rpx;
+    font-size: 50rpx;
     font-weight: 550;
   }
   .date-picker {
@@ -119,6 +128,7 @@ onLoad(async () => {
     display: flex;
     align-items: center;
     font-size: 25rpx;
+    align-self: end;
     i,
     text {
       font-weight: 550;

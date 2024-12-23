@@ -192,7 +192,7 @@ const onDeleteaddress_comfirn = async () => {
     address_delete_show.value = false
   } else {
     uni.showToast({
-      icon: 'success',
+      icon: 'error',
       title: '删除地址失败！',
     })
   }

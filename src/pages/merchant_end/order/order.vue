@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import type { AsideItem } from '@/types/aside'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import Header from './components/Header.vue'
 import OderItemComponent from './components/OderItemComponent.vue'
-import WS from '@/utils/websocket'
 import { useMerchantOrderStore } from '@/stores'
 import { getLastDays, throttle, formatDate } from '@/composables/tools'
-import { getOrdersByStatus } from '@/services/merchant/merchant_shop_order_api'
-import { initBluetooth, writeBLEValueLoop, closeBluetooth } from '@/utils/BluetoothAdapter'
-import { Printer } from '@/utils/ble/Printer'
-// import { Bluetooth, sleep } from '@/utils/ble/Bluetooth'
+import { getOrdersByStatus, countTwoStatus } from '@/services/merchant/merchant_shop_order_api'
 /**
  * @description 订单管理主页面
  * @author 应东林
@@ -23,11 +19,10 @@ import { Printer } from '@/utils/ble/Printer'
 const OrderStore = useMerchantOrderStore()
 
 const my_aside_list = ref<AsideItem[]>([
-  { itemId: 0, itemName: '待处理', active: true, addNumber: 10 },
-  { itemId: 1, itemName: '已确认', active: false, addNumber: 2 },
+  { itemId: 0, itemName: '待处理', active: true, addNumber: OrderStore.to_be_confirmed },
+  { itemId: 1, itemName: '已确认', active: false, addNumber: OrderStore.confirmed },
   { itemId: 2, itemName: '已完成', active: false },
-  { itemId: 3, itemName: '已退款', active: false },
-  { itemId: 4, itemName: '查询某订单', active: false },
+  { itemId: 3, itemName: '查询某订单', active: false },
 ])
 
 const scrollTop = ref<number>(0)
@@ -47,7 +42,7 @@ const goTop = (e: any) => {
 //加载图标状态
 const loading_status = ref<string>('more') //加载前more/加载中loading/加载后noMore
 const onLoading_moreOrder = async () => {
-  if (my_aside_list.value[4].active === true) {
+  if (OrderStore.queryFlag) {
     // 如果是查询状态的话，就退出
     return
   }
@@ -70,10 +65,16 @@ const onLoading_moreOrder = async () => {
   if (res.code === 1) {
     if (res.data.list.length > 0) {
       loading_status.value = 'more'
+      res.data.list.forEach((value, index, arr) => {
+        arr[index].menu.forEach((item, i, a) => {
+          a[i].dishPrice = +a[i].dishPrice.toFixed(2)
+        })
+      })
       OrderStore.localOrderData.push(...res.data.list)
     } else {
       loading_status.value = 'noMore'
     }
+    await getCount()
   } else {
     uni.showToast({
       icon: 'none',
@@ -88,7 +89,7 @@ const onLoading_throttle = throttle(onLoading_moreOrder, 500)
 // 订单状态切换
 const onSwitch = async (e: number) => {
   //切换到查询状态
-  if (e === 4) {
+  if (e === 3) {
     OrderStore.queryFlag = true
     OrderStore.localOrderData = []
     loading_status.value = 'noMore'
@@ -101,28 +102,21 @@ const onSwitch = async (e: number) => {
     OrderStore.status = 2
     OrderStore.localOrderData = []
     //获取订单
-    await onLoading_throttle()
+    await onLoading_moreOrder()
   }
   //已确认
   if (OrderStore.status !== 3 && e === 1) {
     OrderStore.status = 3
     OrderStore.localOrderData = []
     //获取订单
-    await onLoading_throttle()
+    await onLoading_moreOrder()
   }
   //已完成
   if (OrderStore.status !== 4 && OrderStore.status !== 5 && OrderStore.status !== 6 && e === 2) {
     OrderStore.status = 4
     OrderStore.localOrderData = []
     //获取订单
-    await onLoading_throttle()
-  }
-  //已退款
-  if (OrderStore.status !== 8 && e === 3) {
-    OrderStore.status = 8
-    OrderStore.localOrderData = []
-    //获取订单
-    await onLoading_throttle()
+    await onLoading_moreOrder()
   }
 }
 
@@ -136,6 +130,12 @@ const getOrder_loading = async () => {
   )
   if (res.code === 1) {
     OrderStore.localOrderData = res.data.list
+    OrderStore.localOrderData.forEach((value, index, arr) => {
+      arr[index].menu.forEach((item, i, a) => {
+        a[i].dishPrice = +a[i].dishPrice.toFixed(2)
+      })
+    })
+    await getCount()
   } else {
     uni.showToast({
       icon: 'none',
@@ -144,41 +144,25 @@ const getOrder_loading = async () => {
   }
 }
 
-// 打印
-const print = async () => {
-  console.log('simon')
-  const buffer = new Printer()
-    .setAlign('ct')
-    .setSize(1, 2)
-    .print('居中标题')
-    .setAlign('lt')
-    .setSize(1, 1)
-    .printFill()
-    .printLR('左侧文字', '右侧文字')
-    .printLCR('左侧文字', '中间文字', '右侧文字')
-    .setSize(2, 1)
-    .print('宽度放大文字')
-    .setSize(1, 2)
-    .print('高度放大文字')
-    .setSize(2, 2)
-    .print('等比放大文字')
-    .setSize(1, 1)
-    .printFill()
-    .print('打印时间：' + formatDate('yyyy-MM-dd hh:mm:ss'))
-    .println()
-    .end()
-
-  console.log(buffer)
-
-  writeBLEValueLoop(buffer).then((res) => {
-    setTimeout(() => {
-      console.log('加载-----')
-    }, 1000)
-  })
+// 主动获取订单数量
+const getCount = async () => {
+  const res = await countTwoStatus()
+  if (res.code === 1) {
+    OrderStore.confirmed = res.data.CONFIRMED
+    OrderStore.to_be_confirmed = res.data.TO_BE_CONFIRMED
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取数量失败！',
+    })
+  }
 }
 
+watch(OrderStore, (newValue, oldValue) => {
+  my_aside_list.value[0].addNumber = OrderStore.to_be_confirmed
+  my_aside_list.value[1].addNumber = OrderStore.confirmed
+})
 // 进入订单页面初始化
-let ws = null
 onLoad(async () => {
   OrderStore.date.label = '今日'
   OrderStore.date.value = getLastDays(1)[0]
@@ -186,30 +170,6 @@ onLoad(async () => {
   //获取订单
 
   await getOrder_loading()
-  //await initBluetooth()
-  //await print()
-  //ws连接
-  ws = new WS({
-    // 连接websocket所需参数
-    data: { userId: '' },
-    // 首次连接成功之后，断线重新连接后也会触发（防止断线期间对方发送消息未接收到）
-    onConnected: () => {
-      // toDo
-      // 一般用于请求历史消息列表 getHistoryList()
-    },
-    // 监听接收到服务器消息
-    onMessage: (data: string) => {
-      console.log(data)
-    },
-  })
-})
-
-// 页面销毁，断开websocket
-onUnload(() => {
-  // 主动关闭websocket
-  ws.close()
-  //断开蓝牙
-  closeBluetooth()
 })
 </script>
 
