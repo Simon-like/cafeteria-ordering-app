@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ref, defineComponent } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getMerchantAuditInfo, merchantAudit } from '@/services/admin/merchant_manage'
+import type { MerchantAudit } from '@/types/admin_return'
+
 /**
  * @description 管理端商户管理模块
  * @author 钟礼豪
@@ -7,53 +10,23 @@ import { ref, defineComponent } from 'vue'
  * @lastModifiedBy 钟礼豪
  * @lastModifiedTime  2024-10-31
  */
-interface NoticeItem {
-  index: number
-  is_show: boolean
-  name: string
-  address: string
-  contact: string
-  business_hours: string
-  owner: string
-  shop_introduction: string
+
+const notice_list = ref<MerchantAudit[]>()
+
+// 获取商户审核信息
+const handleGetInfo = async () => {
+  const res = await getMerchantAuditInfo()
+  notice_list.value = res.data
+}
+onMounted(handleGetInfo)
+
+// 处理商户审核操作
+const handleAudit = async (flag: boolean, id: number) => {
+  const res = await merchantAudit(flag, id)
 }
 
-const notice_list = ref<NoticeItem[]>([
-  {
-    index: 0,
-    is_show: false,
-    name: '商家A',
-    address: '地址A',
-    contact: '联系方式A',
-    business_hours: '营业时间A',
-    owner: '所有人A',
-    shop_introduction: '店铺简介A',
-  },
-  {
-    index: 1,
-    is_show: false,
-    name: '商家B',
-    address: '地址B',
-    contact: '联系方式B',
-    business_hours: '营业时间B',
-    owner: '所有人B',
-    shop_introduction: '店铺简介B',
-  },
-  // 更多商家数据...
-])
-
-const approve = (index: number) => {
-  console.log(`通过商家：${notice_list.value[index].name}`)
-  // 这里可以添加审核通过的逻辑，例如发送请求到后端
-}
-
-const reject = (index: number) => {
-  console.log(`不通过商家：${notice_list.value[index].name}`)
-  // 这里可以添加审核不通过的逻辑，例如发送请求到后端
-}
-
+// 切换显示状态
 const changeShow = (index: number) => {
-  // 切换整个内容的显示状态
   notice_list.value[index].is_show = !notice_list.value[index].is_show
   console.log(`Item ${index} is now ${notice_list.value[index].is_show ? 'shown' : 'hidden'}`)
 }
@@ -61,27 +34,29 @@ const changeShow = (index: number) => {
 
 <template>
   <scroll-view scroll-y="true" class="scroll-Y">
-    <view class="info-box" v-for="(item, index) in notice_list" :key="item.index">
+    <view class="info-box" v-for="(item, index) in notice_list" :key="item.id">
       <view class="info">
         <view class="logo">
-          <image src="" mode="aspectFit"></image>
+          <image :src="item.logo" mode="aspectFit"></image>
         </view>
         <view>
           <view class="info-item"> 名称: {{ item.name }} </view>
           <view class="info-item"> 地址: {{ item.address }} </view>
-          <view class="info-item"> 联系方式: {{ item.contact }} </view>
+          <view class="info-item"> 联系方式: {{ item.contactPhone }} </view>
         </view>
       </view>
       <view class="info-wrapper" :class="{ show: item.is_show }">
         <view class="content">
-          <view class="info-item"> 营业时间: {{ item.business_hours }} </view>
+          <view class="info-item"> 营业时间: {{ item.businessHours }} </view>
+
           <view v-if="item.is_show">
-            <view class="info-item"> 所有人: {{ item.owner }} </view>
-            <view class="info-item"> 店铺简介: {{ item.shop_introduction }} </view>
+            <view class="info-item"> 所有人: {{ item.realName }} </view>
+
+            <view class="info-item"> 店铺简介: {{ item.discription }} </view>
           </view>
           <view class="btn">
-            <button @click="approve(index)" class="approve">通过</button>
-            <button @click="reject(index)" class="reject">不通过</button>
+            <button @click="handleAudit(true, item.id)" class="approve">通过</button>
+            <button @click="handleAudit(false, item.id)" class="reject">不通过</button>
           </view>
         </view>
         <view @click="changeShow(index)" class="icon">

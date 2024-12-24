@@ -111,6 +111,25 @@ export const deleteNoticeById = (noticeId: number) => {
   })
 }
 
+//====账号设置
+//管理端获取个人信息
+export const getAdminInfo = () => {
+  return http({
+    method: 'GET',
+    url: '/administer/Administer_getInfo',
+  })
+}
+//管理端修改个人信息
+export const ChangeAdminInfo = (collegeId: string, phoneNumber: string) => {
+  return http({
+    method: 'PUT',
+    url: '/administer/Administer_changeInfo',
+    data: {
+      collegeId,
+      phoneNumber,
+    },
+  })
+}
 /**
  * 系统设置
  */

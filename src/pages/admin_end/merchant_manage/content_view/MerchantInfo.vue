@@ -1,103 +1,98 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { getMerchantInfo } from '@/services/admin/merchant_manage'
+import { useAdminStore } from '@/stores'
+import detailComponent from './detail.vue'
 
-/**
- * @description 管理端区域商家信息展示模块
- * @author 钟礼豪
- * @date 2024-10-11
- * @lastModifiedBy 钟礼豪
- * @lastModifiedTime  2024-10-12
- */
+interface MerchantInfo {
+  id: string
+  place: string
+  merchantDeInfo: [
+    {
+      name: string
+      logo: string
+      address: string
+      contactPhone: string
+      businessHours: string
+      realName: string
+      description: string
+    },
+  ]
+}
 
-// 模拟数据
-const testInfo = ref([
-  {
-    place: '食堂a',
-    merchantInfoList: [
-      {
-        name: '兰州拉面',
-        logo: 'http://lzlm',
-        address: '哈V',
-        contactPhone: '12345678901',
-        businessHours: '8:00-22:00',
-        realName: '店主',
-        description: '我不吃牛肉',
-      },
-      {
-        name: '新疆大盘鸡',
-        logo: 'http://xjdpj',
-        address: '哈V',
-        contactPhone: '12345678901',
-        businessHours: '8:00-22:00',
-        realName: '店主',
-        description: '我不吃鸡肉',
-      },
-    ],
-  },
-  {
-    place: '食堂b',
-    merchantInfoList: [
-      {
-        name: '2-1',
-        logo: 'http://lzlm',
-        address: '哈V',
-        contactPhone: '12345678901',
-        businessHours: '8:00-22:00',
-        realName: '店主',
-        description: '我不吃牛肉',
-      },
-      {
-        name: '新疆大盘鸡',
-        logo: 'http://xjdpj',
-        address: '哈V',
-        contactPhone: '12345678901',
-        businessHours: '8:00-22:00',
-        realName: '店主',
-        description: '我不吃鸡肉',
-      },
-    ],
-  },
-])
+const adminStore = useAdminStore()
+const ifShowDetail = ref(false)
+const currentMerchantDetail = ref<MerchantInfo>(null)
 
-// 获取所有的食堂名称，供选择使用
-const placeOptions = computed(() => {
-  return testInfo.value.length > 0 ? testInfo.value.map((item) => item.place) : []
+onMounted(() => {
+  handleGetInfo()
 })
 
-// 默认选择第一个食堂
+const Info = ref<MerchantInfo[]>([])
+
+const handleGetInfo = async () => {
+  const res = await getMerchantInfo('圣地v专')
+  Info.value = res.data
+  console.log(res.data)
+}
+
+// 获取所有的食堂名称，供选择使用，并去除重复项
+const placeOptions = computed(() => {
+  const places = new Set(Info.value.map((item) => item.place))
+  return Array.from(places)
+})
+
+// 默认选择第一个食堂，但仅当placeOptions非空时
 const selectedPlaceIndex = ref(0)
+if (placeOptions.value.length > 0) {
+  selectedPlaceIndex.value = 0
+}
 
 // 根据选中的食堂索引过滤商户信息
 const filteredMerchants = computed(() => {
-  const placeData = testInfo.value[selectedPlaceIndex.value]
-  return placeData ? placeData.merchantInfoList : []
+  if (Info.value.length === 0 || selectedPlaceIndex.value >= Info.value.length) {
+    return []
+  }
+  const selectedPlace = placeOptions.value[selectedPlaceIndex.value]
+  return Info.value
+    .filter((item) => item.place === selectedPlace)
+    .map((item) => item.merchantDeInfo)
+    .flat()
 })
 
-// 切换食堂
 const selectPlace = (index: number) => {
   if (index >= 0 && index < placeOptions.value.length) {
     selectedPlaceIndex.value = index
   }
 }
 
-// 查看商户详情
-const goToDetail = (place, merchantIndex) => {
-  console.log(place, merchantIndex)
-  uni.navigateTo({
-    url: `/pages/admin_end/merchant_manage/content_view/detail?place=${place}&merchantIndex=${merchantIndex}`,
-  })
+const showDetail = (index: number) => {
+  const merchant = filteredMerchants.value[index]
+  if (merchant) {
+    currentMerchantDetail.value = merchant
+    console.log(currentMerchantDetail.value)
+    ifShowDetail.value = true
+  }
 }
+
+const goBack = () => {
+  ifShowDetail.value = false
+}
+
+// 当前选中的食堂名称
+const selectedPlaceName = computed(() => placeOptions.value[selectedPlaceIndex.value])
 </script>
+
 <template>
-  <view class="content">
+  <view class="content" v-if="!ifShowDetail">
     <!-- 食堂选择下拉框 -->
     <view class="place-picker">
       <picker
-        :value="selectedPlaceIndex"
+        :value="selectedPlaceIndex.value"
         :range="placeOptions"
         @change="(e) => selectPlace(e.detail.value)"
       >
-        <view class="picker-btn"> 当前选择食堂：{{ placeOptions[selectedPlaceIndex] }} </view>
+        <view class="picker-btn">{{ selectedPlaceName }}</view>
       </picker>
     </view>
 
@@ -112,11 +107,33 @@ const goToDetail = (place, merchantIndex) => {
           <view class="businessHours">营业时间:{{ merchant.businessHours }}</view>
           <view class="contactPhone">联系电话:{{ merchant.contactPhone }}</view>
           <view class="btns">
-            <button @click="goToDetail(selectedPlace, index)">查看详细信息</button>
+            <button @click="showDetail(index)">查看详细信息</button>
           </view>
         </view>
       </view>
     </scroll-view>
+  </view>
+
+  <!--商户详细信息显示部分-->
+  <detailComponent
+    v-if="ifShowDetail"
+    :id="currentMerchantDetail.id"
+    :name="currentMerchantDetail.name"
+    :logo="currentMerchantDetail.logo"
+    :address="currentMerchantDetail.address"
+    :contactPhone="currentMerchantDetail.contactPhone"
+    :businessHours="currentMerchantDetail.businessHours"
+    :realName="currentMerchantDetail.realName"
+    :description="currentMerchantDetail.description"
+    :commissionType="currentMerchantDetail.commissionType"
+    :commission="currentMerchantDetail.commission"
+    :style="{ width: '590rpx' }"
+  >
+  </detailComponent>
+
+  <!-- 返回按钮 -->
+  <view @click="goBack" v-if="ifShowDetail">
+    <button class="back-btn" @click="goBack"><i class="zuojiantou"></i>区域商家详细信息</button>
   </view>
 </template>
 
@@ -130,74 +147,97 @@ const goToDetail = (place, merchantIndex) => {
     margin-bottom: 20rpx;
     font-size: 30rpx;
     .picker-btn {
-      padding: 10rpx;
-      background-color: #f2f2f2;
-      border: 1px solid #ccc;
-      border-radius: 5rpx;
+      position: relative;
       text-align: center;
     }
   }
 
   .box {
+    font-size: 24rpx;
     width: 100%;
-    max-height: 1400rpx;
-    overflow-y: auto;
+    min-height: 500rpx; /* 设置最小高度，确保内容能够显示 */
+    max-height: 1400rpx; /* 你可以根据实际需求调整这个值 */
+    overflow-y: auto; /* 如果内容超出box的高度，允许滚动 */
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+  }
 
-    .dishList {
-      display: flex;
-      align-items: center;
-      padding: 10rpx;
-      border-bottom: 1px solid #333;
-      background-color: $bg-color-light;
-      margin-bottom: 20rpx;
-      height: 220rpx;
+  .dishList {
+    display: flex;
+    justify-content: flex-start; /* 内容从左向右排列 */
+    align-items: flex-start; /* 垂直顶部对齐 */
+    padding: 10rpx;
+    margin-bottom: 20rpx;
+    background-color: $bg-color-light;
+    border-bottom: 1px solid #333;
+    box-sizing: border-box;
+  }
 
-      .logo {
-        width: 170rpx;
-        height: 170rpx;
-        margin-right: 20rpx;
-        background-color: #000;
-      }
+  .logo {
+    width: 170rpx; /* 固定宽度 */
+    height: 170rpx; /* 固定高度 */
+    background-color: #000;
+    margin-right: 15rpx; /* 给logo右边添加间距 */
+  }
 
-      .details {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        .name {
-          margin-bottom: 5rpx;
-          padding: 5rpx;
-          font-size: 35rpx;
-        }
-        .businessHours,
-        .contactPhone {
-          margin-bottom: 5rpx;
-          padding: 5rpx;
-          font-size: 25rpx;
-          color: $text-color-active;
-        }
+  .details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* 右侧内容自适应占据剩余空间 */
+    justify-content: flex-start; /* 顶部对齐 */
+    white-space: nowrap;
+    .name {
+      margin-bottom: 5rpx;
+      padding: 5rpx;
+    }
 
-        .name {
-          font-size: 32rpx;
-        }
-      }
+    .businessHours,
+    .contactPhone {
+      margin-bottom: 5rpx;
+    }
 
-      .btns {
-        margin-left: auto;
-        margin-right: 20rpx;
-        margin-bottom: 25rpx;
-        height: 20rpx;
-        width: 280rpx;
+    .btns {
+      margin-left: auto;
+      margin-right: 20rpx;
+      margin-bottom: 25rpx;
+      height: 20rpx;
+      width: 280rpx;
 
-        button {
-          font-size: 20rpx;
-          background-color: $bg-color-green;
-          border-radius: 10rpx;
-          padding: 0;
-        }
+      button {
+        width: 250rpx;
+        font-size: 20rpx;
+        background-color: $bg-color-green;
+        border-radius: 10rpx;
+        padding: 0;
       }
     }
+  }
+}
+.back-btn {
+  background-color: #fff;
+  font-size: 35rpx;
+  position: absolute;
+  left: 180rpx;
+  top: 170rpx;
+  padding: 0;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b1caae;
+  .zuojiantou {
+    margin-top: 8rpx;
+    width: 20rpx;
+    height: 20rpx;
+    border-top: 6rpx solid #b1caae;
+    border-left: 6rpx solid #b1caae;
+    transform: rotate(-45deg);
+    margin-left: 10rpx;
+    margin-right: 100rpx;
+  }
+  &:active {
+    scale: 0.9;
   }
 }
 </style>

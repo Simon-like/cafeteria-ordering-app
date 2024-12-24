@@ -88,9 +88,8 @@ const onUniversityChange = (e) => {
   const index = e.detail.value
   if (universities.value[index]) {
     const selectedUniversity = universities.value[index]
-    // 存储选中的大学 ID 和名称到 Pinia 仓库
-    adminStore.collegeId = selectedUniversity.collegeId
-    adminStore.collegeName = selectedUniversity.collegeName
+    // 存储选中的大学名称到 Pinia 仓库
+    adminStore.college = selectedUniversity.collegeName
     college.value = selectedUniversity.collegeName // 更新显示的大学名称
   }
 }

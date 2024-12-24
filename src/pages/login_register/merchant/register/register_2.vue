@@ -12,12 +12,18 @@ const college = ref<string>('')
 const merchantStore = useMerchantStore()
 
 const gotoNext = () => {
-  merchantStore.realName = realName.value
-  merchantStore.name = name.value
-  merchantStore.detailedAddress = detailedAddress.value
-  uni.navigateTo({
-    url: '/pages/login_register/merchant/register/register_3',
-  })
+  if (realName.value & name.value & detailedAddress.value) {
+    merchantStore.realName = realName.value
+    merchantStore.name = name.value
+    merchantStore.detailedAddress = detailedAddress.value
+    uni.navigateTo({
+      url: '/pages/login_register/merchant/register/register_3',
+    })
+  } else {
+    uni.showToast({
+      title: `请填写完全部数据！`,
+    })
+  }
 }
 
 // 改为数组类型以存储大学列表

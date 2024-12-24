@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
-import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
-import { getInviteCode } from '@/services/admin/admin_api'
+import { getInviteCode, ChangeAdminInfo, getAdminInfo } from '@/services/admin/admin_api'
 import { GetUniversity } from '@/services/merchant/merchant_api'
 import { upload } from '@/utils/http'
+import type { University } from '@/types/merchant_return'
 
 /**
  * @description 管理端联络中心页面账号管理模块
@@ -15,6 +15,30 @@ import { upload } from '@/utils/http'
  */
 
 const adminStore = useAdminStore()
+
+// 异步获取管理员信息并更新到 adminStore
+const handlegetInfo = async () => {
+  try {
+    const res = await getAdminInfo()
+    adminStore.logo = res.data.avater
+    adminStore.college = res.data.college
+    adminStore.phoneNumber = res.data.phoneNumber
+    console.log(res.data)
+    // 在获取到管理员信息后，更新 valiFormData
+    valiFormData.college = adminStore.college
+    valiFormData.phoneNumber = adminStore.phoneNumber
+  } catch (error) {
+    console.error('获取管理员信息失败', error)
+  }
+}
+//异步修改管理员信息
+const handleChangeInfo = async (collegeId: string, phoneNumber: string) => {
+  const res = await ChangeAdminInfo(collegeId, phoneNumber)
+  console.log(res.data)
+}
+// 页面加载时调用 handlegetInfo 获取管理员信息
+onMounted(handlegetInfo)
+
 /**
  * 图片上传功能
  */
@@ -42,9 +66,13 @@ const deletePic = (event: any) => {
 
 const uploadImg = async () => {
   for (let i = 0; i < fileList1.value.length; i++) {
-    const result = await upload('/merchant/uploadMerchantImage', fileList1.value[i].url)
+    const result = await upload('/administer/uploadAdministerImage', fileList1.value[i].url)
+    // 1. 解析 `data` 字符串
+    const parsedData = JSON.parse(result.data)
+    // 2. 获取图片的 URL
+    const logoUrl = parsedData.data
     if (result) {
-      adminStore.logo = result.url // 更新logo
+      handlegetInfo()
       uni.showToast({
         title: `图片修改成功！`,
       })
@@ -53,6 +81,7 @@ const uploadImg = async () => {
   }
 }
 
+//修改资料
 const popup = ref()
 const valiForm = ref<UniHelper.FormInstance>(null)
 const valiFormData = reactive({
@@ -61,9 +90,8 @@ const valiFormData = reactive({
 })
 
 const onEdit = () => {
-  valiFormData.college = adminStore.college
-  valiFormData.phoneNumber = adminStore.phoneNumber
-  valiFormData.realName = adminStore.realName
+  valiFormData.college = adminStore.college || '' // 确保即使 `adminStore.college` 为 `null`，也会有一个默认值
+  valiFormData.phoneNumber = adminStore.phoneNumber || '' // 同理
   popup.value.open('center')
 }
 
@@ -71,37 +99,38 @@ const close = () => {
   popup.value.close()
 }
 
+// 修改资料的表单校验规则
+const rules = {
+  college: [{ required: true, errorMessage: '学校不能为空' }],
+  phoneNumber: [{ required: false }],
+}
+
+// 确认按钮的点击事件，表单校验
 const confirm = () => {
-  valiForm.value
-    .validate()
-    .then((res) => {
-      if (res) {
-        // 更新管理员信息
-        adminStore.updateAdminInfo(valiFormData)
+  valiForm.value?.validate().then((res) => {
+    console.log(res)
+    if (res) {
+      // 更新管理员信息
+      console.log('进行上传')
+      const response = handleChangeInfo(selectedUniversityId.value, valiFormData.phoneNumber)
+      if (response) {
         uni.showToast({
-          title: `资料修改成功`,
+          title: `修改成功！`,
         })
         popup.value.close()
       }
-    })
-    .catch((err) => {
-      console.log('err', err)
-    })
-}
-
-const rules = {
-  college: [{ required: true, errorMessage: '学校不能为空' }],
-  phoneNumber: [{ required: true, errorMessage: '联系电话不能为空' }],
+    }
+  })
 }
 
 // 显示邀请码弹窗
 const invitationCodePopup = ref()
 
 // 生成并显示邀请码
-const invitationCode = ref('ABC123456') // 这里可以替换为动态生成的邀请邀请码
+const invitationCode = ref()
 
 const openInvitationCodePopup = async () => {
-  const res = await getInviteCode('666')
+  const res = await getInviteCode(adminStore.realName)
   invitationCode.value = res.data
   invitationCodePopup.value.open('center')
 }
@@ -109,9 +138,11 @@ const openInvitationCodePopup = async () => {
 const closeInvitationCodePopup = () => {
   invitationCodePopup.value.close()
 }
-const college = ref(adminStore.college) // 响应式变量，存储选中的大学名称
+
+const selectedUniversityId = ref<string>()
 //数组类型以存储大学列表
 const universities = ref<University[]>([])
+
 // 获取大学列表的函数
 const fetchUniversities = async () => {
   try {
@@ -124,27 +155,33 @@ const fetchUniversities = async () => {
     console.error('获取大学列表失败', error)
   }
 }
+//修改表单数据为选择的大学
+const onUniversityChange = (e: any) => {
+  const index = e.detail.value
+  console.log(universityNames.value)
+  valiFormData.college = universityNames.value[index]
+  selectedUniversityId.value = universityIds.value[index]
+  console.log('选中大学id为：', selectedUniversityId.value)
+}
 // 计算属性，提取大学名称
 const universityNames = computed(() => {
   return universities.value.map((university) => university.collegeName)
 })
-// 在页面加载时调用获取大学列表的函数
-onLoad(() => {
+//计算属性，提取大学id
+const universityIds = computed(() => {
+  return universities.value.map((university) => university.collegeId)
+})
+//返回登录注册页面
+const gotoLoginAndRegister = () => {
+  uni.navigateTo({
+    url: 'pages/login_register/login_register',
+  })
+}
+
+// 在页面加载时调用
+onMounted(() => {
   fetchUniversities()
 })
-
-// 当选择大学时触发的函数
-const onUniversityChange = (e) => {
-  const index = e.detail.value
-  if (universities.value[index]) {
-    const selectedUniversity = universities.value[index]
-    // 存储选中的大学 ID 和名称到 Pinia 仓库
-    adminStore.collegeId = selectedUniversity.collegeId
-    adminStore.collegeName = selectedUniversity.collegeName
-    college.value = selectedUniversity.collegeName // 更新显示的大学名称
-    console.log(adminStore.collegeId, adminStore.collegeName)
-  }
-}
 </script>
 
 <template>
@@ -160,6 +197,7 @@ const onUniversityChange = (e) => {
     <view class="content">
       <view class="content-items">学校:{{ adminStore.college }}</view>
       <view class="content-items">联系电话:{{ adminStore.phoneNumber }}</view>
+      <view class="tips">*请注意修改联系电话后需重新用修改后的电话登录*</view>
     </view>
     <view class="outlogin" @click="onEdit"><button>修改资料</button></view>
     <view class="outlogin"> <button @click="openInvitationCodePopup">生成个人邀请码</button> </view>
@@ -204,22 +242,25 @@ const onUniversityChange = (e) => {
                 :rules="rules"
               >
                 <uni-forms-item required name="college">
-                  <template #label
-                    ><text>选择大学</text>
+                  <template #label>
+                    <text>选择大学</text>
                     <picker
                       class="uni"
                       mode="selector"
                       :range="universityNames"
                       @change="onUniversityChange"
-                      ><view class="uni-text" style="margin-left: 40rpx">{{
-                        college || '请选择大学'
-                      }}</view>
-                      <!-- 显示选择的大学 --></picker
-                    ></template
-                  >
+                    >
+                      <view class="uni-text" style="margin-left: 40rpx">
+                        {{ valiFormData.college || '请选择大学' }}
+                      </view>
+                    </picker>
+                  </template>
                 </uni-forms-item>
+
                 <uni-forms-item required name="phoneNumber">
-                  <template #label><text style="margin-right: 40rpx">联系电话</text></template>
+                  <template #label>
+                    <text style="margin-right: 40rpx">联系电话</text>
+                  </template>
                   <uni-easyinput v-model="valiFormData.phoneNumber" placeholder="请输入联系电话" />
                 </uni-forms-item>
               </uni-forms>
@@ -274,6 +315,11 @@ const onUniversityChange = (e) => {
     padding-bottom: 20rpx;
     .content-items {
       margin-bottom: 20rpx;
+    }
+
+    .tips {
+      color: #ccc;
+      font-size: 20rpx;
     }
   }
   .outlogin {

@@ -44,13 +44,38 @@ export type CourierFeedback = {
   customer_phone: string
 }
 //外卖员信息
-export type CourierInfo = {
-  imageUrl: string
-  info: {
-    nums: [{}]
-    totalOrders: string
-    totalSalary: string
-  }
+// 定义Info类型，包含nums（数组）、totalOrders（字符串）和totalSalary（字符串）
+export type Info = {
+  nums: Array<any> // nums数组，可以根据实际需要修改类型
+  totalOrders: string // 总订单数，类型为字符串
+  totalSalary: string // 总工资，类型为字符串
+}
+
+// 定义DataItem类型，包含imageUrl（图片URL）、info（Info类型）、phoneNumber（电话）和realName（真实姓名）
+export type DataItem = {
+  imageUrl: string // 图片URL，字符串类型
+  info: Info // 包含nums, totalOrders, totalSalary的Info对象
+  phoneNumber: string // 电话号码，字符串类型
+  realName: string // 真实姓名，字符串类型
+}
+//商户菜单请求信息
+
+export type MerchantRequest = {
+  merchantId: number
+  addReqCount: number
+  updateReqCount: number
+  logo: string
+  merchantName: string
   phoneNumber: string
+}
+//商户审核信息
+export type MerchantAudit = {
+  id: number
+  name: string
+  address: string
+  contactPhone: string
+  businessHours: string
   realName: string
+  discription: string
+  logo: string
 }

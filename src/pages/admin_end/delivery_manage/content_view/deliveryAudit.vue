@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { diliver_audit, diliver_auditResult } from '@/services/admin/delivery_manage'
 /**
  * @description 管理端外卖员模块
  * @author 钟礼豪
@@ -8,40 +9,34 @@ import { ref } from 'vue'
  * @lastModifiedTime  2024-10-31
  */
 
-// 假设的数据，实际应用中可能从API获取
-const audits = ref([
-  {
-    name: '张三',
-    id: '001',
-    identity: '361128',
-  },
-  {
-    name: '李四',
-    id: '002',
-    identity: '361128',
-  },
-])
-
-const approve = (index: number) => {
-  console.log(`通过商家：${notice_list.value[index].name}`)
-  // 这里可以添加审核通过的逻辑，例如发送请求到后端
+interface Info {
+  id: number
+  realName: string
+  idCardNumber: string
 }
 
-const reject = (index: number) => {
-  console.log(`不通过商家：${notice_list.value[index].name}`)
-  // 这里可以添加审核不通过的逻辑，例如发送请求到后端
+const audits = ref<Info[]>()
+const handleGetInfo = async () => {
+  const res = await diliver_audit()
+  console.log(res.data)
+  audits.value = res.data
 }
+const handleAudit = async (flag: boolean, id: number) => {
+  const res = await diliver_auditResult(flag, id)
+  handleGetInfo()
+}
+onMounted(handleGetInfo)
 </script>
 
 <template>
   <scroll-view scroll-y="true" class="scroll-Y">
     <view v-for="audit in audits" :key="audit.id" class="audit-item">
-      <view>姓名: {{ audit.name }}</view>
+      <view>姓名: {{ audit.realName }}</view>
       <view>编号: {{ audit.id }}</view>
-      <view>身份信息: {{ audit.identity }}</view>
+      <view>身份信息: {{ audit.idCardNumber }}</view>
       <view class="btn">
-        <button @click="approve(index)" class="approve-btn">通过</button>
-        <button @click="reject(index)" class="reject-btn">不通过</button>
+        <button @click="handleAudit(true, audit.id)" class="approve-btn">通过</button>
+        <button @click="handleAudit(false, audit.id)" class="reject-btn">不通过</button>
       </view>
     </view>
   </scroll-view>

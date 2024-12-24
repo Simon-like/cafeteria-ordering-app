@@ -1,31 +1,30 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { downDish, getMerchantDishes } from '@/services/admin/merchant_manage'
 
 interface Dish {
   id: number
-  logo: string
-  name: string
+  imageUrl: string
+  dishName: string
   price: number
-  description: string
+  dishDescription: string
 }
 
+const props = defineProps({
+  merchantId: {
+    type: Number,
+    required: true,
+  },
+})
 // 菜品数据
-const dishes = ref<Dish>([
-  {
-    id: 1,
-    logo: '',
-    name: '1',
-    price: 9.9,
-    description: '12',
-  },
-  {
-    id: 2,
-    logo: '',
-    name: '2',
-    price: 9.9,
-    description: '12',
-  },
-])
+const dishes = ref<Dish[]>()
+const handelGetInfo = async (merchantId: number) => {
+  const res = await getMerchantDishes(props.merchantId)
+  dishes.value = res.data
+  console.log(res.data)
+}
+
+onLoad(handelGetInfo)
 
 // 控制 popup 显示状态
 const showPopup = ref(false)
@@ -34,6 +33,7 @@ const currentDishId = ref<number | null>(null)
 
 // 显示删除确认框
 const showDeletePopup = (id: number) => {
+  console.log(id)
   currentDishId.value = id
   showPopup.value = true
 }
@@ -45,10 +45,13 @@ const closePopup = () => {
 }
 
 // 确认删除菜品
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (currentDishId.value !== null) {
-    dishes.value = dishes.value.filter((dish) => dish.id !== currentDishId.value)
-    closePopup()
+    const res = await downDish(currentDishId.value, props.merchantId)
+    if (res) {
+      dishes.value = dishes.value.filter((dish) => dish.id !== currentDishId.value)
+      closePopup()
+    }
   }
 }
 </script>
@@ -60,11 +63,11 @@ const confirmDelete = () => {
     </view>
 
     <view v-for="dish in dishes" :key="dish.id" class="dish-card">
-      <view class="logo"><image src="" mode="aspectFill">logo</image></view>
+      <view class="logo"><image :src="dish.imageUrl" mode="aspectFill"></image></view>
       <view class="dish-info">
-        <view class="info-item">{{ dish.name }}</view>
+        <view class="info-item">{{ dish.dishName }}</view>
         <view class="info-item">{{ dish.price }}</view>
-        <view class="info-item">菜品描述:{{ dish.description }}</view>
+        <view class="info-item">菜品描述:{{ dish.dishDescription }}</view>
       </view>
 
       <view class="aside">
@@ -121,7 +124,6 @@ const confirmDelete = () => {
       width: 150rpx;
       height: 150rpx;
       margin-right: 15rpx;
-      background-color: #fff;
     }
 
     .dish-info {

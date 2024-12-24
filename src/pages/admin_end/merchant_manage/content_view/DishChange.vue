@@ -1,24 +1,21 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { getAllRequestInfo } from '@/services/admin/merchant_manage'
 import iconComponent from '@/components/icons/icons.vue'
 import DishAddComponent from './DishChangeViews/add.vue' // 新增菜品组件
 import DishEditComponent from './DishChangeViews/change.vue' // 更改菜品组件
 import DishDeleteComponent from './DishChangeViews/delete.vue' // 删除菜品组件
-
+import type { MerchantRequest } from '@/types/admin_return'
 // 管理当前页面的视图状态
 const currentView = ref('main') // 当前显示的视图，默认主页面
 const selectedMerchantId = ref<number | null>(null) // 当前选中的商户ID
-
-// 模拟商户数据
-const merchants = ref([
-  { id: 1, name: '商家A', addDishData: 1, editDishData: 1 },
-  { id: 2, name: '商家B', addDishData: 0, editDishData: 1 },
-  { id: 3, name: '商家C', addDishData: 1, editDishData: 0 },
-  { id: 4, name: '商家D', addDishData: 1, editDishData: 1 },
-  { id: 5, name: '商家E', addDishData: 1, editDishData: 1 },
-  { id: 6, name: '商家F', addDishData: 0, editDishData: 0 },
-])
-
+const merchants = ref<MerchantRequest>()
+const handleGetInfo = async () => {
+  const res = await getAllRequestInfo()
+  merchants.value = res.data
+  console.log(res.data)
+}
+onLoad(handleGetInfo)
 // 展示增添菜品页面
 const showAddDish = (merchantId: number) => {
   selectedMerchantId.value = merchantId
@@ -49,30 +46,32 @@ const goBack = () => {
     <view class="box">
       <scroll-view scroll-y class="merchant-list" v-if="currentView === 'main'">
         <view class="msg">
-          <view v-for="merchant in merchants" :key="merchant.id" class="msg-item">
+          <view v-for="merchant in merchants" :key="merchant.merchantId" class="msg-item">
             <view class="merchant-box">
               <view class="merchant-info">
-                <view class="logo"></view>
-                <view class="name">{{ merchant.name }}</view>
+                <view class="logo"><image :src="merchant.logo" mode="aspectFill"></image></view>
+                <view class="name">{{ merchant.merchantName }}</view>
               </view>
 
               <view class="operations">
                 <view
-                  v-if="merchant.addDishData > 0"
+                  v-if="merchant.addReqCount > 0"
                   class="msg-item"
-                  @click="showAddDish(merchant.id)"
+                  @click="showAddDish(merchant.merchantId)"
                 >
-                  新增菜品 <iconComponent :data="merchant.addDishData" :radius="15"></iconComponent>
+                  新增菜品 <iconComponent :data="merchant.addReqCount" :radius="15"></iconComponent>
                 </view>
                 <view
-                  v-if="merchant.editDishData > 0"
+                  v-if="merchant.updateReqCount > 0"
                   class="msg-item"
                   @click="showEditDish(merchant.id)"
                 >
                   更改已有菜品信息
-                  <iconComponent :data="merchant.editDishData" :radius="15"></iconComponent>
+                  <iconComponent :data="merchant.updateReqCount" :radius="15"></iconComponent>
                 </view>
-                <view class="msg-item" @click="showDeleteDish(merchant.id)"> 下架已有菜品 </view>
+                <view class="msg-item" @click="showDeleteDish(merchant.merchantId)">
+                  下架已有菜品
+                </view>
               </view>
             </view>
           </view>
@@ -175,7 +174,6 @@ const goBack = () => {
 .logo {
   width: 100rpx;
   height: 100rpx;
-  background-color: #ccc;
   border-radius: 50%;
 }
 

@@ -1,39 +1,55 @@
 import { http } from '@/utils/http'
-import type { CourierFeedback, CourierInfo } from '@/types/admin_return'
+import type { CourierFeedback, DataItem } from '@/types/admin_return'
 /**
  * @description 外卖员管理
  * @author 钟礼豪
  * @date 2024-11-25
  * @lastModifiedBy 钟礼豪
  */
-//外卖员申述
+//获取外卖员申述信息
 export const diliver_courier = () => {
   return http<CourierFeedback[]>({
     method: 'GET',
     url: '/administer/staticis/Courier',
   })
 }
-//外卖员审核
-export const diliver_audit = () => {
-  return http<[id: string, idCardNumber: string, realName: string]>({
-    method: 'GET',
-    url: '/administer/statistics/CourierAudit',
+//上传外卖员申述结果
+export const courier_audit = (flag: boolean, id: number) => {
+  return http({
+    method: 'POST',
+    url: '/administer/statistics/AuditCourier',
+    data: {
+      flag,
+      id,
+    },
   })
 }
 
-export const diliver_auditResult = (msg: string) => {
+//获取外卖员审核信息
+export const diliver_audit = () => {
+  return http<[id: string, idCardNumber: string, realName: string]>({
+    method: 'GET',
+    url: '/administer/statistics/getCourierAuditInfo',
+  })
+}
+//上传外卖员审核结果
+export const diliver_auditResult = (flag: boolean, id: number) => {
   return http({
     method: 'POST',
-    url: '/administer/doing',
+    url: '/administer/statistics/AuditCourier',
     data: {
-      msg,
+      flag,
+      id,
     },
   })
 }
 //获取外卖员信息
 export const diliver_info = () => {
-  return http<CourierInfo[]>({
+  return http<DataItem[]>({
     method: 'GET',
     url: '/administer/statistics/getCourierInfo',
+    header: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   })
 }

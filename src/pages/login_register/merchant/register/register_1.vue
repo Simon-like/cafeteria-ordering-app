@@ -18,9 +18,6 @@ const password_2 = ref<string>('')
 const merchantStore = useMerchantStore()
 const is_phone_repeat = ref<boolean>(false)
 const gotoNext = async () => {
-  uni.navigateTo({
-    url: '/pages/login_register/merchant/register/register_2',
-  })
   if (!phoneNumber.value) {
     uni.showToast({
       icon: 'none',
