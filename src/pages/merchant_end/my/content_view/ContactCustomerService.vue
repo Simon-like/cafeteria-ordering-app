@@ -1,13 +1,29 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-const value = ref<string>('')
+import { contactService } from '@/services/merchant/merchant_api'
+const content = ref<string>('')
+
+const onSubmit = async () => {
+  const res = await contactService(content.value)
+  if (res.code === 1) {
+    uni.showToast({
+      icon: 'success',
+      title: '发送成功！',
+    })
+  } else {
+    uni.showToast({
+      icon: 'success',
+      title: '发送失败！',
+    })
+  }
+}
 </script>
 
 <template>
   <view class="contact-customerservice">
     <uni-easyinput
       type="textarea"
-      v-model="value"
+      v-model="content"
       autoHeight
       placeholder="请输入您遇到的问题"
       :styles="{
@@ -16,14 +32,13 @@ const value = ref<string>('')
       }"
       :placeholderStyle="'color:rgba(0, 0, 0, 0.5);font-size:14px'"
     ></uni-easyinput>
-    <view class="sub-button"><button>提交</button></view>
+    <view class="sub-button"><button @click="onSubmit">提交</button></view>
     <view class="text-area">
       <view class="line">
         如您的问题没有解决或客服没有在三个工作日内回复您，您可以选择以下方式联系：
       </view>
       <view class="line"> 客服电话：000-00000000 </view>
       <view class="line"> 客服微信：xxxxxxxxxxxxxx </view>
-      <view class="line"> …… </view>
     </view>
   </view>
 </template>

@@ -1,7 +1,7 @@
 {
-    "name" : "食堂订单后台",
+    "name" : "食堂订单服务平台",
     "appid" : "__UNI__D060301",
-    "description" : "",
+    "description" : "点单小程序的服务端运用场景",
     "versionName" : "1.0.0",
     "versionCode" : 1,
     "transformPx" : false,
@@ -55,11 +55,42 @@
                 ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+                "dSYMs" : false
+            },
             /* SDK配置 */
             "sdkConfigs" : {
                 "oauth" : {
                     "apple" : {}
+                }
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/未来（7）.png",
+                    "xhdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/未来（1）.png"
+                }
+            },
+            "splashscreen" : {
+                "androidStyle" : "default",
+                "android" : {
+                    "hdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/栗山未来（3）.png",
+                    "xhdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/未来（3）.png"
+                }
+            }
+        },
+        "nativePlugins" : {
+            "Ba-TTS" : {
+                "__plugin_info__" : {
+                    "name" : "文字转语音（文字播报、语音合成、免服务费）、震动提示 Ba-TTS",
+                    "description" : "Ba-TTS 是一款uniapp语音合成（tts）插件，支持文本转语音（无服务费），支持震动提示。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=17277",
+                    "android_package_name" : "uni.UNID060301",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "17277",
+                    "parameters" : {}
                 }
             }
         }

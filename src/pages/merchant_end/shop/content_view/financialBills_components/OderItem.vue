@@ -25,7 +25,7 @@ const props = defineProps<{
   <view class="oder-item">
     <view class="line">
       <view class="title">订单编号:{{ props.orderItem.orderCode }}</view>
-      <view class="status">{{ props.orderItem.orderStatus === 2 ? '已支付' : '已退款' }}</view>
+      <view class="status">{{ props.orderItem.orderStatus === 8 ? '已退款' : '已支付' }}</view>
     </view>
     <view class="line">
       <view class="title">订单金额:{{ props.orderItem.actualPrice }}</view>
@@ -36,7 +36,11 @@ const props = defineProps<{
       >
     </view>
     <view class="line">
-      <view class="title">支付时间:{{ props.orderItem.orderTime }}</view>
+      <view class="title"
+        >支付时间:{{
+          props.orderItem.orderTime.split('T').reduce((res, item) => res + '  ' + item)
+        }}</view
+      >
     </view>
   </view>
 </template>

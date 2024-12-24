@@ -44,7 +44,7 @@ const oderType_columns = reactive([
   ],
 ])
 const oderType_value = ref<string>(oderType_columns[0][0].label) //当前选中订单类型
-const oderType_id = ref<number>(0) //对应ID
+const oderType_id = ref<number>(-1) //对应ID
 
 //选择订单类型
 const oderType_confirm = async (e: any) => {

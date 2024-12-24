@@ -7,7 +7,7 @@ import type { categoryType, dishData, specItem, specOptionsItem } from '@/types/
 import {
   updateDishNot,
   getDishById,
-  updateDish,
+  reqUpdateDish,
   getAllCategory,
   downDish,
   upDish,
@@ -39,6 +39,8 @@ const dish_info_data = ref<dishData>({
   isDeliver: 0, // 单点是否配送。0表示单点不配送，1单点配送
   todayInventory: 0,
   specList: [], // 规格S
+  newPrice: 0,
+  count: 5,
 })
 
 const back = () => {
@@ -62,27 +64,29 @@ const inventoryAdd = () => {
   dish_info_data.value.todayInventory++
 }
 
+// 修改的定价值
+const oldPrice = ref<number>(0)
 const priceMinus = () => {
-  if (dish_info_data.value.price === 0) {
+  if (oldPrice.value === 0) {
     uni.showToast({
       icon: 'none',
       title: '定价已经达到最小值',
     })
   } else {
-    dish_info_data.value.price--
+    oldPrice.value--
   }
 }
 const priceAdd = () => {
-  dish_info_data.value.price++
+  oldPrice.value++
 }
 
 const onPriceCheck = () => {
-  if (dish_info_data.value.price <= 0) {
+  if (oldPrice.value <= 0) {
     uni.showToast({
       icon: 'none',
       title: '定价已经达到最小值',
     })
-    dish_info_data.value.price = 0
+    oldPrice.value = 0
   }
 }
 
@@ -283,19 +287,44 @@ const onSave = async () => {
   }
 }
 
-const onAdjustPricing = async () => {
-  const res = await updateDish(dish_info_data.value.id, dish_info_data.value.price)
+/**
+ * @菜品定价审核
+ */
+const editPricePopup = ref()
+//审核菜品
+const onAdjustPricing = () => {
+  editPricePopup.value.open('center')
+}
+
+//确定修改
+const onConfirm__Price = async () => {
+  if (dish_info_data.value.count <= 0) {
+    uni.showToast({
+      icon: 'none',
+      title: '今日请求次数已用完，明天再来吧！',
+    })
+    return
+  }
+  const res = await reqUpdateDish(dish_info_data.value.id, oldPrice.value)
   if (+res.code === 1) {
     uni.showToast({
       icon: 'none',
       title: '请求发送成功，请等待审核！',
     })
-  } else {
+    dish_info_data.value.count = res.data.requestCount
+    dish_info_data.value.newPrice = res.data.newPrice
+  } else
     uni.showToast({
       icon: 'none',
       title: '请求发送失败',
     })
-  }
+}
+
+const onConfirm__Price_debounce = debounce(onConfirm__Price, 2000, true)
+
+//返回
+const onReturn__Price = () => {
+  editPricePopup.value.close()
 }
 
 // 下架菜品
@@ -315,8 +344,6 @@ const onDownDish = async () => {
     })
   }
 }
-
-const oldPrice = ref<number>(0)
 
 // 修改后的规格信息
 
@@ -553,23 +580,35 @@ const onUpDish = async () => {
       <view class="section-title">价格信息</view>
       <view class="info-wrapper">
         <view class="info-line">
-          <view class="line-title">菜品定价：</view>
-          <view class="value number">
-            <view class="minus" @click="priceMinus">-</view>
-            <input
-              type="number"
-              class="inventory-input"
-              v-model="dish_info_data.price"
-              @input="onPriceCheck()"
-            />
-            <view class="add" @click="priceAdd">+</view>
+          <view class="line-title"
+            >菜品定价：<text style="font-weight: 550">
+              {{ dish_info_data.price + '￥' }}</text
+            ></view
+          >
+          <view class="x-wrapper">
+            <view>修改定价：</view>
+            <view class="value number">
+              <view class="minus" @click="priceMinus">-</view>
+              <input
+                type="number"
+                class="inventory-input"
+                v-model="oldPrice"
+                @input="onPriceCheck()"
+              />
+              <view class="add" @click="priceAdd">+</view>
+            </view>
           </view>
         </view>
 
         <view class="info-line status-line">
-          <view class="status OK" v-if="oldPrice === dish_info_data.price">状态：审核通过</view>
-          <view class="status" v-else>状态：审核未通过</view>
-          <view class="btn" @click="onAdjustPricing">确认提交</view>
+          <view class="y-wrapper" v-if="!!dish_info_data.newPrice">
+            <view>上一次请求审核的定价: {{ dish_info_data.newPrice }}</view>
+            <view class="status OK" v-if="dish_info_data.newPrice === dish_info_data.price"
+              >状态：审核通过</view
+            >
+            <view class="status" v-else>状态：审核未通过</view>
+          </view>
+          <view class="btn Adjust" @click="onAdjustPricing">确认提交</view>
         </view>
 
         <view class="info-line">
@@ -754,6 +793,7 @@ const onUpDish = async () => {
       </uni-card>
     </uni-popup>
 
+    <!-- 规格删除模态框提示 -->
     <uni-popup ref="specDeletePopup" type="dialog" border-radius="10px 10px 0 0">
       <uni-card class="form-card">
         <uni-section title="删除提示" type="line">
@@ -766,6 +806,20 @@ const onUpDish = async () => {
       </uni-card>
     </uni-popup>
 
+    <!-- 定价修改模态框提示 -->
+    <uni-popup ref="editPricePopup" type="dialog" border-radius="10px 10px 0 0">
+      <uni-card class="form-card">
+        <uni-section title="修改提示" type="line">
+          <view style="font-weight: 550"
+            >今天你还能请求修改该菜品定价的次数：{{ dish_info_data.count }}</view
+          >
+          <view style="display: flex; width: 100%">
+            <view class="close btn" @click="onReturn__Price">返回</view>
+            <view class="confirm btn" @click="onConfirm__Price_debounce">请求修改</view>
+          </view>
+        </uni-section>
+      </uni-card>
+    </uni-popup>
     <view class="button-box">
       <view class="save btn" @click="onSave">保存</view>
       <view class="discontinued btn" v-if="dish_info_data.dishStatus === 2" @click="onUpDish"
@@ -1052,7 +1106,7 @@ const onUpDish = async () => {
 
         .discountPrice {
           margin-left: auto;
-          color: $text-color-gray;
+          color: $text-color-active;
         }
 
         .spec {
@@ -1189,7 +1243,7 @@ const onUpDish = async () => {
       }
 
       .status-line {
-        margin-top: -30rpx;
+        //margin-top: -30rpx;
       }
       .status {
         min-width: 200rpx;
@@ -1213,6 +1267,9 @@ const onUpDish = async () => {
         background-color: $bg-color-green;
         border-radius: 16rpx;
         transition: 0.2s ease;
+        &.Adjust {
+          margin-top: -30rpx;
+        }
         &:active {
           scale: 0.95;
         }
@@ -1252,6 +1309,18 @@ const onUpDish = async () => {
   }
 }
 
+.x-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.y-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  flex-direction: column;
+}
 // 样式穿透
 :deep(.uni-stat__select) {
   background-color: $bg-color-light;

@@ -1,6 +1,6 @@
 import { http } from '@/utils/http'
 import type { TokenType } from '@/types/login_register'
-import type { AddressItem, ColleagueItem } from '@/types/admin_return'
+import type { AddressItem, ColleagueItem, feedbackType } from '@/types/admin_return'
 export const admin_Login_pp = (phoneNumber: string, password: string) => {
   return http<TokenType>({
     method: 'POST',
@@ -251,7 +251,6 @@ export const deletePlace = (regionID: number) => {
 /**
  * 管理员同事
  */
-
 // 获取同事信息
 export const getColleagueInfo = () => {
   return http<ColleagueItem[]>({
@@ -265,5 +264,22 @@ export const queryColleagueInfo = (realName: string) => {
   return http<ColleagueItem[]>({
     method: 'GET',
     url: `/administer/statistics/query_administer_info?realName=${realName}`,
+  })
+}
+
+/**
+ * 信息反馈
+ */
+export const getFeedbackInfo = (
+  targetGroup: number, //待查询群体,0外卖员,1商家,2用户,3全部
+  searchInfo: string, //反馈人昵称模糊查询
+) => {
+  return http<feedbackType[]>({
+    method: 'GET',
+    url: `/administer/statistics/getFeedbackInfo`,
+    data: {
+      targetGroup,
+      searchInfo,
+    },
   })
 }

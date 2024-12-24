@@ -1,13 +1,18 @@
 <script lang="ts" setup>
 import { ref, reactive, nextTick } from 'vue'
+import type { ReviewsType } from '@/types/merchant_return'
 /**
  * @description 评价卡片
  * @author 应东林
  * @date 2024-11-10
  * @lastModifiedBy 应东林
- * @lastModifiedTime  2024-11-10
+ * @lastModifiedTime  2024-12-22
  */
-
+// 传递的数据
+const props = defineProps<{
+  ReviewsInfo: ReviewsType
+}>()
+const ReviewsInfo = props.ReviewsInfo
 const is_show = ref<boolean>(false)
 </script>
 
@@ -17,23 +22,27 @@ const is_show = ref<boolean>(false)
       <view class="customer-info x-wrapper">
         <up-avatar :src="'static/images/car.png'"></up-avatar>
         <view class="y-wrapper">
-          <view class="customer">应先生</view>
-          <view class="date">2021.3.1-13 ：58</view>
+          <view class="customer">{{ ReviewsInfo.customer }}</view>
+          <view class="date">{{ ReviewsInfo.date }}</view>
         </view>
       </view>
-      <up-rate active-color="#EED814" inactive-color="#EED814" gutter="4"></up-rate>
+      <up-rate
+        active-color="#EED814"
+        inactive-color="#EED814"
+        gutter="4"
+        v-model="ReviewsInfo.Scoring"
+        readonly
+      ></up-rate>
     </view>
-    <view class="content"
-      >分开就好打底裤发货速度加快粉红色的尽快回复快三点会分开就是的回复就是看到回复卡萨帝恢复健康发货快啥都会发空间撒</view
-    >
+    <view class="content">{{ ReviewsInfo.content }}</view>
     <view class="btn">回复</view>
 
     <!-- 评价隐藏信息 -->
     <view class="reviews-content-wrapper" :class="{ show: is_show }">
       <view class="fn-content">
         <view class="inner y-wrapper">
-          <view class="orderCode">订单编号:FSA4544545</view>
-          <view class="phoneNumber">用户电话:16623819144</view>
+          <view class="orderCode">订单编号:{{ ReviewsInfo.orderCode }}</view>
+          <view class="phoneNumber">用户电话:{{ ReviewsInfo.phoneNumber }}</view>
         </view>
       </view>
     </view>

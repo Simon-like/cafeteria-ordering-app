@@ -215,6 +215,28 @@ class Printer {
     return this
   }
   /**
+   * 循环打印
+   * @param {*} menu 打印数组，格式支持n-1，n-2和n-3的数组
+   * @returns
+   */
+  printLoop(menu) {
+    for (const item of menu) {
+      if (!item.length) {
+        this.print(item)
+      } else if (item.length === 2) {
+        this.printLR(item[0], item[1])
+      } else if (item.length === 3) {
+        this.print(item[0])
+        this.printLCR('', item[1], item[2])
+      }
+      this.setSize(1, 1)
+      this.printFill()
+      this.setSize(1, 2)
+    }
+    return this
+  }
+
+  /**
    * 打印空行
    * @param {*} n
    * @returns
