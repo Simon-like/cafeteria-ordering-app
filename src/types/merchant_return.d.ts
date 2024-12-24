@@ -49,6 +49,8 @@ export type dishData = {
   price: number
   discount: number
   discountedPrice: number
+  newPrice: number //上一次的审核定价
+  count: number //剩余请求次数
   imageUrl: string
   categoryList: categoryType[]
   dishStatus: number // 菜品的状态，热销0、缺货1、下架2，其他3

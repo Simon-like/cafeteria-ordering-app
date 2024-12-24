@@ -11,6 +11,7 @@ import {
 import { writeBLEValueLoop, closeBluetooth } from '@/utils/BluetoothAdapter'
 import { Printer } from '@/utils/ble/Printer'
 import { useMerchantOrderStore, useMerchantPagesStore } from '@/stores'
+import BATTS from '@/utils/voice_utils' //语音类测试
 // 本地订单数据
 const OrderStore = useMerchantOrderStore()
 
@@ -138,7 +139,18 @@ const onConfirm = async () => {
       OrderStore.localOrderData.splice(index, 1)
       showToast('接单成功！', 'success')
     })
-    !!MerchantPages.RWInfo.deviceId && (await BLEPrint()) //打印
+    if (MerchantPages.RWInfo.deviceId) {
+      await BLEPrint() //打印
+    } else {
+      showToast('请连接蓝牙打印机!', 'error')
+    }
+    let BA = new BATTS()
+    BA.speak()
+    BA.playVibrate()
+    setTimeout(() => {
+      BA.cancelVibrate()
+      console.log('震动关闭')
+    }, 2000)
   } else {
     showToast('接单失败', 'error')
   }

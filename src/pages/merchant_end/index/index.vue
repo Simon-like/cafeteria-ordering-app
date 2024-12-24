@@ -24,6 +24,7 @@ const statistics_list = ref<
     title: string
     value: number
     changeValue: number
+    compareType: number
   }[]
 >([])
 
@@ -73,10 +74,12 @@ function extractMonthAndDay(dateStr: string): string {
 onLoad(async () => {
   const resStatistics = await getStatistics() //数据看板
   if (resStatistics.code === 1) {
-    statistics_list.value = resStatistics.data.digiSignageInfoList
-    statistics_list.value.forEach((value, index, arr) => {
+    statistics_list.value = []
+    resStatistics.data.digiSignageInfoList.forEach((value, index, arr) => {
       arr[index].value = +value.value.toFixed(2)
       arr[index].changeValue = +value.changeValue.toFixed(2)
+      let compareType = index === 4 ? 1 : 0
+      statistics_list.value.push({ ...value, compareType })
     })
   } else {
     uni.showToast({
@@ -132,6 +135,7 @@ onLoad(async () => {
         :name="item.title"
         :data="item.value"
         :changeAmount="item.changeValue"
+        :compareType="item.compareType"
       ></StatisticsItem>
     </view>
     <view class="sales-trend chart-wrapper">
@@ -151,6 +155,8 @@ onLoad(async () => {
 
 <style lang="scss" scoped>
 .index {
+  border-radius: 28rpx 28rpx 0 0;
+  box-shadow: 0 -6rpx 10rpx rgba(0, 0, 0, 0.15);
   padding: 60rpx 70rpx;
   width: 100%;
   height: 100%;

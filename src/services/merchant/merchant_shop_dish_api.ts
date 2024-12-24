@@ -125,16 +125,16 @@ export const updateDishNot = (
   })
 }
 // 修改菜品信息、需要审核 --BINGGO
-export const updateDish = (dishId: number, price: number) => {
-  return http({
-    method: 'POST',
-    url: `/merchant/dish/updateDish`,
-    data: {
-      dishId,
-      price,
-    },
-  })
-}
+// export const updateDish = (dishId: number, price: number) => {
+//   return http({
+//     method: 'POST',
+//     url: `/merchant/dish/updateDish`,
+//     data: {
+//       dishId,
+//       price,
+//     },
+//   })
+// }
 // 商户端获取各类型下的菜品数量 --BINGGO
 export const getAllCategoryNum = () => {
   return http<{
@@ -198,5 +198,19 @@ export const upDish = (dishId: number) => {
   return http({
     method: 'PUT',
     url: `/merchant/dish/upDish?dishId=${dishId}`,
+  })
+}
+
+//商户端菜品定价审核 --BINGGO
+export const reqUpdateDish = (dishId: number, newPrice: number) => {
+  return http<{
+    dishName: string //菜品名称
+    price: number //菜品现在的价格
+    newPrice: number //审核的价格
+    requestCount: number //剩余请求次数
+    lastNewPrice: number //最近的一次审核价格
+  }>({
+    method: 'GET',
+    url: `/merchant/dish/reqUpdateDish?dishId=${dishId}&newPrice=${newPrice}`,
   })
 }

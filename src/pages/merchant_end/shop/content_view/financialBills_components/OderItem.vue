@@ -36,7 +36,11 @@ const props = defineProps<{
       >
     </view>
     <view class="line">
-      <view class="title">支付时间:{{ props.orderItem.orderTime }}</view>
+      <view class="title"
+        >支付时间:{{
+          props.orderItem.orderTime.split('T').reduce((res, item) => res + '  ' + item)
+        }}</view
+      >
     </view>
   </view>
 </template>
