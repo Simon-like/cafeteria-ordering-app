@@ -30,18 +30,21 @@ export type ColleagueItem = {
  * 外卖员管理模块
  */
 //外卖员申述
-export type CourierFeedback = {
-  time: string
-  type: string
-  content: string
-  imgs: string
+export type FeedBackInfo = {
+  id: string
+  appealContent: string
+  appealImages: Array<string>
   orderNumber: string
-  diliver: string
-  diliver_phone: string
-  name: string
-  contactPhone: string
+  courierId: number
+  courierName: string
+  courierPhone: string
+  merchantId: number
+  merchantName: string
+  merchantPhone: string
+  userId: number
   customer: string
-  customer_phone: string
+  customerPhone: string
+  appealTime: string
 }
 //外卖员信息
 // 定义Info类型，包含nums（数组）、totalOrders（字符串）和totalSalary（字符串）

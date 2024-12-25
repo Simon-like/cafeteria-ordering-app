@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, ref, onMounted } from 'vue'
 import { updateCommission } from '@/services/admin/merchant_manage'
-
+import MenuComponent from '@/pages/admin_end/merchant_manage/content_view/DishChangeViews/delete.vue'
 const props = defineProps<{
   id: number
   name: string
@@ -58,10 +58,27 @@ const handleUpdateCommission = async () => {
 const cancelUpdate = () => {
   closePopup() // 取消关闭弹窗
 }
+
+const showMenu = ref<boolean>(false)
+const ifShowDetail = ref<boolean>(true)
+//跳转到商家菜单页面
+const goToMenu = (id: number) => {
+  showMenu.value = true
+  ifShowDetail.value = false
+}
+
+const goBack = () => {
+  ifShowDetail.value = false
+}
 </script>
 
 <template>
-  <view class="container">
+  <MenuComponent :merchantId="props.id" v-if="showMenu" class="menu"></MenuComponent>
+  <view class="container" v-if="!showMenu">
+    <!-- 返回按钮 -->
+    <view @click="goBack" v-if="ifShowDetail">
+      <button class="back-btn" @click="goBack"><i class="zuojiantou"></i>区域商家详细信息</button>
+    </view>
     <view class="info">
       <!-- 店铺信息展示部分 -->
       <view class="info-item">
@@ -71,9 +88,10 @@ const cancelUpdate = () => {
       <view class="info-item">营业时间: {{ props.businessHours }}</view>
       <view class="info-item">地址: {{ props.address }}</view>
       <view class="info-item">联系电话: {{ props.contactPhone }}</view>
-      <view class="info-item">所有人: {{ props.realName }}</view>
       <view class="info-item">店铺简介: {{ props.description }}</view>
-
+      <view class="info-item"
+        >店铺菜单:<span class="nav" @click="goToMenu(props.id)">点击跳转</span></view
+      >
       <!-- 平台抽成部分 -->
       <view class="info-item">
         <view style="white-space: nowrap">平台抽成:</view>
@@ -126,8 +144,17 @@ const cancelUpdate = () => {
 </template>
 
 <style scoped>
-.container {
+.menu {
   width: 100%;
+  max-width: 590rpx;
+  max-height: 1400rpx;
+  overflow-y: auto;
+  padding: 20rpx;
+  font-size: 30rpx;
+}
+
+.container {
+  max-width: 590rpx;
   margin-top: 50rpx;
   padding: 20rpx;
   font-size: 30rpx;
@@ -240,21 +267,35 @@ const cancelUpdate = () => {
   cursor: pointer;
 }
 
-.save-button {
-  background-color: #4caf50;
-  color: white;
+.nav {
+  color: #ccc;
+  text-decoration: underline;
+  margin-right: 250rpx;
 }
-
-.cancel-button {
-  background-color: #f44336;
-  color: white;
-}
-
-.save-button:hover {
-  background-color: #45a049; /* 保存按钮悬浮效果 */
-}
-
-.cancel-button:hover {
-  background-color: #e53935; /* 取消按钮悬浮效果 */
+.back-btn {
+  background-color: #fff;
+  font-size: 35rpx;
+  position: absolute;
+  left: 180rpx;
+  top: 170rpx;
+  padding: 0;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b1caae;
+  .zuojiantou {
+    margin-top: 8rpx;
+    width: 20rpx;
+    height: 20rpx;
+    border-top: 6rpx solid #b1caae;
+    border-left: 6rpx solid #b1caae;
+    transform: rotate(-45deg);
+    margin-left: 10rpx;
+    margin-right: 100rpx;
+  }
+  &:active {
+    scale: 0.9;
+  }
 }
 </style>

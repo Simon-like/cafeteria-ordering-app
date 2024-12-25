@@ -118,6 +118,7 @@ const confirm = () => {
           title: `修改成功！`,
         })
         popup.value.close()
+        gotoLogin()
       }
     }
   })
@@ -171,10 +172,10 @@ const universityNames = computed(() => {
 const universityIds = computed(() => {
   return universities.value.map((university) => university.collegeId)
 })
-//返回登录注册页面
-const gotoLoginAndRegister = () => {
-  uni.navigateTo({
-    url: 'pages/login_register/login_register',
+
+const gotoLogin = () => {
+  uni.reLaunch({
+    url: '/pages/login_register/login_register',
   })
 }
 
@@ -195,14 +196,15 @@ onMounted(() => {
       ></image>
     </view>
     <view class="content">
+      <view class="content-items">管理员姓名:{{ adminStore.realName }}</view>
       <view class="content-items">学校:{{ adminStore.college }}</view>
       <view class="content-items">联系电话:{{ adminStore.phoneNumber }}</view>
       <view class="tips">*请注意修改联系电话后需重新用修改后的电话登录*</view>
     </view>
     <view class="outlogin" @click="onEdit"><button>修改资料</button></view>
     <view class="outlogin"> <button @click="openInvitationCodePopup">生成个人邀请码</button> </view>
-    <view class="outlogin" @click="gotoLoginAndRegister">
-      <button>退出登录</button>
+    <view class="outlogin">
+      <button @click="gotoLogin()">退出登录</button>
     </view>
 
     <!-- 上传Logo的弹框 -->

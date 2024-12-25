@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { diliver_courier, courier_audit } from '@/services/admin/delivery_manage'
+import type { FeedBackInfo } from '@/types/admin_return'
+
 /**
  * @description 管理端外卖员模块
  * @author 钟礼豪
@@ -7,104 +10,117 @@ import { ref } from 'vue'
  * @lastModifiedBy 钟礼豪
  * @lastModifiedTime  2024-10-31
  */
-interface Info {
-  time: string
-  type: string
-  content: string
-  imgs: string
-  orderNumber: string
-  diliver: string
-  diliver_phone: string
-  name: string
-  contactPhone: string
-  customer: string
-  customer_phone: string
-}
-const tests = ref<Info>([
+
+const tests = ref<FeedBackInfo[]>([
   {
-    id: '1',
-    time: '2024.10.20',
-    type: '退款',
-    content: '外卖丢失',
-    imgs: 'http://img',
-    orderNumber: 'aaa',
-    diliver: 'xxx',
-    diliver_phone: '123',
-    name: 'xxx',
-    contactPhone: '123',
-    customer: 'xxx',
-    customer_phone: '123',
+    id: 1,
+    appealContent: '外卖延迟，顾客投诉。',
+
+    orderNumber: 'ORD12345678',
+    courierName: '张三',
+    merchantName: '麦当劳',
+
+    customer: '李四',
+    customerPhone: '13812345678', // 用户手机号
+    courierId: 101,
+    appealTime: '2024-10-20 10:30:00',
   },
-  {
-    id: '2',
-    time: '2024.10.21',
-    type: '退款',
-    content: '外卖丢失',
-    imgs: 'http://img',
-    orderNumber: 'aaa',
-    diliver: 'xxx',
-    diliver_phone: '123',
-    name: 'xxx',
-    contactPhone: '123',
-    customer: 'xxx',
-    customer_phone: '123',
-  },
+  // ... 其他数据
 ])
+const handleGetInfo = async () => {
+  const res = await diliver_courier()
+  tests.value = res.data
+  console.log(res.data)
+}
+onMounted(handleGetInfo)
+
+const handleAudit = async (flag: boolean, id: number) => {
+  const res = await courier_audit(flag, id)
+  console.log(res.data)
+}
 
 const popup = ref(null)
-const selectedInfo = ref<Info>({})
+const phonePopup = ref(null) // 新增手机号弹窗的引用
+const selectedInfo = ref<FeedBackInfo>()
 
-const handleButtonClick = (info: Info) => {
+// 处理弹窗打开
+const handleButtonClick = (info: FeedBackInfo) => {
   selectedInfo.value = info
   popup.value.open()
 }
 
+// 新增手机号处理弹窗
+const handlePhoneButtonClick = (phoneNumber: string) => {
+  // 在手机号弹窗中展示手机号
+  selectedInfo.value = { ...selectedInfo.value, phoneNumber }
+  phonePopup.value.open()
+}
+
 const hidePopup = () => {
   popup.value.close()
+}
+
+const hidePhonePopup = () => {
+  phonePopup.value.close()
 }
 </script>
 <template>
   <view class="box">
     <scroll-view scroll-y="true" class="scroll-Y">
       <view v-for="info in tests" :key="info.id" class="card">
-        <view class="item">时间:{{ info.time }}</view>
-        <view class="item">类型:申述-{{ info.type }}</view>
-        <view class="item">内容:{{ info.content }}</view>
+        <view class="item">时间:{{ info.appealTime }}</view>
+        <view class="item">类型:申述</view>
+        <view class="item">内容:{{ info.appealContent }}</view>
         <button @click="handleButtonClick(info)">处理</button>
       </view>
     </scroll-view>
 
+    <!-- 处理申述的原始弹窗 -->
     <uni-popup ref="popup" type="center">
       <view class="popup-content">
-        <view class="content-item">时间: {{ selectedInfo.time }}</view>
-        <view class="content-item">类型: {{ selectedInfo.type }}</view>
-        <view class="content-item">申述说明: {{ selectedInfo.content }}</view>
+        <view class="content-item">时间: {{ selectedInfo.appealTime }}</view>
+        <view class="content-item">类型: 外卖员申述</view>
+        <view class="content-item">申述说明: {{ selectedInfo.appealContent }}</view>
         <view class="content-item">上传附件: </view>
-        <view class="content-item" style="text-decoration: underline"
-          >相关订单:{{ selectedInfo.orderNumber }}</view
-        >
-        <view class="content-item">
-          <view class="contactInfo"
-            ><text>外卖员:{{ selectedInfo.diliver }}</text
-            ><button class="contact">联系外卖员</button></view
-          >
-          <view class="contactInfo"
-            ><text>商家:{{ selectedInfo.name }}</text
-            ><button class="contact">联系商家</button></view
-          >
-          <view class="contactInfo"
-            ><text>用户:{{ selectedInfo.customer }}</text
-            ><button class="contact">联系用户</button></view
-          >
+        <view class="content-item" style="text-decoration: underline">
+          相关订单:{{ selectedInfo.orderNumber }}
         </view>
-
-        <!-- 可以继续添加更多信息 -->
+        <view class="content-item">
+          <view class="contactInfo">
+            <text>外卖员:{{ selectedInfo.courierName }}</text>
+            <button class="contact" @click="handlePhoneButtonClick(selectedInfo.courierPhone)">
+              联系外卖员
+            </button>
+          </view>
+          <view class="contactInfo">
+            <text>商家:{{ selectedInfo.merchantName }}</text>
+            <button class="contact" @click="handlePhoneButtonClick(selectedInfo.merchantPhone)">
+              联系商家
+            </button>
+          </view>
+          <view class="contactInfo">
+            <text>用户:{{ selectedInfo.customer }}</text>
+            <button class="contact" @click="handlePhoneButtonClick(selectedInfo.customerPhone)">
+              联系用户
+            </button>
+          </view>
+        </view>
+        <!-- 审核按钮 -->
+        <button @click="handleAudit(true, selectedInfo.id)">同意</button>
+        <button @click="handleAudit(false, selectedInfo.id)">不同意</button>
         <button @click="hidePopup()" class="close">关闭</button>
+      </view>
+    </uni-popup>
+
+    <!-- 新增手机号弹窗 -->
+    <uni-popup ref="phonePopup" type="center">
+      <view class="popup-content">
+        <view class="content-item">手机号: {{ selectedInfo.phoneNumber }}</view>
+        <button @click="hidePhonePopup()" class="close">关闭</button>
       </view>
     </uni-popup>
   </view>
 </template>
-
 <style lang="scss" scoped>
 .box {
   display: flex;
@@ -127,6 +143,7 @@ const hidePopup = () => {
       background-color: $bg-color-green;
       text-align: center;
       line-height: 60rpx;
+      margin-top: 10rpx;
     }
   }
 
@@ -143,21 +160,23 @@ const hidePopup = () => {
       margin-left: 15rpx;
       display: flex;
       flex-direction: column;
+      font-size: 24rpx;
+    }
 
-      .contactInfo {
-        display: flex;
-        margin-right: auto;
-        margin-bottom: 40rpx;
-        button {
-          position: absolute;
-          font-size: 20rpx;
-          width: 200rpx;
-          height: 60rpx;
-          padding: 0;
-          right: 0;
-        }
+    .contactInfo {
+      display: flex;
+      margin-right: auto;
+      margin-bottom: 40rpx;
+      button {
+        position: absolute;
+        font-size: 20rpx;
+        width: 200rpx;
+        height: 60rpx;
+        padding: 0;
+        right: 0;
       }
     }
+
     .close {
       margin-top: 50rpx;
       width: 200rpx;

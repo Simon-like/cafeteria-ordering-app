@@ -70,7 +70,7 @@ const goBack = () => {
                   <iconComponent :data="merchant.updateReqCount" :radius="15"></iconComponent>
                 </view>
                 <view class="msg-item" @click="showDeleteDish(merchant.merchantId)">
-                  下架已有菜品
+                  查看当前商家菜单
                 </view>
               </view>
             </view>

@@ -127,14 +127,8 @@ const selectedPlaceName = computed(() => placeOptions.value[selectedPlaceIndex.v
     :description="currentMerchantDetail.description"
     :commissionType="currentMerchantDetail.commissionType"
     :commission="currentMerchantDetail.commission"
-    :style="{ width: '590rpx' }"
   >
   </detailComponent>
-
-  <!-- 返回按钮 -->
-  <view @click="goBack" v-if="ifShowDetail">
-    <button class="back-btn" @click="goBack"><i class="zuojiantou"></i>区域商家详细信息</button>
-  </view>
 </template>
 
 <style lang="scss" scoped>
@@ -212,32 +206,6 @@ const selectedPlaceName = computed(() => placeOptions.value[selectedPlaceIndex.v
         padding: 0;
       }
     }
-  }
-}
-.back-btn {
-  background-color: #fff;
-  font-size: 35rpx;
-  position: absolute;
-  left: 180rpx;
-  top: 170rpx;
-  padding: 0;
-  transition: 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #b1caae;
-  .zuojiantou {
-    margin-top: 8rpx;
-    width: 20rpx;
-    height: 20rpx;
-    border-top: 6rpx solid #b1caae;
-    border-left: 6rpx solid #b1caae;
-    transform: rotate(-45deg);
-    margin-left: 10rpx;
-    margin-right: 100rpx;
-  }
-  &:active {
-    scale: 0.9;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { downDish, getMerchantDishes } from '@/services/admin/merchant_manage'
 
 interface Dish {
@@ -24,7 +24,7 @@ const handelGetInfo = async (merchantId: number) => {
   console.log(res.data)
 }
 
-onLoad(handelGetInfo)
+onMounted(handelGetInfo)
 
 // 控制 popup 显示状态
 const showPopup = ref(false)
@@ -58,7 +58,7 @@ const confirmDelete = async () => {
 <template>
   <view class="dishes-container">
     <view class="header">
-      <view class="title">下架</view>
+      <view class="title">商家菜单</view>
       <navigator class="nav" url="">联系商家</navigator>
     </view>
 

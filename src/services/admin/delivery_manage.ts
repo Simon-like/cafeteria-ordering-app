@@ -1,5 +1,5 @@
 import { http } from '@/utils/http'
-import type { CourierFeedback, DataItem } from '@/types/admin_return'
+import type { FeedBackInfo, DataItem } from '@/types/admin_return'
 /**
  * @description 外卖员管理
  * @author 钟礼豪
@@ -8,16 +8,16 @@ import type { CourierFeedback, DataItem } from '@/types/admin_return'
  */
 //获取外卖员申述信息
 export const diliver_courier = () => {
-  return http<CourierFeedback[]>({
+  return http<FeedBackInfo[]>({
     method: 'GET',
-    url: '/administer/staticis/Courier',
+    url: '/administer/statistics/getAuditFeedBack',
   })
 }
 //上传外卖员申述结果
 export const courier_audit = (flag: boolean, id: number) => {
   return http({
     method: 'POST',
-    url: '/administer/statistics/AuditCourier',
+    url: '/administer/statistics/AuditFeedBack',
     data: {
       flag,
       id,
