@@ -14,6 +14,11 @@ const props = defineProps<{
 }>()
 const ReviewsInfo = props.ReviewsInfo
 const is_show = ref<boolean>(false)
+
+//拨打电话
+const onPhone = () => {
+  plus.device.dial(ReviewsInfo.phoneNumber, true)
+}
 </script>
 
 <template>
@@ -30,12 +35,12 @@ const is_show = ref<boolean>(false)
         active-color="#EED814"
         inactive-color="#EED814"
         gutter="4"
-        v-model="ReviewsInfo.Scoring"
+        v-model="ReviewsInfo.scoring"
         readonly
       ></up-rate>
     </view>
     <view class="content">{{ ReviewsInfo.content }}</view>
-    <view class="btn">回复</view>
+    <view class="btn" @click="onPhone">回复</view>
 
     <!-- 评价隐藏信息 -->
     <view class="reviews-content-wrapper" :class="{ show: is_show }">
@@ -114,6 +119,9 @@ const is_show = ref<boolean>(false)
       overflow: hidden;
       gap: 10rpx;
       align-items: flex-start;
+      .phoneNumber {
+        user-select: text;
+      }
     }
   }
 

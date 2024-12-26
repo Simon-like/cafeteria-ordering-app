@@ -6,6 +6,7 @@ import { closeBluetooth } from '@/utils/BluetoothAdapter'
 import { ref, nextTick } from 'vue'
 import { useMerchantOrderStore } from '@/stores'
 import WS from '@/utils/websocket'
+import BATTS from '@/utils/voice_utils' //语音类测试
 
 /**
  * @description 商户端入口页面
@@ -45,6 +46,9 @@ onLoad(() => {
           OrderStore.to_be_confirmed = socketData.TO_BE_CONFIRMED
           OrderStore.order_notice = !OrderStore.order_notice
         })
+        let BA = new BATTS()
+        BA.speak('来订单了！请注意查看！')
+        BA.playVibrate()
         uni.showToast({
           icon: 'none',
           title: '来订单了！请注意查看！',

@@ -11,11 +11,11 @@ export default class BATTS {
   constructor() {
     if (!this.tts) this.tts = uni.requireNativePlugin('Ba-TTS') //引入组件
   }
-  speak() {
+  speak(text: string) {
     //播放声音
     this.tts.speak(
       {
-        text: '测试语音合成', //文本； 注意：如果是数字单读（如叫号1001），可用空格隔开，如“1 0 0 1”）
+        text, //文本； 注意：如果是数字单读（如叫号1001），可用空格隔开，如“1 0 0 1”）
         //pitch: 0.6, // 设置音调，值越大声音越尖（女生），值越小则变成男声,默认是1
         //speed: 1 //设定语速 ，默认1正常语速
       },
@@ -41,6 +41,9 @@ export default class BATTS {
     this.tts.playVibrate(params, (res) => {
       console.log(res)
     })
+    setTimeout(() => {
+      this.cancelVibrate()
+    }, 2000)
   }
   cancelVibrate() {
     //取消震动

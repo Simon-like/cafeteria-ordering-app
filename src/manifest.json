@@ -1,5 +1,5 @@
 {
-    "name" : "食堂订单服务平台",
+    "name" : "康食速点通服务平台",
     "appid" : "__UNI__D060301",
     "description" : "点单小程序的服务端运用场景",
     "versionName" : "1.0.0",
@@ -37,6 +37,9 @@
                     "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
                     "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.CAMERA\"/>",
                     "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
@@ -66,15 +69,30 @@
             },
             "icons" : {
                 "android" : {
-                    "hdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/未来（7）.png",
-                    "xhdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/未来（1）.png"
+                    "hdpi" : "C:/Users/86166/Desktop/kssdt.png",
+                    "xhdpi" : "C:/Users/86166/Desktop/kssdt.png",
+                    "xxhdpi" : "C:/Users/86166/Desktop/kssdt.png",
+                    "xxxhdpi" : "C:/Users/86166/Desktop/kssdt.png"
+                },
+                "ios" : {
+                    "appstore" : "",
+                    "iphone" : {
+                        "app@2x" : "C:/Users/86166/Desktop/kssdt.png",
+                        "app@3x" : "C:/Users/86166/Desktop/kssdt.png",
+                        "spotlight@2x" : "C:/Users/86166/Desktop/kssdt.png",
+                        "spotlight@3x" : "C:/Users/86166/Desktop/kssdt.png"
+                    },
+                    "ipad" : {
+                        "app" : "C:/Users/86166/Desktop/kssdt.png",
+                        "app@2x" : "C:/Users/86166/Desktop/kssdt.png"
+                    }
                 }
             },
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/栗山未来（3）.png",
-                    "xhdpi" : "D:/VsCode/前端项目/werun纳新第二次作业/image/未来（3）.png"
+                    "hdpi" : "C:/Users/86166/Desktop/Group 297.png",
+                    "xhdpi" : "C:/Users/86166/Desktop/Group 297.png"
                 }
             }
         },

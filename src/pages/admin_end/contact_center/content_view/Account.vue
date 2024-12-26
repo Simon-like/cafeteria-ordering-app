@@ -297,6 +297,7 @@ onMounted(() => {
   flex-direction: column;
   font-size: 26rpx;
   gap: 44rpx;
+  overflow: hidden;
 
   .platform-logo {
     margin: 20rpx auto;
