@@ -73,6 +73,7 @@ const onConnectionBLE = async () => {
       icon: 'error',
       title: '扫描失败！',
     })
+    loading_show.value = false
   }
 }
 // 关闭弹窗
