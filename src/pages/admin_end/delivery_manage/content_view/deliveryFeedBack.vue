@@ -11,22 +11,7 @@ import type { FeedBackInfo } from '@/types/admin_return'
  * @lastModifiedTime  2024-10-31
  */
 
-const tests = ref<FeedBackInfo[]>([
-  {
-    id: 1,
-    appealContent: '外卖延迟，顾客投诉。',
-
-    orderNumber: 'ORD12345678',
-    courierName: '张三',
-    merchantName: '麦当劳',
-
-    customer: '李四',
-    customerPhone: '13812345678', // 用户手机号
-    courierId: 101,
-    appealTime: '2024-10-20 10:30:00',
-  },
-  // ... 其他数据
-])
+const tests = ref<FeedBackInfo[]>()
 const handleGetInfo = async () => {
   const res = await diliver_courier()
   tests.value = res.data

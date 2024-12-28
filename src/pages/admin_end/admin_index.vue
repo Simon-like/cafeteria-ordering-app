@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { componentList } from './index'
 import { ref } from 'vue'
-import { useAdminPagesStore } from '@/stores'
+import { useAdminPagesStore, useAdminStore } from '@/stores'
+import { getInviteCode, ChangeAdminInfo, getAdminInfo } from '@/services/admin/admin_api'
 import adminHeaderBar from '@/components/HeaderBar/adminHeaderBar.vue'
 /**
  * @description 管理端入口页面
@@ -10,8 +11,19 @@ import adminHeaderBar from '@/components/HeaderBar/adminHeaderBar.vue'
  * @lastModifiedBy 应东林
  * @lastModifiedTime  2024-09-21
  */
-
+const adminStore = useAdminStore()
 const AdminPages = useAdminPagesStore()
+
+const handlegetInfo = async () => {
+  const res = await getAdminInfo()
+  adminStore.realName = res.data.realName
+  adminStore.logo = res.data.avater
+  adminStore.college = res.data.college
+  adminStore.phoneNumber = res.data.phoneNumber
+  console.log(res.data)
+}
+
+onLoad(handlegetInfo)
 </script>
 
 <template>

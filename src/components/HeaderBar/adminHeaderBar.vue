@@ -2,9 +2,6 @@
 import { ref, watchEffect } from 'vue'
 import { useAdminStore } from '@/stores'
 const AdminStore = useAdminStore()
-
-//测试数据
-AdminStore.college = 'v专'
 </script>
 
 <template>

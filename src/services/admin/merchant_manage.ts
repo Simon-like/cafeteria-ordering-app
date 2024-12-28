@@ -1,5 +1,5 @@
 import { http } from '@/utils/http'
-import type { MerchantInfo } from '@/types/merchant_return'
+import type { AllInfo } from '@/types/merchant_return'
 import type { MerchantAudit } from '@/types/admin_return'
 /**
  * @description 商户管理
@@ -11,7 +11,7 @@ import type { MerchantAudit } from '@/types/admin_return'
 
 //获取区域商家信息
 export const getMerchantInfo = (college: string) => {
-  return http<MerchantInfo>({
+  return http<AllInfo[]>({
     method: 'GET',
     url: `/administer/statistics/MerchantManage?college=${college}`,
   })

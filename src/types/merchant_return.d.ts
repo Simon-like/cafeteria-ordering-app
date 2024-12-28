@@ -1,17 +1,19 @@
 export type MerchantInfo = {
+  name: string
+  logo: string
+  address: string
+  contactPhone: string
+  businessHours: string
+  realName: string
+  description: string
+  commissionType: number
+  commission: number
+  id: number
+}
+
+export type AllInfo = {
   place: string
-  merchantDeInfo: [
-    {
-      id: string
-      name: string
-      logo: string
-      address: string
-      contactPhone: string
-      businessHours: string
-      realName: string
-      description: string
-    },
-  ]
+  merchantDeInfo: MerchantInfo[]
 }
 
 export type URL = {

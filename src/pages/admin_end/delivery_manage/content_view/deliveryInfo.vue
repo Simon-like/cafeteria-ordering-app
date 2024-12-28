@@ -17,7 +17,7 @@ const changeShow = (index: number) => {
 </script>
 
 <template>
-  <scroll-view scroll-y="true" class="scroll-Y" style="max-height: 1400rpx">
+  <scroll-view scroll-y="true" class="scroll-Y" style="max-height: 1350rpx">
     <view class="info-box" v-for="(item, index) in notice_list" :key="index">
       <view class="info">
         <view class="logo">

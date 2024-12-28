@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
-import { getInviteCode, ChangeAdminInfo, getAdminInfo } from '@/services/admin/admin_api'
+import { getInviteCode, ChangeAdminInfo } from '@/services/admin/admin_api'
 import { GetUniversity } from '@/services/merchant/merchant_api'
 import { upload } from '@/utils/http'
 import type { University } from '@/types/merchant_return'
@@ -16,28 +16,11 @@ import type { University } from '@/types/merchant_return'
 
 const adminStore = useAdminStore()
 
-// 异步获取管理员信息并更新到 adminStore
-const handlegetInfo = async () => {
-  try {
-    const res = await getAdminInfo()
-    adminStore.logo = res.data.avater
-    adminStore.college = res.data.college
-    adminStore.phoneNumber = res.data.phoneNumber
-    console.log(res.data)
-    // 在获取到管理员信息后，更新 valiFormData
-    valiFormData.college = adminStore.college
-    valiFormData.phoneNumber = adminStore.phoneNumber
-  } catch (error) {
-    console.error('获取管理员信息失败', error)
-  }
-}
 //异步修改管理员信息
 const handleChangeInfo = async (collegeId: string, phoneNumber: string) => {
   const res = await ChangeAdminInfo(collegeId, phoneNumber)
   console.log(res.data)
 }
-// 页面加载时调用 handlegetInfo 获取管理员信息
-onMounted(handlegetInfo)
 
 /**
  * 图片上传功能
