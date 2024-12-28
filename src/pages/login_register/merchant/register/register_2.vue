@@ -12,7 +12,7 @@ const college = ref<string>('')
 const merchantStore = useMerchantStore()
 
 const gotoNext = () => {
-  if (realName.value & name.value & detailedAddress.value) {
+  if (!!realName.value & !!name.value & !!detailedAddress.value) {
     merchantStore.realName = realName.value
     merchantStore.name = name.value
     merchantStore.detailedAddress = detailedAddress.value
