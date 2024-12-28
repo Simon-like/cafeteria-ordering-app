@@ -13,11 +13,32 @@ import { ref, nextTick } from 'vue'
  */
 
 const ReviewsData = ref<ReviewsType[]>([])
+function formatDateTime(dateString: string) {
+  // 创建一个 Date 对象
+  const date = new Date(dateString)
+
+  // 获取月份、日期、小时和分钟
+  const month = date.getMonth() + 1 // 月份是从 0 开始的，所以加 1
+  const day = date.getDate()
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+
+  // 格式化为 MM-DD HH:mm 形式
+  const formattedDate = `${month.toString().padStart(2, '0')}-${day
+    .toString()
+    .padStart(2, '0')}  ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+
+  return formattedDate
+}
 
 onLoad(async () => {
   const res = await getAllReviews()
   if (res.code === 1) {
     ReviewsData.value = res.data
+    ReviewsData.value.forEach((item, index, arr) => {
+      arr[index].date = formatDateTime(item.date)
+    })
+    console.log(ReviewsData.value)
   } else {
     uni.showToast({
       icon: 'none',
@@ -31,7 +52,7 @@ onLoad(async () => {
   <view class="ReviewsMain">
     <scroll-view scroll-y="true" class="scroll-Y">
       <view class="null-content" v-show="ReviewsData.length === 0">暂时没有评价消息</view>
-      <ReviewsCard v-for="item in ReviewsData" :ReviewsInfo="item" />
+      <ReviewsCard v-for="item in ReviewsData" :ReviewsInfo="item" :key="item.date" />
     </scroll-view>
   </view>
 </template>

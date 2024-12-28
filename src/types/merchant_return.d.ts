@@ -102,6 +102,6 @@ export type ReviewsType = {
   content: string //评价内容
   date: string //日期
   orderCode: string //订单编号
-  Scoring: number //评分
+  scoring: number //评分
   phoneNumber: string //用户电话
 }

@@ -147,7 +147,7 @@ const submit = () => {
     .then((res: string) => {
       if (compareTime(Merchant.time_start, Merchant.time_end) !== -1) {
         uni.showToast({
-          icon: 'error',
+          icon: 'none',
           title: `营业时间填写错误！`,
         })
       } else {
@@ -342,7 +342,7 @@ const onAddressChange = (e: any) => {
                       hasInput
                       :show="time_end_show"
                       v-model="Merchant.time_end"
-                      format=":mm"
+                      format="HH:mm"
                       mode="time"
                       @confirm="time_edit"
                     ></up-datetime-picker>
@@ -453,6 +453,8 @@ const onAddressChange = (e: any) => {
           align-items: center;
           justify-content: center;
           gap: 5rpx;
+          border: none;
+          height: auto;
         }
 
         .submit-button {
