@@ -6,10 +6,11 @@ import DishAddComponent from './DishChangeViews/add.vue' // 新增菜品组件
 import DishEditComponent from './DishChangeViews/change.vue' // 更改菜品组件
 import DishDeleteComponent from './DishChangeViews/delete.vue' // 删除菜品组件
 import type { MerchantRequest } from '@/types/admin_return'
+import { onLoad } from '@dcloudio/uni-app'
 // 管理当前页面的视图状态
 const currentView = ref('main') // 当前显示的视图，默认主页面
 const selectedMerchantId = ref<number | null>(null) // 当前选中的商户ID
-const merchants = ref<MerchantRequest>()
+const merchants = ref<MerchantRequest[]>()
 const handleGetInfo = async () => {
   const res = await getAllRequestInfo()
   merchants.value = res.data
@@ -49,7 +50,12 @@ const goBack = () => {
           <view v-for="merchant in merchants" :key="merchant.merchantId" class="msg-item">
             <view class="merchant-box">
               <view class="merchant-info">
-                <view class="logo"><image :src="merchant.logo" mode="aspectFill"></image></view>
+                <view class="logo"
+                  ><image
+                    :src="!!merchant.logo ? merchant.logo : '/static/images/kssdt.png'"
+                    mode="aspectFill"
+                  ></image
+                ></view>
                 <view class="name">{{ merchant.merchantName }}</view>
               </view>
 
@@ -104,7 +110,7 @@ const goBack = () => {
   height: 100%;
   .box {
     margin: 20rpx;
-    height: auto;
+    height: 75vh;
 
     .msg {
       margin: 20rpx;
@@ -175,6 +181,7 @@ const goBack = () => {
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
+  overflow: hidden;
 }
 
 .name {

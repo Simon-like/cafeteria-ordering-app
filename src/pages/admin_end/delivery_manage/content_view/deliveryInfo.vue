@@ -17,36 +17,45 @@ const changeShow = (index: number) => {
 </script>
 
 <template>
-  <scroll-view scroll-y="true" class="scroll-Y" style="max-height: 1350rpx">
-    <view class="info-box" v-for="(item, index) in notice_list" :key="index">
-      <view class="info">
-        <view class="logo">
-          <image :src="item.imageUrl" mode="aspectFit"></image>
-        </view>
-        <view>
-          <view class="info-item" style="font-size: 28rpx">{{ item.realName }}</view>
-          <view class="info-item">电话: {{ item.phoneNumber }}</view>
-        </view>
-      </view>
-      <view class="info-wrapper" :class="{ show: item.is_show }">
-        <view class="content" v-if="item.is_show">
-          <view class="info-item">近7天总配送费: {{ item.info.totalSalary }}</view>
-          <view class="info-item">固定地点总配送单数: {{ item.info.totalOrders }}</view>
-          <view class="info-item" v-for="(locationObj, index) in item.info.nums" :key="index">
-            <span v-for="(value, location) in locationObj" :key="location">
-              {{ location }}总配送单数: {{ value }}
-            </span>
+  <view class="wrapper">
+    <scroll-view scroll-y="true" class="scroll-Y" style="max-height: 1350rpx">
+      <view class="info-box" v-for="(item, index) in notice_list" :key="index">
+        <view class="info">
+          <view class="logo">
+            <image
+              :src="!!item.imageUrl ? item.imageUrl : '/static/images/kssdt.png'"
+              mode="aspectFill"
+            ></image>
+          </view>
+          <view>
+            <view class="info-item" style="font-size: 28rpx">{{ item.realName }}</view>
+            <view class="info-item">电话: {{ item.phoneNumber }}</view>
           </view>
         </view>
-        <view @click="changeShow(index)" class="icon">
-          <i class="iconfont icon-jiantouarrow483"></i>
+        <view class="info-wrapper" :class="{ show: item.is_show }">
+          <view class="content" v-if="item.is_show">
+            <view class="info-item">近7天总配送费: {{ item.info.totalSalary }}</view>
+            <view class="info-item">固定地点总配送单数: {{ item.info.totalOrders }}</view>
+            <view class="info-item" v-for="(locationObj, index) in item.info.nums" :key="index">
+              <span v-for="(value, location) in locationObj" :key="location">
+                {{ location }}总配送单数: {{ value }}
+              </span>
+            </view>
+          </view>
+          <view @click="changeShow(index)" class="icon">
+            <i class="iconfont icon-jiantouarrow483"></i>
+          </view>
         </view>
       </view>
-    </view>
-  </scroll-view>
+    </scroll-view>
+  </view>
 </template>
 
 <style lang="scss" scoped>
+.wrapper {
+  width: 590rpx;
+  max-height: 75vh;
+}
 .info-box {
   font-size: 25rpx;
   padding: 20rpx;
@@ -54,22 +63,19 @@ const changeShow = (index: number) => {
   flex-direction: column;
   margin: 15rpx 15rpx 15rpx 15rpx;
   background-color: $bg-color-light;
-  max-height: 100%;
 
   .info {
     display: flex;
     align-items: center;
 
     .logo {
-      width: 150rpx;
-      height: 150rpx;
-      border-radius: 50%;
-      margin-right: 20rpx;
-      background-color: #fff;
       image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        width: 150rpx;
+        height: 150rpx;
+        border-radius: 50%;
+        margin-right: 20rpx;
+        background-color: #fff;
+        overflow: hidden;
       }
     }
 

@@ -66,7 +66,7 @@ const uploadImg = async () => {
 
 //修改资料
 const popup = ref()
-const valiForm = ref<UniHelper.FormInstance>(null)
+const valiForm = ref<UniHelper.FormInstance>()
 const valiFormData = reactive({
   college: '',
   phoneNumber: '',
@@ -101,7 +101,6 @@ const confirm = () => {
           title: `修改成功！`,
         })
         popup.value.close()
-        gotoLogin()
       }
     }
   })
@@ -172,7 +171,7 @@ onMounted(() => {
   <view class="account-mana">
     <view class="platform-logo">
       <image
-        :src="adminStore.logo"
+        :src="!!adminStore.logo ? adminStore.logo : '/static/images/kssdt.png'"
         mode="aspectFill"
         class="logo"
         @click="openLogoPicker()"
@@ -260,7 +259,9 @@ onMounted(() => {
       <uni-card class="form-card">
         <uni-section title="邀请码" title-color="rgba(25, 196, 126, 0.7)" title-font-size="40rpx">
           <view class="invitation-code-content">
-            <text>您的邀请码是：{{ invitationCode }}</text>
+            您的邀请码是：<text style="user-select: text; font-weight: 550">{{
+              invitationCode
+            }}</text>
           </view>
         </uni-section>
         <view class="action-btns">

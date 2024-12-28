@@ -12,6 +12,15 @@ export const useAdminStore = defineStore(
     const realName = ref<string>('')
     const validationCode = ref<string>('')
     const college = ref<string>('')
+
+    const init = () => {
+      phoneNumber.value = ''
+      password.value = ''
+      inviteCode.value = ''
+      realName.value = ''
+      validationCode.value = ''
+      college.value = ''
+    }
     // 记得 return
     return {
       phoneNumber,
@@ -20,6 +29,7 @@ export const useAdminStore = defineStore(
       realName,
       validationCode,
       college,
+      init,
     }
   },
   // TODO: 持久化

@@ -108,7 +108,7 @@ export const getTotalAmountRollover = (orderTime: string) => {
 }
 
 // 获取历史订单
-export const getCompletedOrRefund = (orderTime: string, status: number) => {
+export const getCompletedOrRefund = (orderTime: string) => {
   return http<
     {
       orderId: number
@@ -123,7 +123,6 @@ export const getCompletedOrRefund = (orderTime: string, status: number) => {
     url: `/merchant/statistics/getCompletedOrRefund`,
     data: {
       orderTime,
-      status,
     },
   })
 }
