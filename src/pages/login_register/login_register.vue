@@ -1,6 +1,17 @@
 <script setup lang="ts">
-//
 import { computed, ref } from 'vue'
+import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { useAdminStore } from '@/stores/modules/admin_information'
+import { onLoad, onUnload } from '@dcloudio/uni-app'
+/**
+ * @description 账号密码登录初始页面
+ * @author 钟礼豪 应东林
+ * @date 2024-很久很久之前
+ * @lastModifiedBy 应东林
+ * @lastModifiedTime  2024-12-28
+ */
+const adminStore = useAdminStore()
+const Merchant = useMerchantStore()
 const activeLink = ref<string>('商家登录')
 const setActiveLink = (link: string) => {
   activeLink.value = link

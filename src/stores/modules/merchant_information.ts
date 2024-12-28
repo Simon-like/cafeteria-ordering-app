@@ -25,6 +25,12 @@ export const useMerchantStore = defineStore(
     const logo = ref<string>('')
     const id = ref<string>('')
 
+    const init = () => {
+      phoneNumber.value = ''
+      realName.value = ''
+      id.value = ''
+    }
+
     // 记得 return
     return {
       phoneNumber,
@@ -44,6 +50,7 @@ export const useMerchantStore = defineStore(
       validationCode,
       time_start,
       time_end,
+      init,
     }
   },
   // TODO: 持久化

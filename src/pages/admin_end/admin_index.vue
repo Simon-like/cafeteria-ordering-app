@@ -4,6 +4,8 @@ import { ref } from 'vue'
 import { useAdminPagesStore, useAdminStore } from '@/stores'
 import { getInviteCode, ChangeAdminInfo, getAdminInfo } from '@/services/admin/admin_api'
 import adminHeaderBar from '@/components/HeaderBar/adminHeaderBar.vue'
+import { useMerchantStore } from '@/stores/modules/merchant_information'
+import { onLoad, onUnload } from '@dcloudio/uni-app'
 /**
  * @description 管理端入口页面
  * @author 应东林
@@ -13,6 +15,7 @@ import adminHeaderBar from '@/components/HeaderBar/adminHeaderBar.vue'
  */
 const adminStore = useAdminStore()
 const AdminPages = useAdminPagesStore()
+const Merchant = useMerchantStore()
 
 const handlegetInfo = async () => {
   const res = await getAdminInfo()
@@ -20,10 +23,12 @@ const handlegetInfo = async () => {
   adminStore.logo = res.data.avater
   adminStore.college = res.data.college
   adminStore.phoneNumber = res.data.phoneNumber
-  console.log(res.data)
 }
 
-onLoad(handlegetInfo)
+onLoad(async () => {
+  await handlegetInfo()
+  Merchant.init()
+})
 </script>
 
 <template>

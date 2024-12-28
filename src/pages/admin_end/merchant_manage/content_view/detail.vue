@@ -153,7 +153,7 @@ const goDetail = () => {
 .menu {
   width: 100%;
   max-width: 590rpx;
-  max-height: 1400rpx;
+  max-height: 1350rpx;
   overflow-y: auto;
   padding: 20rpx;
   font-size: 30rpx;

@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { componentList } from './index'
-import { useMerchantPagesStore } from '@/stores'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { closeBluetooth } from '@/utils/BluetoothAdapter'
 import { ref, nextTick } from 'vue'
-import { useMerchantOrderStore } from '@/stores'
+import {
+  useMerchantOrderStore,
+  useAdminPagesStore,
+  useAdminStore,
+  useMerchantPagesStore,
+} from '@/stores'
+import { GetMerchantInfo } from '@/services/merchant/merchant_api'
 import WS from '@/utils/websocket'
 import BATTS from '@/utils/voice_utils' //语音类测试
 
@@ -16,6 +21,9 @@ import BATTS from '@/utils/voice_utils' //语音类测试
  * @lastModifiedTime  2024-09-21
  */
 
+const AdminPages = useAdminPagesStore()
+const Merchant = useMerchantStore()
+
 const MerchantPages = useMerchantPagesStore()
 // 本地订单数据
 const OrderStore = useMerchantOrderStore()
@@ -26,7 +34,18 @@ type socketInfo = {
   type: number
   TO_BE_CONFIRMED: number
 }
-onLoad(() => {
+
+const HandleGetInfo = async () => {
+  const res = await GetMerchantInfo()
+  Object.assign(Merchant, res.data)
+  Merchant.operationStatus = res.data.operationStatus
+  let [time_start, time_end] = res.data.businessHours.split('-')
+  Merchant.time_start = time_start
+  Merchant.time_end = time_end
+}
+onLoad(async () => {
+  await HandleGetInfo()
+  AdminPages.init()
   //检查websocket是否连接成功
   if (!MerchantPages.ws) {
     MerchantPages.ws = new WS({
