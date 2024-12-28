@@ -15,10 +15,17 @@ const props = defineProps({
     required: true,
   },
 })
+interface Dish {
+  name: string
+  price: string
+  newprice: string
+}
 
+const dishes = ref<Dish[]>()
 //获取商家修改菜品价格审核信息
 const handleGetInfo = async () => {
   const res = await getUpdateDishInfo(props.merchantId)
+  dishes.value = res.data
   console.log('获取菜品更改价格信息:', res.data)
 }
 //修改菜品价格审核
@@ -31,31 +38,6 @@ const handleAudit = async (dishId: number, result: boolean) => {
 onMounted(() => {
   handleGetInfo()
 })
-
-interface Dish {
-  id: number
-  name: string
-  price: string
-  newprice: string
-  agreed: boolean
-}
-
-const dishes = ref<Dish[]>([
-  {
-    id: 1,
-    name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
-    price: '20',
-    newprice: '12',
-    agreed: false,
-  },
-  {
-    id: 2,
-    name: 'XXXXXXXXXXXXX0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX000000000',
-    price: '20',
-    newprice: '12',
-    agreed: false,
-  },
-])
 </script>
 <template>
   <view class="dishes-container">
@@ -65,9 +47,9 @@ const dishes = ref<Dish[]>([
     </view>
 
     <view v-for="dish in dishes" :key="dish.id" class="dish-card">
-      <view class="id">{{ dish.id }}</view>
       <view class="dish-info">
-        <view class="info-item">{{ dish.name }} 定价:{{ dish.price }} -> {{ dish.newprice }}</view>
+        <view class="info-item">{{ dish.dishName }}</view>
+        <view class="info-item"> 定价:{{ dish.price }}¥ -> {{ dish.newPrice }}¥</view>
       </view>
       <view class="footer">
         <view class="btns">

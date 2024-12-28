@@ -127,6 +127,7 @@ const selectedPlaceName = computed(() => placeOptions.value[selectedPlaceIndex.v
     :description="currentMerchantDetail.description"
     :commissionType="currentMerchantDetail.commissionType"
     :commission="currentMerchantDetail.commission"
+    @goBack="goBack"
   >
   </detailComponent>
 </template>

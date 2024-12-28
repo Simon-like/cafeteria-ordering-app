@@ -66,7 +66,7 @@ const confirmDelete = async () => {
       <view class="logo"><image :src="dish.imageUrl" mode="aspectFill"></image></view>
       <view class="dish-info">
         <view class="info-item">{{ dish.dishName }}</view>
-        <view class="info-item">{{ dish.price }}</view>
+        <view class="info-item">¥{{ dish.price }}</view>
         <view class="info-item">菜品描述:{{ dish.dishDescription }}</view>
       </view>
 

@@ -64,7 +64,7 @@ const goBack = () => {
                 <view
                   v-if="merchant.updateReqCount > 0"
                   class="msg-item"
-                  @click="showEditDish(merchant.id)"
+                  @click="showEditDish(merchant.merchantId)"
                 >
                   更改已有菜品信息
                   <iconComponent :data="merchant.updateReqCount" :radius="15"></iconComponent>

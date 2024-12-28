@@ -106,15 +106,18 @@ const hidePhonePopup = () => {
           </view>
         </view>
         <!-- 审核按钮 -->
-        <button @click="handleAudit(true, selectedInfo.id)">同意</button>
-        <button @click="handleAudit(false, selectedInfo.id)">不同意</button>
+        <view class="btns">
+          <button @click="handleAudit(true, selectedInfo.id)">同意</button>
+          <button @click="handleAudit(false, selectedInfo.id)">不同意</button>
+        </view>
+
         <button @click="hidePopup()" class="close">关闭</button>
       </view>
     </uni-popup>
 
     <!-- 新增手机号弹窗 -->
     <uni-popup ref="phonePopup" type="center">
-      <view class="popup-content">
+      <view class="phone-popup-content">
         <view class="content-item">手机号: {{ selectedInfo.phoneNumber }}</view>
         <button @click="hidePhonePopup()" class="close">关闭</button>
       </view>
@@ -126,10 +129,9 @@ const hidePhonePopup = () => {
   display: flex;
   width: 590rpx;
   flex-direction: column;
+
   .card {
-    margin: 15rpx 15rpx 15rpx 15rpx;
-    display: flex;
-    flex-direction: column;
+    margin: 15rpx;
     padding: 15rpx;
     background-color: $bg-color-light;
     .item {
@@ -151,36 +153,69 @@ const hidePhonePopup = () => {
     display: flex;
     flex-direction: column;
     background-color: #fff;
+    border-radius: 20rpx; // 添加圆角
     margin-left: 120rpx;
     width: 500rpx;
-    height: 1000rpx;
-    padding-top: 10rpx;
+    padding: 20rpx; // 调整内边距
     .content-item {
-      margin-top: 40rpx;
+      margin-top: 20rpx;
       margin-left: 15rpx;
-      display: flex;
-      flex-direction: column;
       font-size: 24rpx;
     }
 
     .contactInfo {
+      width: 100%;
+      margin-right: 40rpx;
       display: flex;
-      margin-right: auto;
-      margin-bottom: 40rpx;
-      button {
-        position: absolute;
+      right: 340rpx;
+      margin-bottom: 20rpx;
+      justify-content: space-between;
+      .contact {
         font-size: 20rpx;
-        width: 200rpx;
-        height: 60rpx;
+        width: 120rpx;
+        height: 50rpx;
         padding: 0;
-        right: 0;
+      }
+    }
+
+    // 审核按钮放在同一行
+    .btns {
+      display: flex;
+      gap: 20rpx; // 两个按钮之间的间隙
+      margin-top: 20rpx;
+      button {
+        width: auto;
+        height: 60rpx;
+        font-size: 24rpx;
       }
     }
 
     .close {
-      margin-top: 50rpx;
+      margin-top: 20rpx;
       width: 200rpx;
-      height: 80rpx;
+      height: 70rpx;
+    }
+  }
+
+  // 手机号弹窗样式
+  .phone-popup-content {
+    position: absolute;
+    bottom: 150rpx; // 距离屏幕底部150rpx
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300rpx;
+    background-color: #fff;
+    border-radius: 20rpx 20rpx 0 0; // 顶部圆角，底部平直
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); // 底部阴影
+    padding: 20rpx;
+    .content-item {
+      font-size: 24rpx;
+      text-align: center;
+    }
+    .close {
+      margin-top: 20rpx;
+      width: 100rpx;
+      height: 60rpx;
     }
   }
 }

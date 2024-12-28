@@ -125,6 +125,12 @@
       }
     },
     {
+      "path": "pages/admin_end/merchant_manage/content_view/MerchantInfo",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/admin_end/merchant_manage/content_view/detail",
       "style": {
         "navigationStyle": "custom"

@@ -23,6 +23,7 @@ onMounted(handleGetInfo)
 // 处理商户审核操作
 const handleAudit = async (flag: boolean, id: number) => {
   const res = await merchantAudit(flag, id)
+  handleGetInfo()
 }
 
 // 切换显示状态

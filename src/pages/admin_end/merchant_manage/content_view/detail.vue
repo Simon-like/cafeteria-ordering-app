@@ -66,13 +66,19 @@ const goToMenu = (id: number) => {
   showMenu.value = true
   ifShowDetail.value = false
 }
-
+// 定义返回事件
+const emits = defineEmits(['goBack'])
 const goBack = () => {
-  ifShowDetail.value = false
+  emits('goBack') // 通过事件通知父组件返回
+}
+const goDetail = () => {
+  showMenu.value = false
+  ifShowDetail.value = true
 }
 </script>
 
 <template>
+  <button class="back-btn" @click="goDetail" v-if="showMenu"><i class="zuojiantou"></i></button>
   <MenuComponent :merchantId="props.id" v-if="showMenu" class="menu"></MenuComponent>
   <view class="container" v-if="!showMenu">
     <!-- 返回按钮 -->
@@ -273,7 +279,7 @@ const goBack = () => {
   margin-right: 250rpx;
 }
 .back-btn {
-  background-color: #fff;
+  background-color: transparent;
   font-size: 35rpx;
   position: absolute;
   left: 180rpx;

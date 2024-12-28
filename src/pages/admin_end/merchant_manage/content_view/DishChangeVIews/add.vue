@@ -16,9 +16,19 @@ const props = defineProps({
   },
 })
 
+interface Dish {
+  id: number
+  name: string
+  price: string
+  description: string
+  more?: string // 添加 optional 属性 more
+}
+
+const dishes = ref<Dish[]>()
 //获取商家新增菜品审核信息
 const handleGetInfo = async () => {
   const res = await getAddDishInfo(props.merchantId)
+  dishes.value = res.data
   console.log('新增菜品信息:', res.data)
 }
 //上传审核结果
@@ -31,31 +41,6 @@ const handleAudit = async (dishId: number, result: boolean) => {
 onMounted(() => {
   handleGetInfo()
 })
-interface Dish {
-  id: number
-  name: string
-  price: string
-  description: string
-  more?: string // 添加 optional 属性 more
-}
-
-const dishes = ref<Dish[]>([
-  {
-    id: 1,
-    description:
-      '描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述',
-    name: '斤斤计较急急急急急急急急急急急急急急急斤斤计较斤斤计较',
-    price: 'xxxx',
-    more: 'xxx',
-  },
-  {
-    id: 2,
-    name: 'XXXXXXXXX',
-    price: 'xxxx',
-    description: 'XXXXXXXXXXXXXXXXXXXXX',
-    more: 'xxx', // 确保每个 dish 都有 more 属性
-  },
-])
 </script>
 
 <template>
