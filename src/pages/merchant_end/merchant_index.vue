@@ -5,9 +5,9 @@ import { closeBluetooth } from '@/utils/BluetoothAdapter'
 import { ref, nextTick } from 'vue'
 import {
   useMerchantOrderStore,
-  useAdminPagesStore,
   useAdminStore,
   useMerchantPagesStore,
+  useMerchantStore,
 } from '@/stores'
 import { GetMerchantInfo } from '@/services/merchant/merchant_api'
 import WS from '@/utils/websocket'
@@ -21,9 +21,8 @@ import BATTS from '@/utils/voice_utils' //语音类测试
  * @lastModifiedTime  2024-09-21
  */
 
-const AdminPages = useAdminPagesStore()
 const Merchant = useMerchantStore()
-
+const adminStore = useAdminStore()
 const MerchantPages = useMerchantPagesStore()
 // 本地订单数据
 const OrderStore = useMerchantOrderStore()
@@ -45,7 +44,7 @@ const HandleGetInfo = async () => {
 }
 onLoad(async () => {
   await HandleGetInfo()
-  AdminPages.init()
+  adminStore.init()
   //检查websocket是否连接成功
   if (!MerchantPages.ws) {
     MerchantPages.ws = new WS({

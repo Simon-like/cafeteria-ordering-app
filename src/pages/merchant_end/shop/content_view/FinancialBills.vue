@@ -32,7 +32,7 @@ const onDate_selected = async (date: string) => {
 
 // 加载订单数据
 const getOrder_loading = async () => {
-  const res = await getCompletedOrRefund(date_now.value, 4)
+  const res = await getCompletedOrRefund(date_now.value)
   if (res.code === 1) {
     resOrder.value = res.data
   } else {
