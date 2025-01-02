@@ -55,7 +55,7 @@ const uploadImg = async () => {
     // 2. 获取图片的 URL
     const logoUrl = parsedData.data
     if (result) {
-      handlegetInfo()
+      handleChangeInfo()
       uni.showToast({
         title: `图片修改成功！`,
       })
@@ -114,8 +114,15 @@ const invitationCode = ref()
 
 const openInvitationCodePopup = async () => {
   const res = await getInviteCode(adminStore.realName)
-  invitationCode.value = res.data
-  invitationCodePopup.value.open('center')
+  if (res.code === 1) {
+    invitationCode.value = res.data
+    invitationCodePopup.value.open('center')
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: res.msg,
+    })
+  }
 }
 
 const closeInvitationCodePopup = () => {
