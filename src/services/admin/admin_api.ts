@@ -35,7 +35,7 @@ export const admin_register = (
   password: string,
   inviteCode: string,
   realName: string,
-  college: string,
+  collegeId: string,
   validationCode: string,
 ) => {
   return http({
@@ -46,7 +46,7 @@ export const admin_register = (
       password,
       realName,
       inviteCode,
-      college,
+      collegeId,
       validationCode,
     },
   })
