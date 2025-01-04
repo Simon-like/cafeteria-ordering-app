@@ -43,6 +43,9 @@ onMounted(handleGetInfo)
 </template>
 
 <style lang="scss" scoped>
+.scroll-Y {
+  height: 70vh;
+}
 .audit-item {
   margin: 15rpx;
   padding: 10rpx;

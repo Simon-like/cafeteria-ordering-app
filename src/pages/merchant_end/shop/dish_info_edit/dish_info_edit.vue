@@ -313,6 +313,7 @@ const onConfirm__Price = async () => {
     })
     dish_info_data.value.count = res.data.requestCount
     dish_info_data.value.newPrice = res.data.newPrice
+    editPricePopup.value.close()
   } else
     uni.showToast({
       icon: 'none',

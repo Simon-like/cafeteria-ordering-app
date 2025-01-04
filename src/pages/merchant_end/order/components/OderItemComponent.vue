@@ -136,10 +136,10 @@ const onConfirm = async () => {
       OrderStore.to_be_confirmed = res.data.TO_BE_CONFIRMED
       let index = OrderStore.localOrderData.findIndex((item) => item.orderID === orderData.orderID)
       OrderStore.localOrderData.splice(index, 1)
-      showToast('接单成功！', 'success')
     })
     if (MerchantPages.RWInfo.deviceId) {
       await BLEPrint() //打印
+      showToast('接单成功！', 'success')
     } else {
       uni.showToast({
         icon: 'none',

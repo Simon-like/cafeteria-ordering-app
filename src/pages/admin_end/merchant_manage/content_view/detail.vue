@@ -78,12 +78,20 @@ const goDetail = () => {
 </script>
 
 <template>
-  <button class="back-btn" @click="goDetail" v-if="showMenu"><i class="zuojiantou"></i></button>
-  <MenuComponent :merchantId="props.id" v-if="showMenu" class="menu"></MenuComponent>
+  <view class="back-btn isposition" @click="goDetail" v-if="showMenu">
+    <i class="iconfont icon-zuojiantou"></i>
+  </view>
+  <MenuComponent
+    :merchantId="props.id"
+    :phoneNumber="props.contactPhone"
+    v-if="showMenu"
+    class="menu"
+  ></MenuComponent>
   <view class="container" v-if="!showMenu">
     <!-- 返回按钮 -->
-    <view @click="goBack" v-if="ifShowDetail">
-      <button class="back-btn" @click="goBack"><i class="zuojiantou"></i>区域商家详细信息</button>
+    <view @click="goBack" v-if="ifShowDetail" class="title-box">
+      <view class="back-btn" @click="goBack"><i class="iconfont icon-zuojiantou"></i></view>
+      <view class="title">区域商家详细信息</view>
     </view>
     <view class="info">
       <!-- 店铺信息展示部分 -->
@@ -278,27 +286,30 @@ const goDetail = () => {
   text-decoration: underline;
   margin-right: 250rpx;
 }
-.back-btn {
-  background-color: transparent;
-  font-size: 35rpx;
-  position: absolute;
-  left: 180rpx;
-  top: 170rpx;
-  padding: 0;
-  transition: 0.2s ease;
+.title-box {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #b1caae;
-  .zuojiantou {
-    margin-top: 8rpx;
-    width: 20rpx;
-    height: 20rpx;
-    border-top: 6rpx solid #b1caae;
-    border-left: 6rpx solid #b1caae;
-    transform: rotate(-45deg);
-    margin-left: 10rpx;
-    margin-right: 100rpx;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 12rpx;
+}
+.back-btn {
+  padding: 8rpx;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 16rpx;
+  font-weight: 550;
+  transition: 0.2s ease;
+  text-align: center;
+
+  .icon-zuojiantou {
+    font-size: 40rpx;
+    color: #fff;
+  }
+  &.isposition {
+    position: absolute;
+    left: 180rpx;
+    top: 200rpx;
+    z-index: 99;
   }
   &:active {
     scale: 0.9;

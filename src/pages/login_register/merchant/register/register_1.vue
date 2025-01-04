@@ -17,6 +17,7 @@ const password_1 = ref<string>('')
 const password_2 = ref<string>('')
 const merchantStore = useMerchantStore()
 const is_phone_repeat = ref<boolean>(false)
+merchantStore.init()
 const gotoNext = async () => {
   if (!phoneNumber.value) {
     uni.showToast({
@@ -106,9 +107,9 @@ const gotoNext = async () => {
         <input placeholder="请输入密码" type="text" v-model="password_2" />
       </view>
     </view>
-    <view class="checkbox__container">
+    <!--    <view class="checkbox__container">
       <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label>
-    </view>
+    </view> -->
 
     <button class="next" @click="gotoNext">下一步</button>
   </view>

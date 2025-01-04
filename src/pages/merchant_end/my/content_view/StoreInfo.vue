@@ -242,9 +242,7 @@ const onAddressChange = (e: any) => {
     </view>
     <view class="content">
       <view class="content-items">店铺名称: {{ Merchant.name }}</view>
-      <view class="content-items"
-        >店铺地址: {{ Merchant.address }}{{ Merchant.detailAddress }}</view
-      >
+      <view class="content-items">店铺地址: {{ Merchant.address + Merchant.detailAddress }}</view>
       <view class="content-items">联系电话: {{ Merchant.contactPhone }}</view>
       <view class="content-items">营业时间:{{ Merchant.businessHours }}</view>
       <view class="content-items">所有人: {{ Merchant.realName }}</view>
@@ -476,26 +474,26 @@ const onAddressChange = (e: any) => {
     }
   }
 }
-.picker-container {
-  padding: 50rpx 40rpx;
-  width: 600rpx;
-  height: 750rpx;
-  background-color: #fff;
-  .submit-button {
-    margin: 0 auto;
-    margin-top: 46rpx;
-    width: 300rpx;
-    height: 60rpx;
-    line-height: 60rpx;
-    background-color: rgba(126, 126, 94, 0.7);
-    text-align: center;
-    transition: all 0.2s ease;
-    &:active {
-      opacity: 0.8;
-      transform: scale(0.95);
-    }
-  }
-}
+// .picker-container {
+//   padding: 50rpx 40rpx;
+//   width: 600rpx;
+//   height: 750rpx;
+//   background-color: #fff;
+//   .submit-button {
+//     margin: 0 auto;
+//     margin-top: 46rpx;
+//     width: 300rpx;
+//     height: 60rpx;
+//     line-height: 60rpx;
+//     background-color: rgba(126, 126, 94, 0.7);
+//     text-align: center;
+//     transition: all 0.2s ease;
+//     &:active {
+//       opacity: 0.8;
+//       transform: scale(0.95);
+//     }
+//   }
+// }
 .upload-button {
   margin: 50rpx auto;
   background-color: #fff;

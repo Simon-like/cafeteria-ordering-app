@@ -12,6 +12,7 @@ export const useAdminStore = defineStore(
     const realName = ref<string>('')
     const validationCode = ref<string>('')
     const college = ref<string>('')
+    const logo = ref<string>('')
 
     const init = () => {
       phoneNumber.value = ''
@@ -20,6 +21,7 @@ export const useAdminStore = defineStore(
       realName.value = ''
       validationCode.value = ''
       college.value = ''
+      logo.value = ''
     }
     // 记得 return
     return {
@@ -29,6 +31,7 @@ export const useAdminStore = defineStore(
       realName,
       validationCode,
       college,
+      logo,
       init,
     }
   },

@@ -14,32 +14,54 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
 })
+
+//拨打电话
+const onPhone = () => {
+  plus.device.dial(props.phoneNumber, true)
+}
 
 interface Dish {
   id: number
-  name: string
+  dishName: string
   price: string
-  description: string
-  more?: string // 添加 optional 属性 more
+  dishDescription: string
+  description: string // 添加 optional 属性 more
 }
 
 const dishes = ref<Dish[]>()
 //获取商家新增菜品审核信息
 const handleGetInfo = async () => {
   const res = await getAddDishInfo(props.merchantId)
-  dishes.value = res.data
-  console.log('新增菜品信息:', res.data)
+  if (res.code === 1) {
+    dishes.value = res.data
+    console.log('新增菜品信息:', res.data)
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '刷新菜品信息失败！',
+    })
+  }
 }
 //上传审核结果
 const handleAudit = async (dishId: number, result: boolean) => {
-  const dish = dishes.value.find((dish) => dish.id === id)
   const res = await auditAddDish(dishId, result)
-  console.log('新增菜品审核结果:', res.data)
+  if (res.code === 1) {
+    await handleGetInfo()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '操作失败！',
+    })
+  }
 }
 // 组件挂载时获取数据
-onMounted(() => {
-  handleGetInfo()
+onMounted(async () => {
+  await handleGetInfo()
 })
 </script>
 
@@ -47,19 +69,19 @@ onMounted(() => {
   <view class="dishes-container">
     <view class="header">
       <view class="title">新增</view>
-      <navigator class="nav" url="">联系商家</navigator>
+      <view class="nav" @click="onPhone">联系商家</view>
     </view>
 
     <view v-for="dish in dishes" :key="dish.id" class="dish-card">
       <view class="id">{{ dish.id }}</view>
       <view class="cover">
         <text>封面:</text>
-        <image src="" mode="aspectFill">logo</image>
+        <image :src="dish.logo" mode="aspectFill" class="logo"></image>
       </view>
       <view class="dish-info">
         <view class="info-item">
           <view class="title">菜品名称:</view>
-          <view class="value">{{ dish.name }}</view>
+          <view class="value">{{ dish.dishName }}</view>
         </view>
         <view class="info-item">
           <view class="title">菜品定价:</view>
@@ -67,17 +89,17 @@ onMounted(() => {
         </view>
         <view class="info-item">
           <view class="title">菜品描述:</view>
-          <view class="value">{{ dish.description }}</view>
+          <view class="value">{{ dish.dishDescription }}</view>
         </view>
         <view class="info-item">
           <view class="title">附言:</view>
-          <view class="value">{{ dish.more }}</view>
+          <view class="value">{{ dish.description }}</view>
         </view>
       </view>
       <view class="footer">
         <view class="btns">
-          <button @click="handleGetInfo(dish.id, true)" class="agree">同意</button>
-          <button @click="handleGetInfo(dish.id, false)" class="disagree">不同意</button>
+          <button @click="handleAudit(dish.id, true)" class="agree">同意</button>
+          <button @click="handleAudit(dish.id, false)" class="disagree">不同意</button>
         </view>
       </view>
     </view>
@@ -128,11 +150,12 @@ onMounted(() => {
       text {
         white-space: nowrap;
       }
-      .image {
-        width: 50rpx; // 根据需要调整图片宽度
-        height: 50rpx; // 根据需要调整图片高度
+      .logo {
+        width: 150rpx; // 根据需要调整图片宽度
+        height: 150rpx; // 根据需要调整图片高度
         object-fit: cover; // 确保图片填充容器而不变形
         border-radius: 4rpx; // 根据需要调整图片圆角
+        border: 1px solid #000;
       }
     }
 

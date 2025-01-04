@@ -225,6 +225,7 @@ const onAddDish = async () => {
     MerchantShopStore.imageUrl,
   )
   if (+res.code === 1) {
+    back()
     uni.showToast({
       icon: 'none',
       title: '成功发送菜品信息，请等待管理员审核',

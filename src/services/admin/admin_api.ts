@@ -130,6 +130,13 @@ export const ChangeAdminInfo = (collegeId: string, phoneNumber: string) => {
     },
   })
 }
+//管理端注销账号
+export const deleteAdminister = () => {
+  return http({
+    method: 'DELETE',
+    url: '/administer/deleteAdminister',
+  })
+}
 /**
  * 系统设置
  */

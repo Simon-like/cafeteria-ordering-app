@@ -12,7 +12,7 @@ const handleRegister = async () => {
       adminStore.password,
       adminStore.inviteCode,
       adminStore.realName,
-      adminStore.college,
+      adminStore.collegeId,
       adminStore.validationCode,
     ).then((response) => {
       console.log(response.data)

@@ -9,10 +9,14 @@ const handleRegister = async () => {
     merchantStore.phoneNumber,
     merchantStore.realName,
     merchantStore.name,
-    merchantStore.address,
+    merchantStore.addressId,
     merchantStore.password,
     merchantStore.collegeId,
     merchantStore.detailedAddress,
+    merchantStore.businessHours,
+    merchantStore.contactPhone,
+    merchantStore.discription,
+    merchantStore.logo,
   ).then((response) => {
     gotoLogin()
   })
@@ -36,13 +40,38 @@ const handleRegister = async () => {
       </view>
 
       <view class="content">
-        <text>手机号：{{ merchantStore.phoneNumber }}</text>
-        <text>所有人姓名：{{ merchantStore.realName }}</text>
-        <text>店铺名称：{{ merchantStore.name }}</text>
-        <text>店铺地址：{{ merchantStore.address }}{{ merchantStore.detailedAddressa }}</text>
+        <image :src="merchantStore.logo" mode="aspectFill" class="logo"></image>
+        <view class="line">
+          <view class="label">绑定手机号：</view>
+          <view class="value">{{ merchantStore.phoneNumber }}</view>
+        </view>
+        <view class="line">
+          <view class="label">对外联系电话：</view>
+          <view class="value">{{ merchantStore.contactPhone }}</view>
+        </view>
+        <view class="line">
+          <view class="label">所有人姓名：</view>
+          <view class="value">{{ merchantStore.realName }}</view>
+        </view>
+        <view class="line">
+          <view class="label">店铺名称：</view>
+          <view class="value">{{ merchantStore.name }}</view>
+        </view>
+        <view class="line">
+          <view class="label">所在学校：</view>
+          <view class="value">{{ merchantStore.collegeName }}</view>
+        </view>
+        <view class="line">
+          <view class="label">店铺地址：</view>
+          <view class="value">{{ merchantStore.address + merchantStore.detailedAddress }}</view>
+        </view>
+        <view class="line">
+          <view class="label">店铺简介：</view>
+          <view class="value">{{ merchantStore.discription }}</view>
+        </view>
+        <button @click="handleRegister">提交审核</button>
       </view>
     </view>
-    <button @click="handleRegister">提交审核</button>
   </view>
 </template>
 
@@ -94,19 +123,36 @@ const handleRegister = async () => {
 .content {
   position: absolute;
   top: 300rpx;
-  text {
-    display: block;
-    margin-bottom: 15rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  .line {
+    width: 80%;
+
+    display: flex;
+    .label {
+      flex-basis: 44%;
+      text-align: end;
+    }
+    .value {
+      flex-basis: 56%;
+      padding-left: 10rpx;
+    }
   }
-}
-button {
-  position: absolute;
-  top: 600rpx;
-  left: 70rpx;
-  width: 620rpx;
-  height: 90rpx;
-  border-radius: 5px;
-  border: $text-color-green solid 1rpx;
-  background-color: $bg-color-green;
+  button {
+    width: 620rpx;
+    height: 90rpx;
+    border-radius: 5px;
+    border: $text-color-green solid 1rpx;
+    background-color: $bg-color-green;
+  }
+  .logo {
+    width: 150rpx;
+    height: 150rpx;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
 }
 </style>

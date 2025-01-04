@@ -17,11 +17,16 @@ const password = ref('')
 const tokenStore = useDoubleTokenStore()
 const handleLogin_pp = async () => {
   const res = await admin_Login_pp(phoneNumber.value, password.value)
-  const accessToken = res.data.accessToken
-  const refreshToken = res.data.refreshToken
-  tokenStore.addToken(accessToken, refreshToken)
   if (+res.code === 1) {
+    const accessToken = res.data.accessToken
+    const refreshToken = res.data.refreshToken
+    tokenStore.addToken(accessToken, refreshToken)
     gotoAdminHome()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: res.msg,
+    })
   }
 }
 </script>
@@ -50,13 +55,13 @@ const handleLogin_pp = async () => {
         >
       </view>
       <i class="line"></i>
-      <view class="wxlogin">
+      <!-- <view class="wxlogin">
         <text>第三方登录方式</text>
         <view class="img">
           <image src="@/static/images/wxlogin.png"></image>
         </view>
         <text>微信</text>
-      </view>
+      </view> -->
     </view>
   </view>
 </template>

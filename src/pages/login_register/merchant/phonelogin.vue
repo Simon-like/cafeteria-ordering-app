@@ -18,6 +18,11 @@ const handleLogin_pv = async () => {
     const refreshToken = res.data.refreshToken
     tokenStore.addToken(accessToken, refreshToken)
     gotoMerchantHome()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: res.msg,
+    })
   }
 }
 </script>

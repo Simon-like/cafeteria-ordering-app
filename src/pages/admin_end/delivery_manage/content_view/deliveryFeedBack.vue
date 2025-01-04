@@ -110,6 +110,9 @@ const hidePhonePopup = () => {
   </view>
 </template>
 <style lang="scss" scoped>
+.scroll-Y {
+  height: 70vh;
+}
 .box {
   display: flex;
   width: 590rpx;

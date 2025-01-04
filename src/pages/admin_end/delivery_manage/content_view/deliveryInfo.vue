@@ -18,7 +18,7 @@ const changeShow = (index: number) => {
 
 <template>
   <view class="wrapper">
-    <scroll-view scroll-y="true" class="scroll-Y" style="max-height: 1350rpx">
+    <scroll-view scroll-y="true" class="scroll-Y">
       <view class="info-box" v-for="(item, index) in notice_list" :key="index">
         <view class="info">
           <view class="logo">
@@ -52,6 +52,9 @@ const changeShow = (index: number) => {
 </template>
 
 <style lang="scss" scoped>
+.scroll-Y {
+  height: 70vh;
+}
 .wrapper {
   width: 590rpx;
   max-height: 75vh;

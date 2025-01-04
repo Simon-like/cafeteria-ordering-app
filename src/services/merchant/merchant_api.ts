@@ -38,6 +38,10 @@ export const merchant_register = (
   password: string,
   collegeId: string,
   detailedAddress: string,
+  businessHours: string,
+  contactPhone: string,
+  discription: string,
+  logo: string,
 ) => {
   return http({
     method: 'POST',
@@ -50,6 +54,10 @@ export const merchant_register = (
       password,
       phoneNumber,
       realName,
+      businessHours,
+      contactPhone,
+      discription,
+      logo,
     },
   })
 }
@@ -112,10 +120,10 @@ export const GetUniversity = () => {
   })
 }
 
-export const GetRegion = (college: string) => {
+export const GetRegion = (id: string) => {
   return http<{ region: string; regionId: string }[]>({
     method: 'GET',
-    url: `/administer/getplace?college=${college}`,
+    url: `/common/getPlace/${id}`,
   })
 }
 

@@ -138,13 +138,14 @@ export default class WS {
     } else {
       uni.showModal({
         title: '温馨提示',
-        content: '服务器开小差啦~请返回订单列表重试',
+        content: '服务器开小差啦~请重试',
         showCancel: false,
         confirmText: '我知道了',
         success: () => {
           uni.navigateBack()
         },
       })
+      this.options.onError('出错了')
     }
   }
 

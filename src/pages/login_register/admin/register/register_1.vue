@@ -89,7 +89,7 @@ const onUniversityChange = (e) => {
   if (universities.value[index]) {
     const selectedUniversity = universities.value[index]
     // 存储选中的大学名称到 Pinia 仓库
-    adminStore.college = selectedUniversity.collegeName
+    adminStore.collegeId = selectedUniversity.collegeId
     college.value = selectedUniversity.collegeName // 更新显示的大学名称
   }
 }
@@ -145,9 +145,10 @@ const onUniversityChange = (e) => {
         <input placeholder="请输入密码" type="text" v-model="password_2" />
       </view>
     </view>
-    <view class="checkbox__container">
-      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label> </view
-    ><button class="next" @click="gotoNext()">下一步</button>
+    <!-- <view class="checkbox__container">
+      <label> <checkbox /><text>我已阅读并同意xxxxxxx</text> </label> 
+	  </view> -->
+    <button class="next" @click="gotoNext()">下一步</button>
   </view>
 </template>
 

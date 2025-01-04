@@ -10,6 +10,7 @@ export const useMerchantStore = defineStore(
     const realName = ref<string>('') //所有人名称
     const name = ref<string>('') //店铺名称
     const address = ref<string>('')
+    const addressId = ref<string>('') //区域Id
     const detailedAddress = ref<string>('')
     const password = ref<string>('')
     const collegeId = ref<string>('')
@@ -29,6 +30,18 @@ export const useMerchantStore = defineStore(
       phoneNumber.value = ''
       realName.value = ''
       id.value = ''
+      name.value = ''
+      address.value = ''
+      detailedAddress.value = ''
+      collegeId.value = ''
+      collegeName.value = ''
+      businessHours.value = ''
+      time_start.value = ''
+      time_end.value = ''
+      contactPhone.value = ''
+      logo.value = ''
+      discription.value = ''
+      addressId.value = ''
     }
 
     // 记得 return
@@ -50,6 +63,7 @@ export const useMerchantStore = defineStore(
       validationCode,
       time_start,
       time_end,
+      addressId,
       init,
     }
   },

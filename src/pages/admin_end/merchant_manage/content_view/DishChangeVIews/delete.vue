@@ -15,16 +15,34 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
 })
+
+//拨打电话
+const onPhone = () => {
+  plus.device.dial(props.phoneNumber, true)
+}
 // 菜品数据
 const dishes = ref<Dish[]>()
 const handelGetInfo = async (merchantId: number) => {
   const res = await getMerchantDishes(props.merchantId)
-  dishes.value = res.data
-  console.log(res.data)
+  if (res.code === 1) {
+    dishes.value = res.data
+    console.log(res.data)
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '刷新数据失败',
+    })
+  }
 }
 
-onMounted(handelGetInfo)
+onMounted(async () => {
+  await handelGetInfo()
+})
 
 // 控制 popup 显示状态
 const showPopup = ref(false)
@@ -57,43 +75,46 @@ const confirmDelete = async () => {
 </script>
 <template>
   <view class="dishes-container">
-    <view class="header">
-      <view class="title">商家菜单</view>
-      <navigator class="nav" url="">联系商家</navigator>
-    </view>
-
-    <view v-for="dish in dishes" :key="dish.id" class="dish-card">
-      <view class="logo"><image :src="dish.imageUrl" mode="aspectFill"></image></view>
-      <view class="dish-info">
-        <view class="info-item">{{ dish.dishName }}</view>
-        <view class="info-item">¥{{ dish.price }}</view>
-        <view class="info-item">菜品描述:{{ dish.dishDescription }}</view>
+    <scroll-view class="box" scroll-y>
+      <view class="header">
+        <view class="title">商家菜单</view>
+        <view class="nav" @click="onPhone">联系商家</view>
       </view>
 
-      <view class="aside">
-        <view class="deleteIcon" @click="showDeletePopup(dish.id)">
-          <image src="@/static/images/deleteIcon.png" mode="aspectFill"></image>
+      <view v-for="dish in dishes" :key="dish.id" class="dish-card">
+        <view class="logo"><image :src="dish.imageUrl" mode="aspectFill"></image></view>
+        <view class="dish-info">
+          <view class="info-item">{{ dish.dishName }}</view>
+          <view class="info-item">¥{{ dish.price }}</view>
+          <view class="info-item">菜品描述:{{ dish.dishDescription }}</view>
+        </view>
+
+        <view class="aside">
+          <view class="deleteIcon" @click="showDeletePopup(dish.id)">
+            <image src="@/static/images/deleteIcon.png" mode="aspectFill"></image>
+          </view>
         </view>
       </view>
-    </view>
-
-    <!-- 删除确认弹窗 -->
-    <view v-if="showPopup" class="popup">
-      <view class="popup-content">
-        <view class="popup-header">确认删除</view>
-        <view class="popup-body">您确定要删除这个菜品吗？</view>
-        <view class="popup-footer">
-          <button class="cancel-btn" @click="closePopup">取消</button>
-          <button class="confirm-btn" @click="confirmDelete">确认</button>
-        </view>
-      </view>
-    </view>
+      <!-- 删除确认弹窗 -->
+      <up-modal
+        :show="showPopup"
+        title="确认删除框"
+        content="您确定要删除这个菜品吗？"
+        @confirm="confirmDelete"
+        @cancel="closePopup"
+        confirmText="确认删除"
+        cancelText="取消"
+        confirmColor="#ff5000"
+        showCancelButton
+      ></up-modal>
+    </scroll-view>
   </view>
 </template>
 <style lang="scss" scoped>
 .dishes-container {
   display: flex;
   flex-direction: column;
+  height: 70vh;
 
   .header {
     display: flex;

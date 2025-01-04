@@ -13,32 +13,43 @@ const selectedMerchantId = ref<number | null>(null) // 当前选中的商户ID
 const merchants = ref<MerchantRequest[]>()
 const handleGetInfo = async () => {
   const res = await getAllRequestInfo()
-  merchants.value = res.data
-  console.log(res.data)
+  if (res.code === 1) {
+    merchants.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取信息失败！',
+    })
+  }
 }
-onLoad(handleGetInfo)
+onLoad(async () => await handleGetInfo())
+const phoneNumber_selected = ref<string>('')
 // 展示增添菜品页面
-const showAddDish = (merchantId: number) => {
+const showAddDish = (merchantId: number, phoneNumber: string) => {
+  phoneNumber_selected.value = phoneNumber
   selectedMerchantId.value = merchantId
   currentView.value = 'addDish' // 设置视图为新增菜品
 }
 
 // 展示编辑菜品页面
-const showEditDish = (merchantId: number) => {
+const showEditDish = (merchantId: number, phoneNumber: string) => {
+  phoneNumber_selected.value = phoneNumber
   selectedMerchantId.value = merchantId
   currentView.value = 'editDish' // 设置视图为编辑菜品
 }
 
 // 展示删除菜品页面
-const showDeleteDish = (merchantId: number) => {
+const showDeleteDish = (merchantId: number, phoneNumber: string) => {
+  phoneNumber_selected.value = phoneNumber
   selectedMerchantId.value = merchantId
   currentView.value = 'deleteDish' // 设置视图为删除菜品
 }
 
 // 返回主页面
-const goBack = () => {
+const goBack = async () => {
   currentView.value = 'main' // 返回主页面
   selectedMerchantId.value = null // 清空选中的商家ID
+  await handleGetInfo()
 }
 </script>
 
@@ -63,19 +74,22 @@ const goBack = () => {
                 <view
                   v-if="merchant.addReqCount > 0"
                   class="msg-item"
-                  @click="showAddDish(merchant.merchantId)"
+                  @click="showAddDish(merchant.merchantId, merchant.phoneNumber)"
                 >
                   新增菜品 <iconComponent :data="merchant.addReqCount" :radius="15"></iconComponent>
                 </view>
                 <view
                   v-if="merchant.updateReqCount > 0"
                   class="msg-item"
-                  @click="showEditDish(merchant.merchantId)"
+                  @click="showEditDish(merchant.merchantId, merchant.phoneNumber)"
                 >
                   更改已有菜品信息
                   <iconComponent :data="merchant.updateReqCount" :radius="15"></iconComponent>
                 </view>
-                <view class="msg-item" @click="showDeleteDish(merchant.merchantId)">
+                <view
+                  class="msg-item"
+                  @click="showDeleteDish(merchant.merchantId, merchant.phoneNumber)"
+                >
                   查看当前商家菜单
                 </view>
               </view>
@@ -86,19 +100,19 @@ const goBack = () => {
 
       <!-- 根据currentView的值显示不同的子页面 -->
       <view v-if="currentView === 'addDish'">
-        <DishAddComponent :merchantId="selectedMerchantId" />
+        <DishAddComponent :merchantId="selectedMerchantId" :phoneNumber="phoneNumber_selected" />
       </view>
 
       <view v-if="currentView === 'editDish'">
-        <DishEditComponent :merchantId="selectedMerchantId" />
+        <DishEditComponent :merchantId="selectedMerchantId" :phoneNumber="phoneNumber_selected" />
       </view>
 
       <view v-if="currentView === 'deleteDish'">
-        <DishDeleteComponent :merchantId="selectedMerchantId" />
+        <DishDeleteComponent :merchantId="selectedMerchantId" :phoneNumber="phoneNumber_selected" />
       </view>
 
       <view v-if="currentView !== 'main'">
-        <button class="back-btn" @click="goBack"><i class="zuojiantou"></i></button>
+        <view class="back-btn" @click="goBack"><i class="iconfont icon-zuojiantou"></i></view>
       </view>
     </view>
   </view>
@@ -136,24 +150,18 @@ const goBack = () => {
 
 .back-btn {
   position: absolute;
-  left: 160rpx;
-  top: 180rpx;
-  padding: 10rpx;
+  left: 180rpx;
+  top: 200rpx;
+  padding: 8rpx;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 16rpx;
   font-weight: 550;
   transition: 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  .zuojiantou {
-    margin-top: 20rpx;
-    width: 25rpx;
-    height: 25rpx;
-    border-top: 6rpx solid #b1caae;
-    border-left: 6rpx solid #b1caae;
-    transform: rotate(-45deg);
-    margin-right: 5rpx;
+  text-align: center;
+
+  .icon-zuojiantou {
+    font-size: 40rpx;
+    color: #fff;
   }
   &:active {
     scale: 0.9;

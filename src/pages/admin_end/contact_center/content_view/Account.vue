@@ -1,10 +1,16 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useAdminStore } from '@/stores/modules/admin_information'
-import { getInviteCode, ChangeAdminInfo } from '@/services/admin/admin_api'
+import {
+  getInviteCode,
+  ChangeAdminInfo,
+  getAdminInfo,
+  deleteAdminister,
+} from '@/services/admin/admin_api'
 import { GetUniversity } from '@/services/merchant/merchant_api'
 import { upload } from '@/utils/http'
 import type { University } from '@/types/merchant_return'
+import { gotoLoginAndRegister } from '@/composables/navigation/navigation'
 
 /**
  * @description 管理端联络中心页面账号管理模块
@@ -16,10 +22,34 @@ import type { University } from '@/types/merchant_return'
 
 const adminStore = useAdminStore()
 
+const getAdminInfo_loading = async () => {
+  const res = await getAdminInfo()
+  if (res.code === 1) {
+    Object.assign(adminStore, res.data)
+    console.log(adminStore, res.data)
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取信息失败！',
+    })
+  }
+}
+
 //异步修改管理员信息
 const handleChangeInfo = async (collegeId: string, phoneNumber: string) => {
   const res = await ChangeAdminInfo(collegeId, phoneNumber)
-  console.log(res.data)
+  if (res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: `修改成功！`,
+    })
+    await getAdminInfo_loading()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: `修改失败！`,
+    })
+  }
 }
 
 /**
@@ -54,12 +84,13 @@ const uploadImg = async () => {
     const parsedData = JSON.parse(result.data)
     // 2. 获取图片的 URL
     const logoUrl = parsedData.data
-    if (result) {
-      handleChangeInfo()
-      uni.showToast({
-        title: `图片修改成功！`,
-      })
+    if (logoUrl) {
+      await handleChangeInfo()
       logoPickerPopup.value.close()
+    } else {
+      uni.showToast({
+        title: '图片上传失败！',
+      })
     }
   }
 }
@@ -90,19 +121,10 @@ const rules = {
 
 // 确认按钮的点击事件，表单校验
 const confirm = () => {
-  valiForm.value?.validate().then((res) => {
-    console.log(res)
-    if (res) {
-      // 更新管理员信息
-      console.log('进行上传')
-      const response = handleChangeInfo(selectedUniversityId.value, valiFormData.phoneNumber)
-      if (response) {
-        uni.showToast({
-          title: `修改成功！`,
-        })
-        popup.value.close()
-      }
-    }
+  valiForm.value?.validate().then(async (res) => {
+    // 更新管理员信息
+    await handleChangeInfo(selectedUniversityId.value, valiFormData.phoneNumber)
+    close()
   })
 }
 
@@ -163,14 +185,30 @@ const universityIds = computed(() => {
 })
 
 const gotoLogin = () => {
-  uni.reLaunch({
-    url: '/pages/login_register/login_register',
+  gotoLoginAndRegister()
+}
+
+const deregister_show = ref<boolean>(false)
+const onCancel = () => {
+  deregister_show.value = false
+}
+//确认注销账号
+const onConfirm = async () => {
+  await deleteAdminister()
+  gotoLoginAndRegister()
+  uni.showToast({
+    icon: 'none',
+    title: '感谢您的使用，如果误操作请您重新注册账号！',
   })
+}
+//注销账号
+const deregister = () => {
+  deregister_show.value = true
 }
 
 // 在页面加载时调用
-onMounted(() => {
-  fetchUniversities()
+onMounted(async () => {
+  await fetchUniversities()
 })
 </script>
 
@@ -195,6 +233,22 @@ onMounted(() => {
     <view class="outlogin">
       <button @click="gotoLogin()">退出登录</button>
     </view>
+
+    <view class="deregister">
+      <button @click="deregister()">注销账号</button>
+    </view>
+
+    <!-- 确认注销按钮 -->
+    <up-modal
+      :show="deregister_show"
+      :title="'提示弹框'"
+      @cancel="onCancel"
+      @confirm="onConfirm"
+      :content="'您确定要注销该账号吗？'"
+      showCancelButton
+      :confirmText="'确认注销'"
+      :confirmColor="'#ff5000'"
+    ></up-modal>
 
     <!-- 上传Logo的弹框 -->
     <uni-popup ref="logoPickerPopup" type="bottom" border-radius="10px 10px 0 0">
@@ -248,12 +302,12 @@ onMounted(() => {
                   </template>
                 </uni-forms-item>
 
-                <uni-forms-item required name="phoneNumber">
+                <!--                <uni-forms-item required name="phoneNumber">
                   <template #label>
                     <text style="margin-right: 40rpx">联系电话</text>
                   </template>
                   <uni-easyinput v-model="valiFormData.phoneNumber" placeholder="请输入联系电话" />
-                </uni-forms-item>
+                </uni-forms-item> -->
               </uni-forms>
               <view class="submit-button" @click="confirm"><button>确认修改</button></view>
             </view>
@@ -289,6 +343,7 @@ onMounted(() => {
   font-size: 26rpx;
   gap: 44rpx;
   overflow: hidden;
+  position: relative;
 
   .platform-logo {
     margin: 20rpx auto;
@@ -316,7 +371,8 @@ onMounted(() => {
       font-size: 20rpx;
     }
   }
-  .outlogin {
+  .outlogin,
+  .deregister {
     margin: 0 auto;
     button {
       font-size: 28rpx;
@@ -330,6 +386,18 @@ onMounted(() => {
         opacity: 0.8;
         transform: scale(0.95);
       }
+    }
+  }
+  .deregister {
+    position: absolute;
+    bottom: 150rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    button {
+      background-color: $bg-color-orange;
+      color: #fff;
+      font-weight: 550;
+      border: 1px solid #000;
     }
   }
 }

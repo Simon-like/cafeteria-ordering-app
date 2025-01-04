@@ -14,7 +14,16 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
 })
+
+//拨打电话
+const onPhone = () => {
+  plus.device.dial(props.phoneNumber, true)
+}
 interface Dish {
   name: string
   price: string
@@ -25,25 +34,42 @@ const dishes = ref<Dish[]>()
 //获取商家修改菜品价格审核信息
 const handleGetInfo = async () => {
   const res = await getUpdateDishInfo(props.merchantId)
-  dishes.value = res.data
-  console.log('获取菜品更改价格信息:', res.data)
+  if (res.code === 1) {
+    dishes.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '获取失败！',
+    })
+  }
 }
 //修改菜品价格审核
 const handleAudit = async (dishId: number, result: boolean) => {
   const res = await auditUpdateDish(dishId, result)
-  console.log('上传菜品价格审核结果:', res.data)
+  if (res.code === 1) {
+    uni.showToast({
+      icon: 'none',
+      title: '操作成功！',
+    })
+    await handleGetInfo()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '操作失败！',
+    })
+  }
 }
 
 // 组件挂载时获取数据
-onMounted(() => {
-  handleGetInfo()
+onMounted(async () => {
+  await handleGetInfo()
 })
 </script>
 <template>
   <view class="dishes-container">
     <view class="header">
       <view class="title">更改</view>
-      <navigator class="nav" url="">联系商家</navigator>
+      <view class="nav" @click="onPhone">联系商家</view>
     </view>
 
     <view v-for="dish in dishes" :key="dish.id" class="dish-card">

@@ -15,6 +15,11 @@ const handleLogin_pv = async () => {
     const refreshToken = res.data.refreshToken
     tokenStore.addToken(accessToken, refreshToken)
     gotoAdminHome()
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: res.msg,
+    })
   }
 }
 </script>
