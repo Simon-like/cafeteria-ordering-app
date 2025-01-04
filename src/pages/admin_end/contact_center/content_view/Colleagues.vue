@@ -59,8 +59,10 @@ onLoad(async () => {
               <view class="name" style="margin-right: 10rpx; font-size: 28rpx; font-weight: 550">{{
                 item.realName
               }}</view>
-              <view class="inviter" v-if="item.invitInfo">
-                {{ item.invitInfo.inviteTime }}由{{ item.invitInfo.invitUserName }}邀请</view
+              <view class="inviter" v-if="!!item.invite">
+                {{
+                  !!item.invite.inviteTime ? item.invite.inviteTime.split(' ')[0] : '某个时间'
+                }}由{{ item.invite.inviteUser || '佚名' }}邀请</view
               >
               <view class="inviter" v-else>开服管理员</view>
             </view>
