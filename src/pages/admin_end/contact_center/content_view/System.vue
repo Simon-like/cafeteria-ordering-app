@@ -100,10 +100,12 @@ const Initaddress = () => {
   addressActiveList.value.fill(false)
 }
 
-//随机生成编号事件
+//随机生成编号事件(更换为手动输入)
+/*
 const onRandomly = () => {
   editaddress.addressNumber = generateUniqueId(resaddress.value.map((item) => item.addressNumber))
 }
+ */
 
 //修改或新增送餐地址
 const onComfirnaddress = async () => {
@@ -476,8 +478,8 @@ onLoad(async () => {
               />
             </view>
             <view class="line">
-              <view class="title">编号：{{ editaddress.addressNumber }}</view>
-              <view class="Randomly-btn btn" @click="onRandomly">点击随机生成</view>
+              <view class="title">编号：</view>
+              <uni-easyinput v-model="editaddress.addressNumber" placeholder="请输入编号" />
             </view>
             <view class="line btn-line">
               <view class="btn popup-confirm-btn" @click="onComfirnaddress__debounce"
