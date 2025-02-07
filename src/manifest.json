@@ -69,30 +69,30 @@
             },
             "icons" : {
                 "android" : {
-                    "hdpi" : "C:/Users/86166/Desktop/kssdt.png",
-                    "xhdpi" : "C:/Users/86166/Desktop/kssdt.png",
-                    "xxhdpi" : "C:/Users/86166/Desktop/kssdt.png",
-                    "xxxhdpi" : "C:/Users/86166/Desktop/kssdt.png"
+                    "hdpi" : "src/static/images/kssdt.png",
+                    "xhdpi" : "src/static/images/kssdt.png",
+                    "xxhdpi" : "src/static/images/kssdt.png",
+                    "xxxhdpi" : "src/static/images/kssdt.png"
                 },
                 "ios" : {
                     "appstore" : "",
                     "iphone" : {
-                        "app@2x" : "C:/Users/86166/Desktop/kssdt.png",
-                        "app@3x" : "C:/Users/86166/Desktop/kssdt.png",
-                        "spotlight@2x" : "C:/Users/86166/Desktop/kssdt.png",
-                        "spotlight@3x" : "C:/Users/86166/Desktop/kssdt.png"
+                        "app@2x" : "src/static/images/kssdt.png",
+                        "app@3x" : "src/static/images/kssdt.png",
+                        "spotlight@2x" : "src/static/images/kssdt.png",
+                        "spotlight@3x" : "src/static/images/kssdt.png"
                     },
                     "ipad" : {
-                        "app" : "C:/Users/86166/Desktop/kssdt.png",
-                        "app@2x" : "C:/Users/86166/Desktop/kssdt.png"
+                        "app" : "src/static/images/kssdt.png",
+                        "app@2x" : "src/static/images/kssdt.png"
                     }
                 }
             },
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "C:/Users/86166/Desktop/Group 297.png",
-                    "xhdpi" : "C:/Users/86166/Desktop/Group 297.png"
+                    "hdpi" : "src/static/images/logoloading.png",
+                    "xhdpi" : "src/static/images/logoloading.png"
                 }
             }
         },

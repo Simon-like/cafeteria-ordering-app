@@ -24,27 +24,27 @@ import {
 /**
  * @description 送餐地址设置
  */
-//编号随机生成函数
-function generateUniqueId(existingIds: string[]) {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  const digits = '0123456789'
+// //编号随机生成函数
+// function generateUniqueId(existingIds: string[]) {
+//   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+//   const digits = '0123456789'
 
-  // 生成一个随机的字母和数字的组合
-  function generateRandomId() {
-    const randomLetter = letters[Math.floor(Math.random() * letters.length)]
-    const randomDigit = digits[Math.floor(Math.random() * digits.length)]
-    return randomLetter + randomDigit
-  }
+//   // 生成一个随机的字母和数字的组合
+//   function generateRandomId() {
+//     const randomLetter = letters[Math.floor(Math.random() * letters.length)]
+//     const randomDigit = digits[Math.floor(Math.random() * digits.length)]
+//     return randomLetter + randomDigit
+//   }
 
-  // 生成的编号
-  let newId
+//   // 生成的编号
+//   let newId
 
-  do {
-    newId = generateRandomId()
-  } while (existingIds.includes(newId)) // 如果生成的编号已存在，则重新生成
+//   do {
+//     newId = generateRandomId()
+//   } while (existingIds.includes(newId)) // 如果生成的编号已存在，则重新生成
 
-  return newId
-}
+//   return newId
+// }
 
 //  送餐地址信息列表
 const resaddress = ref<AddressItem[]>([])
@@ -100,9 +100,14 @@ const Initaddress = () => {
   addressActiveList.value.fill(false)
 }
 
-//随机生成编号事件
-const onRandomly = () => {
-  editaddress.addressNumber = generateUniqueId(resaddress.value.map((item) => item.addressNumber))
+// //随机生成编号事件
+// const onRandomly = () => {
+//   editaddress.addressNumber = generateUniqueId(resaddress.value.map((item) => item.addressNumber))
+// }
+
+// 判断编号是否重复
+const isRepetition = (newId: string) => {
+  return resaddress.value.map((item) => item.addressNumber).includes(newId)
 }
 
 //修改或新增送餐地址
@@ -120,6 +125,13 @@ const onComfirnaddress = async () => {
     uni.showToast({
       icon: 'none',
       title: '配送费用太低了！',
+    })
+    return
+  }
+  if (isRepetition(editaddress.addressNumber)) {
+    uni.showToast({
+      icon: 'none',
+      title: '外卖地址编号不可以重复！',
     })
     return
   }
@@ -477,7 +489,11 @@ onLoad(async () => {
             </view>
             <view class="line">
               <view class="title">编号：{{ editaddress.addressNumber }}</view>
-              <view class="Randomly-btn btn" @click="onRandomly">点击随机生成</view>
+              <uni-easyinput
+                v-model="editaddress.addressNumber"
+                placeholder="请输入编号"
+                type="text"
+              />
             </view>
             <view class="line btn-line">
               <view class="btn popup-confirm-btn" @click="onComfirnaddress__debounce"
