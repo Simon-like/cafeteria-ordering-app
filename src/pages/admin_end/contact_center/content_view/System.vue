@@ -410,31 +410,32 @@ onLoad(async () => {
 <template>
   <view class="system">
     <!-- 送餐地址设置 -->
-    <view class="section address-section">
-      <view class="section-title">送餐固定地址设置：</view>
-      <view class="section-content">
-        <view class="line" v-show="resaddress.length === 0">没有内容呢</view>
-        <view class="line" v-for="(item, index) in resaddress" :key="item.id">
-          <view class="address">地址{{ index + 1 }}:{{ item.address }}</view>
-          <view class="delivery-price">配送费：{{ item.deliveryPrice }}</view>
-          <view class="address-number">编号：{{ item.addressNumber }}</view>
+    <scroll-view scroll-y="true" class="scroll-wrapper">
+      <view class="section address-section">
+        <view class="section-title">送餐固定地址设置：</view>
+        <view class="section-content">
+          <view class="line" v-show="resaddress.length === 0">没有内容呢</view>
+          <view class="line" v-for="(item, index) in resaddress" :key="item.id">
+            <view class="address">地址{{ index + 1 }}:{{ item.address }}</view>
+            <view class="delivery-price">配送费：{{ item.deliveryPrice }}</view>
+            <view class="address-number">编号：{{ item.addressNumber }}</view>
+          </view>
         </view>
+        <view class="btn align-end" @click="onEditaddress">修改信息</view>
       </view>
-      <view class="btn align-end" @click="onEditaddress">修改信息</view>
-    </view>
 
-    <!-- 商家区域设置 -->
-    <view class="section region-section">
-      <view class="section-title">商家区域设置：</view>
-      <view class="section-content">
-        <view class="line" v-show="resRegion.length === 0">没有内容呢</view>
-        <view class="line" v-for="(item, index) in resRegion" :key="item.regionId">
-          <view class="region">区域{{ index + 1 }}：{{ item.region }}</view>
+      <!-- 商家区域设置 -->
+      <view class="section region-section">
+        <view class="section-title">商家区域设置：</view>
+        <view class="section-content">
+          <view class="line" v-show="resRegion.length === 0">没有内容呢</view>
+          <view class="line" v-for="(item, index) in resRegion" :key="item.regionId">
+            <view class="region">区域{{ index + 1 }}：{{ item.region }}</view>
+          </view>
         </view>
+        <view class="btn align-end" @click="onEditRegion">修改信息</view>
       </view>
-      <view class="btn align-end" @click="onEditRegion">修改信息</view>
-    </view>
-
+    </scroll-view>
     <!-- 送餐地址信息编辑 -->
     <uni-popup ref="addressPopup" type="dialog">
       <view class="popup-content">
@@ -598,6 +599,10 @@ onLoad(async () => {
   height: 100%;
   font-size: 30rpx;
   padding: 30rpx 18rpx;
+  .scroll-wrapper {
+    width: 100%;
+    height: 75vh;
+  }
   .line {
     width: 100%;
     display: flex;
