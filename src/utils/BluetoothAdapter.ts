@@ -178,7 +178,7 @@ function getBluetoothServices(deviceId: string) {
           deviceId, //'目标设备ID'
           success: function (res) {
             console.log('获取蓝牙设备服务成功', res)
-            if (!!res) {
+            if (res.services.length !== 0) {
               clearInterval(timer)
               timer = null
               resolve(res)
