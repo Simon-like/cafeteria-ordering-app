@@ -17,8 +17,8 @@ const MerchantShopStore = useMerchantShopStore()
 
 const back = () => {
   MerchantShopStore.initializeDishInfo()
-  uni.reLaunch({
-    url: '/pages/merchant_end/merchant_index',
+  uni.navigateBack({
+    delta: 1,
   })
 }
 

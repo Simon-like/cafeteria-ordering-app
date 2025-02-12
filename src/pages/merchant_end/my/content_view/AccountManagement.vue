@@ -127,6 +127,13 @@ const onCloseBLE = () => {
   closeBluetooth(MerchantPages.RWInfo.deviceId)
   MerchantPages.initRWInfo()
 }
+// 安卓后台保活
+const linAlive = uni.requireNativePlugin('Lin-Alive')
+const openBatteryOptimizationSettings = () => {
+  linAlive.openBatteryOptimizationSettings((res) => {
+    console.log('打开电池优化应用设置页面: ' + JSON.stringify(res))
+  })
+}
 </script>
 
 <template>
@@ -139,6 +146,10 @@ const onCloseBLE = () => {
         {{ MerchantPages.RWInfo.name + '（点击断开）' }}
       </view>
       <view class="box off" @click="onConnectionBLE" v-else> 未连接！(点击连接) </view>
+    </view>
+    <view class="bluetooth-wrapper">
+      <view>开启后台高耗电（便于接单提示）：</view>
+      <view class="box" @click="openBatteryOptimizationSettings">设置</view>
     </view>
     <view class="outlogin" @click="gotoLoginAndRegister"><button>退出登录</button></view>
 

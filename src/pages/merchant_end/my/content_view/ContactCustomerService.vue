@@ -1,7 +1,23 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { contactService } from '@/services/merchant/merchant_api'
-const content = ref<string>('')
+import { getCustomerServicePhone } from '@/services/admin/admin_api'
+import { onLoad } from '@dcloudio/uni-app'
+
+const content = ref<string>('') //投诉内容
+const CSPhone = ref<string>('') //客服电话
+//获取客服电话
+const getCSPhone = async () => {
+  const res = await getCustomerServicePhone()
+  if (res.code === 1) {
+    CSPhone.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'error',
+      title: '电话获取失败！',
+    })
+  }
+}
 
 const onSubmit = async () => {
   const res = await contactService(content.value)
@@ -17,6 +33,11 @@ const onSubmit = async () => {
     })
   }
 }
+
+// 数据加载
+onLoad(async () => {
+  await getCSPhone()
+})
 </script>
 
 <template>
@@ -37,8 +58,12 @@ const onSubmit = async () => {
       <view class="line">
         如您的问题没有解决或客服没有在三个工作日内回复您，您可以选择以下方式联系：
       </view>
-      <view class="line"> 客服电话：000-00000000 </view>
-      <view class="line"> 客服微信：xxxxxxxxxxxxxx </view>
+      <view class="line">
+        客服电话：<text style="user-select: text; color: #000">{{ CSPhone }}</text>
+      </view>
+      <view class="line">
+        客服QQ：<text style="user-select: text; color: #000">XXXXXXXXX</text>
+      </view>
     </view>
   </view>
 </template>

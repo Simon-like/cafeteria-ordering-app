@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { componentList } from './index'
-import { onLoad, onUnload } from '@dcloudio/uni-app'
+import { onLoad, onUnload, onHide, onShow } from '@dcloudio/uni-app'
 import { closeBluetooth } from '@/utils/BluetoothAdapter'
 import { ref, nextTick, watch } from 'vue'
 import {
@@ -44,6 +44,7 @@ const HandleGetInfo = async () => {
 }
 
 const initWS = () => {
+  console.log('你倒是连啊')
   MerchantPages.ws = new WS({
     // 连接websocket所需参数
     data: { userId: '' },
@@ -53,7 +54,7 @@ const initWS = () => {
     },
     onError: () => {
       //意外断开
-      MerchantPages.ws = null
+      console.log('不对吧', MerchantPages.ws)
     },
     // 监听接收到服务器消息
     onMessage: (data: string) => {
@@ -76,19 +77,23 @@ const initWS = () => {
     },
   })
 }
+
 onLoad(async () => {
   await HandleGetInfo()
   adminStore.init()
   //检查websocket是否连接成功
-  if (!MerchantPages.ws) {
+  console.log(MerchantPages.ws)
+  if (!MerchantPages.ws || MerchantPages.ws.status === 'notConnected') {
+    MerchantPages.ws = null
     initWS()
   }
 })
 
 // 页面销毁，断开websocket
 onUnload(() => {
+  console.log('页面关了')
   // 主动关闭websocket
-  if (MerchantPages.ws) MerchantPages.ws.close()
+  if (!!MerchantPages.ws && MerchantPages.ws.status === 'connected') MerchantPages.ws.close()
   //断开蓝牙
   closeBluetooth(MerchantPages.RWInfo.deviceId)
   MerchantPages.initRWInfo()

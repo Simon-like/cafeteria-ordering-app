@@ -12,6 +12,8 @@ import {
   updatePlace,
   addPlace,
   deletePlace,
+  getCustomerServicePhone,
+  updateCustomerServicePhone,
 } from '@/services/admin/admin_api'
 /**
  * @description 管理端联络中心页面系统设置模块
@@ -400,17 +402,59 @@ const onCloseBtn = () => {
   regionPopup.value.close()
 }
 
+/**
+ * 客服电话修改
+ */
+const CSPhone = ref<string>('')
+//获取客服电话
+const getCSPhone = async () => {
+  const res = await getCustomerServicePhone()
+  if (res.code === 1) {
+    CSPhone.value = res.data
+  } else {
+    uni.showToast({
+      icon: 'error',
+      title: '电话获取失败！',
+    })
+  }
+}
+//修改客服电话
+const onUpdateCSPhone = async () => {
+  if (CSPhone.value.length !== 11) {
+    uni.showToast({
+      icon: 'error',
+      title: '电话格式错误！',
+    })
+    return
+  }
+  const res = await updateCustomerServicePhone(CSPhone.value)
+  if (res.code === 1) {
+    await getCSPhone()
+    uni.showToast({
+      icon: 'success',
+      title: '电话修改成功！',
+    })
+  } else {
+    uni.showToast({
+      icon: 'error',
+      title: '电话修改失败！',
+    })
+  }
+}
+
 // 数据加载
 onLoad(async () => {
   await getAddress_loading()
   await getAllRegion_loading()
+  await getCSPhone()
 })
 </script>
 
 <template>
   <view class="system">
-    <!-- 送餐地址设置 -->
+    <!-- 系统参数设置区域 -->
     <scroll-view scroll-y="true" class="scroll-wrapper">
+      <!-- 送餐地址设置 -->
       <view class="section address-section">
         <view class="section-title">送餐固定地址设置：</view>
         <view class="section-content">
@@ -434,6 +478,17 @@ onLoad(async () => {
           </view>
         </view>
         <view class="btn align-end" @click="onEditRegion">修改信息</view>
+      </view>
+
+      <!-- 系统客服电话设置 -->
+      <view class="section region-section">
+        <view class="section-title">系统客服电话：</view>
+        <view class="section-content">
+          <view class="line">
+            <uni-easyinput v-model="CSPhone" placeholder="请输入联系电话" type="number" />
+          </view>
+          <view class="btn align-end" @click="onUpdateCSPhone">修改电话</view>
+        </view>
       </view>
     </scroll-view>
     <!-- 送餐地址信息编辑 -->

@@ -290,3 +290,25 @@ export const getFeedbackInfo = (
     },
   })
 }
+
+/**
+ * 获取客服电话
+ */
+export const getCustomerServicePhone = () => {
+  return http({
+    method: 'GET',
+    url: `/common/GetCustomerServicePhone`,
+  })
+}
+/**
+ * 修改客服电话
+ */
+export const updateCustomerServicePhone = (customerServicePhone: string) => {
+  return http({
+    method: 'POST',
+    url: `/administer/statistics/UpdateCustomerServicePhone`,
+    data: {
+      customerServicePhone,
+    },
+  })
+}

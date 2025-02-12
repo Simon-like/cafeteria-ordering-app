@@ -33,6 +33,7 @@ export default class WS {
 
     // 关闭WS
     this.close = () => {
+      this.status = 'notConnected'
       // 正常关闭状态
       this.normalCloseFlag = true
       // 关闭websocket
@@ -82,14 +83,24 @@ export default class WS {
     })
 
     // 监听websocket 错误
-    this.socketTask.onError(() => {
+    this.socketTask.onError((errMsg) => {
       // 关闭并重连
+      console.log('这对吗=========')
+      this.status = 'notConnected'
+      this.normalCloseFlag = false //非正常关闭
       this.socketTask.close()
-      console.log('websocket发生错误，正在进行关闭重连，请检查！')
+      // 关闭心跳定时器
+      clearInterval(this.heartTimer)
+      // 关闭重连定时器
+      clearTimeout(this.reconnectTimer)
+      console.log('websocket发生错误，正在进行关闭重连，请检查！', errMsg)
+      this.onDisconnected(errMsg)
+      this.options.onError(errMsg)
     })
 
     // 监听 WebSocket 连接关闭事件
     this.socketTask.onClose((res) => {
+      console.log('发生了关闭', this.normalCloseFlag)
       // 连接错误，发起重连接
       if (!this.normalCloseFlag) {
         this.onDisconnected(res)

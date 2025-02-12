@@ -54,7 +54,14 @@
                     "<uses-feature android:name=\"android.permission.BLUETOOTH_SCAN\"/>",
                     "<uses-feature android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-feature android:name=\"android.permission.BLUETOOTH_ADMIN\"/>",
-                    "<uses-feature android:name=\"android.permission.BLUETOOTH\"/>"
+                    "<uses-feature android:name=\"android.permission.BLUETOOTH\"/>",
+                    "<uses-permission android:name=\"android.permission.FOREGROUND_SERVICE\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
+                    "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>",
+                    "<uses-permission android:name=\"android.permission.REORDER_TASKS\"/>",
+                    "<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\"/>",
+                    "<uses-permission android:name=\"android.permission.SYSTEM_OVERLAY_WINDOW\"/>",
+                    "<uses-permission android:name=\"android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS\"/>"
                 ]
             },
             /* ios打包配置 */
@@ -110,6 +117,20 @@
                     "pid" : "17277",
                     "parameters" : {}
                 }
+            },
+            "Lin-Alive" : {
+                "__plugin_info__" : {
+                    "name" : "APP后台运行保活、息屏保活、锁屏唤醒、保障定位、推送、WebSocket",
+                    "description" : "Android保活原生插件，广泛兼容机型，提供多技术策略保活，支持后台隐藏、锁屏唤醒、息屏保活，保障定位、推送、WebSocket等稳定运行。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=17631",
+                    "android_package_name" : "uni.UNID060301",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "17631",
+                    "parameters" : {}
+                }
             }
         }
     },
@@ -142,4 +163,7 @@
         }
     },
     "locale" : "zh-Hans"
-}
+} /* 小程序特有相关 */
+
+/* ios打包配置 */
+
