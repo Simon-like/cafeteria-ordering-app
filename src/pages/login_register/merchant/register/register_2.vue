@@ -4,7 +4,9 @@ import { useMerchantStore } from '@/stores'
 import { GetUniversity, GetRegion } from '@/services/merchant/merchant_api'
 import { upload } from '@/utils/http'
 import { onLoad } from '@dcloudio/uni-app'
+
 import type { University } from '@/types/merchant_return'
+
 const realName = ref<string>('')
 const name = ref<string>('')
 const address = ref<string>('')
@@ -29,9 +31,6 @@ const gotoNext = () => {
       title: `请填写完全部数据！`,
     })
   }
-  uni.navigateTo({
-    url: '/pages/login_register/merchant/register/register_3',
-  })
 }
 
 // 改为数组类型以存储大学列表
@@ -72,10 +71,12 @@ const onUniversityChange = (e) => {
     console.log(merchantStore.collegeId, merchantStore.collegeName)
   }
 }
+
 const place_show = ref<boolean>(false)
 const place_PickerRef = ref(null)
 const place_columns = reactive([[]])
-
+const resRegion = ref<{ regionId: number; region: string }[]>([])
+const selectedRegion = ref('')
 // 获取区域信息
 const fetchRegion = async () => {
   if (merchantStore.collegeId) {
