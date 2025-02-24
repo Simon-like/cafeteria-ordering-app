@@ -20,6 +20,7 @@ export const useMerchantStore = defineStore(
     const businessHours = ref<string>('')
     const time_start = ref<string>('')
     const time_end = ref<string>('')
+    const dayFlag = ref<number>(0)
     const contactPhone = ref<string>('')
     const discription = ref<string>('')
     const operationStatus = ref<number>(1)
@@ -63,6 +64,7 @@ export const useMerchantStore = defineStore(
       validationCode,
       time_start,
       time_end,
+      dayFlag,
       addressId,
       init,
     }

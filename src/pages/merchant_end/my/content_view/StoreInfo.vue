@@ -5,6 +5,7 @@ import {
   GetMerchantInfo,
   ChangeMerchantInfo,
   updateMerchantOperationStatus,
+  GetRegion,
 } from '@/services/merchant/merchant_api'
 import { upload } from '@/utils/http'
 import { onLoad, onReady } from '@dcloudio/uni-app'
@@ -30,6 +31,7 @@ const HandleGetInfo = async () => {
   let [time_start, time_end] = res.data.businessHours.split('-')
   Merchant.time_start = time_start
   Merchant.time_end = time_end
+  console.log(Merchant.dayFlag)
 }
 
 onLoad(HandleGetInfo)
@@ -73,7 +75,8 @@ function compareTime(time1: string, time2: string): number {
   if (totalMinutes1 < totalMinutes2) {
     return -1 // time1 早于 time2
   } else if (totalMinutes1 > totalMinutes2) {
-    return 1 // time1 晚于 time2
+    Merchant.dayFlag = 1
+    return -1 // time1 晚于 time2
   } else {
     return 0 // time1 和 time2 相等
   }
@@ -224,14 +227,31 @@ const time_edit = () => {
     Merchant.time_start + ' - ' + Merchant.time_end
 }
 
-const resRegion = ref([
-  { region: '学子', regionId: 213 },
-  { region: '学苑', regionId: 213 },
-])
-
-const onAddressChange = (e: any) => {
-  const index = e.detail.value
-  valiFormData.address = resRegion.value[index].region
+//区域选择
+const place_show = ref<boolean>(false)
+const place_PickerRef = ref(null)
+const place_columns = reactive([[]])
+const resRegion = ref<{ regionId: number; region: string }[]>([])
+const selectedRegion = ref('')
+// 获取区域信息
+const fetchRegion = async () => {
+  const res = await GetRegion(Merchant.collegeId)
+  if (res.code === 1) {
+    place_columns[0] = res.data
+    place_show.value = true
+  } else {
+    uni.showToast({
+      icon: 'none',
+      title: '请求区域信息失败',
+    })
+  }
+}
+//选择某个区域
+const place_confirm = (e: any) => {
+  console.log(e.value[0])
+  Merchant.address = e.value[0].region
+  Merchant.addressId = e.value[0].regionId
+  place_show.value = false
 }
 </script>
 
@@ -244,7 +264,10 @@ const onAddressChange = (e: any) => {
       <view class="content-items">店铺名称: {{ Merchant.name }}</view>
       <view class="content-items">店铺地址: {{ Merchant.address + Merchant.detailAddress }}</view>
       <view class="content-items">联系电话: {{ Merchant.contactPhone }}</view>
-      <view class="content-items">营业时间:{{ Merchant.businessHours }}</view>
+      <view class="content-items">
+        营业时间:{{ Merchant.businessHours }}
+        <view v-show="Merchant.dayFlag" class="dayFlag">+1</view>
+      </view>
       <view class="content-items">所有人: {{ Merchant.realName }}</view>
       <view class="content-items">
         <text>店铺简介: </text>
@@ -303,15 +326,18 @@ const onAddressChange = (e: any) => {
                 </uni-forms-item>
                 <uni-forms-item required name="address">
                   <template #label><text>店铺区域 </text></template>
-                  <picker
-                    mode="selector"
-                    :range="resRegion.map((item) => item.region)"
-                    @change="onAddressChange"
-                  >
-                    <view class="picker">
-                      {{ valiFormData.address || '请选择店铺区域' }}
-                    </view>
-                  </picker>
+                  <view class="place-box" @click="fetchRegion">{{
+                    Merchant.address || '请选择店铺区域'
+                  }}</view>
+
+                  <up-picker
+                    :show="place_show"
+                    :columns="place_columns"
+                    keyName="region"
+                    ref="place_PickerRef"
+                    @confirm="place_confirm"
+                    @cancel="place_show = false"
+                  ></up-picker>
                 </uni-forms-item>
                 <uni-forms-item required name="number">
                   <template #label><text>店铺详细地址</text></template>
@@ -398,6 +424,11 @@ const onAddressChange = (e: any) => {
     padding-bottom: 20rpx;
     .content-items {
       margin-bottom: 20rpx;
+      .dayFlag {
+        display: inline-block;
+        color: #000;
+        font-size: 20rpx;
+      }
     }
   }
   .edit-button {
