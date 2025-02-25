@@ -9,37 +9,37 @@ onLaunch(() => {
 })
 onShow(() => {
   console.log('App Show')
-  linAlive.stopAliveService((res) => {
-    console.log('停止保活服务: ' + JSON.stringify(res))
-  })
+  // linAlive.stopAliveService((res) => {
+  //   console.log('停止保活服务: ' + JSON.stringify(res))
+  // })
 })
 onHide(() => {
   console.log('App Hide')
-  linAlive.startAliveService(
-    {
-      title: '保持后台运行',
-      description: '持续获取后台数据',
-      hideFromTaskList: false,
-      sendStatusWhenScreenOn: true,
-      sendStatusScreenOnTime: 2,
-      enableWakeLock: true,
-      wakeLockScreenTime: 1,
-    },
-    (res) => {
-      console.log(res)
-      console.log('啊，怎么回事', MerchantPages.ws)
-    },
-  )
-  linAlive.checkNotificationPermission((res) => {
-    console.log('检查通知权限是否开启: ' + JSON.stringify(res))
-  })
-  linAlive.runInBackground((res) => {
-    console.log(res)
-    console.log('应用去后台啦', MerchantPages.ws)
-  })
-  linAlive.ignoreBatteryOptimization((res) => {
-    console.log('关闭电池优化', res)
-  })
+  // linAlive.startAliveService(
+  //   {
+  //     title: '保持后台运行',
+  //     description: '持续获取后台数据',
+  //     hideFromTaskList: false,
+  //     sendStatusWhenScreenOn: true,
+  //     sendStatusScreenOnTime: 2,
+  //     enableWakeLock: true,
+  //     wakeLockScreenTime: 1,
+  //   },
+  //   (res) => {
+  //     console.log(res)
+  //     console.log('啊，怎么回事', MerchantPages.ws)
+  //   },
+  // )
+  // linAlive.checkNotificationPermission((res) => {
+  //   console.log('检查通知权限是否开启: ' + JSON.stringify(res))
+  // })
+  // // linAlive.runInBackground((res) => {
+  // //   console.log(res)
+  // //   console.log('应用去后台啦', MerchantPages.ws)
+  // // })
+  // linAlive.ignoreBatteryOptimization((res) => {
+  //   console.log('关闭电池优化', res)
+  // })
 })
 </script>
 
