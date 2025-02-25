@@ -90,7 +90,6 @@ const BLEPrint = async () => {
         .printLR('总价:', orderData.totalPrice + '元')
         .printLR('优惠:', orderData.coupon + '元')
         .printLR('实付:', orderData.actualPrice + '元')
-        .printLR('可提现金额:', orderData.withDrawableAmount + '元')
 
         // 打印送餐地址信息
         .printFill()
