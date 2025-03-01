@@ -81,11 +81,9 @@ const BLEPrint = async () => {
         .print('备注:' + orderData.orderNotes)
         .setSize(1, 1)
         .printFill()
-        .setSize(1, 2)
         // 打印菜品信息
         .setAlign('lt')
         .printLoop(menu)
-        .setSize(1, 1)
         // 打印总价、优惠、实际支付金额
         .printLR('总价:', orderData.totalPrice + '元')
         .printLR('优惠:', orderData.coupon + '元')

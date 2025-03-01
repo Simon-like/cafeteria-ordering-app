@@ -98,21 +98,21 @@ const onSwitch = async (e: number) => {
     loading_status.value = 'more'
   }
   //待处理
-  if (OrderStore.status !== 2 && e === 0) {
+  if (e === 0) {
     OrderStore.status = 2
     OrderStore.localOrderData = []
     //获取订单
     await onLoading_moreOrder()
   }
   //已确认
-  if (OrderStore.status !== 3 && e === 1) {
+  if (e === 1) {
     OrderStore.status = 3
     OrderStore.localOrderData = []
     //获取订单
     await onLoading_moreOrder()
   }
   //已完成
-  if (OrderStore.status !== 4 && OrderStore.status !== 5 && OrderStore.status !== 6 && e === 2) {
+  if (e === 2) {
     OrderStore.status = 4
     OrderStore.localOrderData = []
     //获取订单

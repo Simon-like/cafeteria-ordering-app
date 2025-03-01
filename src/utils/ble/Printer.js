@@ -221,17 +221,20 @@ class Printer {
    */
   printLoop(menu) {
     for (const item of menu) {
+      console.log(item)
       if (!item.length) {
         this.print(item)
       } else if (item.length === 2) {
         this.printLR(item[0], item[1])
       } else if (item.length === 3) {
+        this.setSize(1, 2)
+        // 打印菜品信息
         this.print(item[0])
         this.printLCR('', item[1], item[2])
       }
       this.setSize(1, 1)
       this.printFill()
-      this.setSize(1, 2)
+      console.log('=====================================')
     }
     return this
   }
